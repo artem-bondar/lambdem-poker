@@ -5,7 +5,7 @@
 В данном задании предполагается реализация клиента для игры в покер. В зависимости от количества функционала
 конечная реализация может иметь такой вид (по увеличению степени запущенности):
 
-<img src="/images/HU.png" width="33%"><img src="/images/6 max.png" width="33%"><img src="/images/6 max with HUD.jpg" width="33%">
+<img src="/docs/images/HU.png" width="33%"><img src="/docs/images/6 max.png" width="33%"><img src="/docs/images/6 max with HUD.jpg" width="33%">
 
 ## Минимальные требования (базовая часть)
 

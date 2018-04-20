@@ -16,7 +16,7 @@ One phrase review: \
 
 Nothing really workable here yet. Developing ...
 
-![](/docs/images/"serious coding.gif")
+![serious coding](/docs/images/serious%20coding.gif)
 
 ## Build and run
 
