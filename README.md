@@ -1,33 +1,23 @@
-# lambdem-poker
+# Λambd'em Poker
 
-[![Build Status](https://travis-ci.org/cmc-haskell-2018/lambdem-poker.svg?branch=master)](https://travis-ci.org/cmc-haskell-2018/lambdem-poker)
+## Description
+Client for playing Texas Hold`em versus AI or human beings with some additional features, possibly. \
+Full initial project description can be read [here](/docs/description.md).
 
-Клиент для игры в покер.
+~~Bunch of layout pics here~~
 
-## Сборка и запуск
+List of implemented features: \
+*... coming as soon as they will be added ...*
 
-Соберите проект при помощи [утилиты Stack](https://www.haskellstack.org):
+## Status
 
-```
-stack setup
-stack build
-```
+One phrase review: \
+*Better ever than never.*
 
-Собрать и запустить проект можно при помощи команды
+Nothing really workable here yet. Developing ...
 
-```
-stack build && stack exec lambdem-poker
-```
+![](/docs/images/"serious coding.gif")
 
-Запустить тесты можно при помощи команды
+## Build and run
 
-```
-stack test
-```
-
-Чтобы запустить интепретатор GHCi и автоматически подгрузить все модули проекта, используйте команду
-
-```
-stack ghci
-```
-
+*Coming soon ... some day.*
