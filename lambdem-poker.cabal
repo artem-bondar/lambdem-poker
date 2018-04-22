@@ -15,19 +15,20 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall -fno-warn-type-defaults
-  exposed-modules:     LambdemPoker
+  exposed-modules:     
+    Interface.TableScreen
   build-depends:       base >= 4.7 && < 5
   default-language:    Haskell2010
 
-executable lambdem-poker
+executable poker
   hs-source-dirs:      app
-  main-is:             Main.hs
+  main-is:             LambdemPoker.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , lambdem-poker
   default-language:    Haskell2010
 
-test-suite lambdem-poker-test
+test-suite poker-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
