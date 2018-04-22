@@ -1,4 +1,6 @@
 module Interface.TableScreen where
 
+import Graphics.Gloss
+
 launchTableScreen :: IO ()
-launchTableScreen = putStrLn "This project is not yet implemented"
+launchTableScreen =  display (InWindow "Game window" (200, 200) (10, 10)) white (Circle 80)

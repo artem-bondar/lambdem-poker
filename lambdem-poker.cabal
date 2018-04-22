@@ -1,13 +1,11 @@
 name:                lambdem-poker
 version:             0.1
--- synopsis:
+synopsis:            Poker client
 -- description:
--- homepage:
--- license:
--- license-file:
-author:              Author name here
-maintainer:          author@email.com
-copyright:           2017 Author name here
+homepage:            https://github.com/cmc-haskell-2018/lambdem-poker
+license:             PublicDomain	
+license-file:        UNLICENSE
+author:              Artem Bondar
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
@@ -18,6 +16,7 @@ library
   exposed-modules:     
     Interface.TableScreen
   build-depends:       base >= 4.7 && < 5
+                     , gloss
   default-language:    Haskell2010
 
 executable poker
@@ -37,3 +36,6 @@ test-suite poker-test
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
+source-repository head
+  type:     git
+  location: https://github.com/cmc-haskell-2018/lambdem-poker
