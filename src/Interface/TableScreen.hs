@@ -1,6 +1,6 @@
 module Interface.TableScreen where
 
-import Graphics.Gloss.Game (png)
+import Graphics.Gloss.Juicy (loadJuicyPNG)
 import Graphics.Gloss.Interface.Environment
 import Graphics.Gloss.Interface.Pure.Game
 
@@ -43,7 +43,7 @@ data Player = Player
 data Position = UTG1 | UTG2 | MP1 | MP2 | HJ | CO | BTN | SB | BB
 
 -- | All images relative to table game screen.
-data TableImages = TableImages
+data Images = Images
  { background :: Picture
  , table      :: Picture
  }
@@ -52,7 +52,7 @@ initTableScreen :: IO TableScreen
 initTableScreen = pure TableScreen {totalPlayers = 2}
 
 drawTableScreen :: TableScreen -> Picture
-drawTableScreen _ = png "images/background.png"
+drawTableScreen _ = loadJuicyPNG "images/background.png"
 
 handleTableScreen :: Event -> TableScreen -> TableScreen
 handleTableScreen _ = id

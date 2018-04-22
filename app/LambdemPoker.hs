@@ -1,4 +1,4 @@
-module Main where
+module LambdemPoker where
 
 import Interface.TableScreen
 
