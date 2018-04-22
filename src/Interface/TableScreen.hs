@@ -8,24 +8,20 @@ launchTableScreen :: IO ()
 launchTableScreen =  do
     tableScreen <- initTableScreen
     resolution <- getScreenSize
-    play (display (screenPosition resolution)) bgColor fps tableScreen drawTableScreen handleTableScreen updateTableScreen
+    play (display (margins resolution)) bgColor fps tableScreen drawTableScreen handleTableScreen updateTableScreen
     where
-      display = InWindow "Lambdem Poker" (screenSize)
-      bgColor = white   -- цвет фона
-      fps     = 30      -- кол-во кадров в секунду
+      display = InWindow "Lambdem Poker" windowSize
+      bgColor = white   -- background color
+      fps     = 30      -- framerate
 
-screenSize :: (Int, Int)
-screenSize = (960, 720)
+-- | Resolution
+windowSize :: (Int, Int)
+windowSize = (960, 720)
 
-screenPosition :: (Int, Int) -> (Int, Int)
-screenPosition (w, h) 
-    | w == 1920 = (480, height)
-    | otherwise              = (10, height)
-    where
-      height
-        | h == 1080 = 180
-        | otherwise = 10
-
+-- | Margins to center window depending
+-- on different display resolutions
+margins :: (Int, Int) -> (Int, Int)
+margins (w, h) = ((w - fst windowSize) `div` 2, (h - snd windowSize) `div` 2)
 
 data TableScreen = TableScreen
   { var :: Int
