@@ -15,6 +15,7 @@ library
   ghc-options:         -Wall -fno-warn-type-defaults
   exposed-modules:     
     Interface.TableScreen
+    Interface.Renderer
   build-depends:       base >= 4.7 && < 5
                      , gloss
                      , gloss-juicy

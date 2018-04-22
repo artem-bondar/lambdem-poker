@@ -1,5 +1,6 @@
 module Main where
 
+import Interface.Renderer
 import Interface.TableScreen
 
 main :: IO ()

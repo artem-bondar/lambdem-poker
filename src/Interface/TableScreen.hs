@@ -1,6 +1,5 @@
 module Interface.TableScreen where
 
-import Graphics.Gloss.Juicy (loadJuicyPNG)
 import Graphics.Gloss.Interface.Environment
 import Graphics.Gloss.Interface.Pure.Game
 
@@ -47,16 +46,6 @@ data Images = Images
  { background :: Picture
  , table      :: Picture
  }
-
--- | Loades images from files.
-loadImages :: IO Images
-loadImages = do
-  Just imgBackground <- loadJuicyPNG "img/background.png"
-  Just imgTable      <- loadJuicyPNG "img/table.png"
-  return Images
-    { background = imgBackground
-    , table      = imgTable
-    }
 
 initTableScreen :: IO TableScreen
 initTableScreen = pure TableScreen {totalPlayers = 2}
