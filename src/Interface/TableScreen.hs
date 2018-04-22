@@ -5,11 +5,11 @@ import Graphics.Gloss.Interface.Environment
 import Graphics.Gloss.Interface.Pure.Game
 
 -- | Launches main (table) game screen.
-launchTableScreen :: IO ()
-launchTableScreen =  do
+launchTableScreen :: Images -> IO ()
+launchTableScreen images =  do
     tableScreen <- initTableScreen
-    resolution <- getScreenSize
-    play (display (margins resolution)) bgColor fps tableScreen drawTableScreen handleTableScreen updateTableScreen
+    resolution  <- getScreenSize
+    play (display (margins resolution)) bgColor fps tableScreen (drawTableScreen images) handleTableScreen updateTableScreen
     where
       display = InWindow "Lambdem Poker" windowSize
       bgColor = white   -- background color
@@ -29,7 +29,7 @@ data TableScreen = TableScreen
   { totalPlayers :: Int           -- amount of current players
   , playersData  :: [Player]      -- info about every player
   , handCount    :: Int           -- current hand number
-  , screenImages :: TableImages   -- all images
+  , screenImages :: Images   -- all images
   }
 
 -- | Contains all personal player data.
@@ -48,11 +48,21 @@ data Images = Images
  , table      :: Picture
  }
 
+-- | Loades images from files.
+loadImages :: IO Images
+loadImages = do
+  Just imgBackground <- loadJuicyPNG "img/background.png"
+  Just imgTable      <- loadJuicyPNG "img/table.png"
+  return Images
+    { background = imgBackground
+    , table      = imgTable
+    }
+
 initTableScreen :: IO TableScreen
 initTableScreen = pure TableScreen {totalPlayers = 2}
 
-drawTableScreen :: TableScreen -> Picture
-drawTableScreen _ = loadJuicyPNG "images/background.png"
+drawTableScreen :: Images -> TableScreen -> Picture
+drawTableScreen images sprites = pictures [background images, table images]
 
 handleTableScreen :: Event -> TableScreen -> TableScreen
 handleTableScreen _ = id

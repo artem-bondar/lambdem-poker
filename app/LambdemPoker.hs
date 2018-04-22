@@ -1,6 +1,8 @@
-module LambdemPoker where
+module Main where
 
 import Interface.TableScreen
 
 main :: IO ()
-main = launchTableScreen
+main = do
+    images <- loadImages
+    launchTableScreen images
