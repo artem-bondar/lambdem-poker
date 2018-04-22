@@ -3,7 +3,7 @@ module Interface.TableScreen where
 import Graphics.Gloss.Interface.Environment
 import Graphics.Gloss.Interface.Pure.Game
 
--- | Launch main game screen.
+-- | Launches main (table) game screen.
 launchTableScreen :: IO ()
 launchTableScreen =  do
     tableScreen <- initTableScreen
@@ -14,21 +14,34 @@ launchTableScreen =  do
       bgColor = white   -- background color
       fps     = 30      -- framerate
 
--- | Resolution
+-- | Resolution.
 windowSize :: (Int, Int)
 windowSize = (960, 720)
 
 -- | Margins to center window depending
--- on different display resolutions
+-- on different display resolutions.
 margins :: (Int, Int) -> (Int, Int)
 margins (w, h) = ((w - fst windowSize) `div` 2, (h - snd windowSize) `div` 2)
 
+-- | Contains all data relative to table game screen.
 data TableScreen = TableScreen
-  { var :: Int
+  { totalPlayers :: Int      -- amount of current players
+  , playersData  :: [Player] -- info about every player
+  , handCount    :: Int      -- current hand number
   }
 
+-- | Contains all personal player data.
+data Player = Player
+  { name     :: String
+  , balance  :: Int
+  , position :: Position
+  }
+
+-- | Poker positions
+data Position = UTG1 | UTG2 | MP1 | MP2 | HJ | CO | BTN | SB | BB
+
 initTableScreen :: IO TableScreen
-initTableScreen = pure TableScreen {var = 1}
+initTableScreen = pure TableScreen {totalPlayers = 2}
 
 drawTableScreen :: TableScreen -> Picture
 drawTableScreen _ = text "some text"
