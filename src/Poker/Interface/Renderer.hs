@@ -1,11 +1,11 @@
 module Poker.Interface.Renderer where
 
-import Interface.TableScreen
+import Poker.Interface.Types
 import Graphics.Gloss.Juicy (loadJuicyPNG)
 
 -- | Loades images from files.
-loadImages :: IO Images
-loadImages = do
+loadedImages :: IO TableImages
+loadedImages = do
   Just imgBackground <- loadJuicyPNG "img/background.png"
   Just imgTable      <- loadJuicyPNG "img/table.png"
   return Images

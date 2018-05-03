@@ -3,13 +3,17 @@ module Client where
 import Graphics.Gloss.Interface.Environment
 import Graphics.Gloss.Interface.Pure.Game
 
+import Poker.Interface.Renderer
+import Poker.Interface.Types
+import Poker.Logic.Types
+
 -- | Launches main (table) game screen.
-launchTableScreen :: Images -> IO ()
-launchTableScreen images =  do
+launchGame :: IO ()
+launchGame =  do
     tableScreen <- initTableScreen
     resolution  <- getScreenSize
     test <- return (display (margins resolution))
-    play test color fps tableScreen (drawTableScreen images) handleTableScreen updateTableScreen
+    play test color fps tableScreen drawTableScreen handleInput updateGame
     where
       display = InWindow "Lambdem Poker" windowSize
       color   = white -- background color
@@ -24,14 +28,28 @@ windowSize = (960, 720)
 margins :: (Int, Int) -> (Int, Int)
 margins (w, h) = ((w - fst windowSize) `div` 2, (h - snd windowSize) `div` 2)
 
+-- | Initialization of table screen.
+--   All images are loaded and
+--   all player data is set
 initTableScreen :: IO TableScreen
-initTableScreen = pure TableScreen {totalPlayers = 2}
+initTableScreen = createTableScreenWith <$> loadedImages
 
-drawTableScreen :: Images -> TableScreen -> Picture
-drawTableScreen images sprites = pictures [background images, table images]
+-- | Create new table screen made of
+--   images and set default parameters
+createTableScreenWith :: TableImages -> TableScreen
+createTableScreenWith imgs = TableScreen
+  {
+  totalPlayers  = 2
+  , playersData = [Player "1" 1500 SB, Player "2" 1500 BB]
+  , handCount   = 1
+  , images      = imgs
+  }
 
-handleTableScreen :: Event -> TableScreen -> TableScreen
-handleTableScreen _ = id
+drawTableScreen :: TableScreen -> Picture
+drawTableScreen screen = pictures [background $ images screen, table $ images screen]
 
-updateTableScreen :: Float -> TableScreen -> TableScreen
-updateTableScreen _ = id
+handleInput :: Event -> TableScreen -> TableScreen
+handleInput _ = id
+
+updateGame :: Float -> TableScreen -> TableScreen
+updateGame _ = id

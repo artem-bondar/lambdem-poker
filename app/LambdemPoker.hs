@@ -1,9 +1,6 @@
 module Main where
 
-import Interface.Renderer
-import Interface.TableScreen
+import Client
 
 main :: IO ()
-main = do
-    images <- loadImages
-    launchTableScreen images
+main = launchGame
