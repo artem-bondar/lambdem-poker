@@ -15,6 +15,7 @@ library
   ghc-options:         -Wall -fno-warn-type-defaults
   exposed-modules:     
     Client
+    Poker.Interface.Loader
     Poker.Interface.Renderer
     Poker.Interface.Types
     Poker.Logic.Types
