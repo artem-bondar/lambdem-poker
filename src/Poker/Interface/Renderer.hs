@@ -1,4 +1,4 @@
-module Interface.Renderer where
+module Poker.Interface.Renderer where
 
 import Interface.TableScreen
 import Graphics.Gloss.Juicy (loadJuicyPNG)
