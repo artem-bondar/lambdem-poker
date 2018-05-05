@@ -37,18 +37,18 @@ instance Show Deck where
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
         (cards deck) [1 :: Int .. 52])
 
--- | Contains all 52 cards
+-- | Contains all 52 cards.
 createDeck :: Deck
 createDeck = Deck
   { size = 52
   , cards = Card <$> allCardRanks <*> allSuites 
   }
 
--- | List of all suites
+-- | List of all suites.
 allSuites :: [Suit]
 allSuites = [minBound..maxBound]
 
--- | List of all card ranks
+-- | List of all card ranks.
 allCardRanks :: [CardRank]
 allCardRanks = [minBound..maxBound]
 
