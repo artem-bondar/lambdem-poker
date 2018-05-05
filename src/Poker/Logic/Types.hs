@@ -1,6 +1,8 @@
 -- | All poker related types are declared here.
 module Poker.Logic.Types where
 
+import Data.List
+
 -- | Contains all personal player data.
 data Player = Player
   { name     :: String
@@ -21,6 +23,35 @@ data Position
   | BB   -- ^ Big Blind
   deriving (Eq, Ord, Show)
 
+-- | Card deck.
+data Deck = Deck
+  { size  :: Int
+  , cards :: [Card]
+  }
+
+-- | Derive 'Show' class for 'Deck'.
+instance Show Deck where
+  show deck = "Deck contains " ++ show (size deck) ++ "cards:" ++ insides
+    where
+      insides = intercalate " " (zipWith 
+        (\x index -> (show index ++ ". " ++ show x ++ "\n"))
+        (cards deck) [1 :: Int .. 52])
+
+-- | Contains all 52 cards
+createDeck :: Deck
+createDeck = Deck
+  { size = 52
+  , cards = Card <$> allCardRanks <*> allSuites 
+  }
+
+-- | List of all suites
+allSuites :: [Suit]
+allSuites = [minBound..maxBound]
+
+-- | List of all card ranks
+allCardRanks :: [CardRank]
+allCardRanks = [minBound..maxBound]
+
 -- | Poker combinations.
 data Hand = Hand
   { handRank   :: HandRank
@@ -34,6 +65,11 @@ data Card = Card
   { cardRank :: CardRank
   , suit     :: Suit
   }
+  deriving (Eq, Ord)
+
+-- | Derive 'Show' class for 'Card'.
+instance Show Card where
+  show card = show (cardRank card) ++ " of " ++ show (suit card) 
 
 -- | Card suites.
 data Suit
