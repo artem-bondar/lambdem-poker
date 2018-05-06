@@ -18,12 +18,15 @@ drawTableScreen screen
     | state screen == Dealing_Hand = pictures
         [background $ images screen,  table $ images screen]
     | otherwise = pictures ([background $ images screen,  table $ images screen,
-        drawDealerChip (dealer screen) (chipLayout $ images screen)] ++
+        drawDealerChip (dealer screen) chipImages] ++
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
                              drawPlayerSeatBold p (seatBold $ images screen),
                              drawPlayerName p, drawPlayerBalance p,
-                             drawPlayerBet p (chipLayout $ images screen)])
+                             drawPlayerBet p chipImages,
+                             drawPot (pot screen) chipImages])
             (players screen))
+    where
+        chipImages = (chipLayout $ images screen)
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
@@ -103,13 +106,15 @@ drawBetSize bet offset = uncurry translate offset betSize
         betSize = color white $ scale 0.125 0.125 (text $ show bet)
 
 -- | Draw pot by it'size.
-drawPot :: Int -> ChipLayout -> Picture
-drawPot potSize layout = 
-    let separation = separateBet potSize allChipValues
-        columns    = length (filter (> 0) separation)
-    in pictures [uncurry translate (getPotOffset columns)
-    (drawBet 0 separation (stack layout)),
-    drawBetSize potSize (getPotOffset (-columns))]
+drawPot :: Maybe Int -> ChipLayout -> Picture
+drawPot potSize layout = case potSize of
+    Nothing  -> blank
+    Just pot ->
+        let separation = separateBet pot allChipValues
+            columns    = length (filter (> 0) separation)
+        in pictures [uncurry translate (getPotOffset columns)
+        (drawBet 0 separation (stack layout)),
+        drawBetSize pot (getPotOffset (-columns))]
 
 -------------------------------------------------------------------------------
 -- * Utility functions

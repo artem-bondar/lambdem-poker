@@ -71,7 +71,7 @@ getChipsOffset s columns = case s of
 -- | Return pot offset depending on amount of columns. 
 getPotOffset :: Int -> (Float, Float)
 getPotOffset columns = 
-    (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 150)    
+    (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 115)    
 
 -------------------------------------------------------------------------------
 -- * Constants
