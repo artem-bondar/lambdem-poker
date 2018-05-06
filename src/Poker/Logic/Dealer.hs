@@ -62,3 +62,7 @@ takeBlind player blind
         { balance = balance player - blind
         , move = Move Raised blind
         }
+
+-- | Time consumed to deal cards.
+dealTime :: Float
+dealTime = 0.76

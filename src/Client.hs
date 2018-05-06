@@ -61,14 +61,18 @@ handleInput _ = id
 -- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen
 updateGame timePassed screen 
-      | state screen == Dealing_Hand = screen
-        { state      = Waiting_User_Input
-        , players    = takeBlinds (fst dealResult) (blindSize screen) 
-        , randomizer = fst $ snd dealResult
-        , deck       = snd $ snd dealResult
-        }
-      | otherwise    = screen {state = Waiting_User_Input}
-      where
-        dealResult = dealPlayers (players screen)
-          (randomizer screen) createDeck
+    | state screen == Dealing_Hand = if (timer screen == 0)
+        then screen
+            { timer      = timePassed
+            , players    = takeBlinds (fst dealResult) (blindSize screen) 
+            , randomizer = fst $ snd dealResult
+            , deck       = snd $ snd dealResult
+            }
+        else if (timer screen < dealTime)
+            then screen { timer = timer screen + timePassed }
+            else screen { timer = 0, state = Waiting_User_Input}
+    | otherwise    = screen {state = Waiting_User_Input}
+    where
+      dealResult = dealPlayers (players screen)
+        (randomizer screen) createDeck
       

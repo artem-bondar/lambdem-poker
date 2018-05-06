@@ -16,17 +16,18 @@ import Debug.Trace
 drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
     | state screen == Dealing_Hand = pictures
-        [background $ images screen,  table $ images screen]
+        ([background $ images screen,  table $ images screen] ++
+        map (\p -> playerOnSeatBold p) (players screen))
     | otherwise = pictures ([background $ images screen,  table $ images screen,
         drawDealerChip (dealer screen) chipImages] ++
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
-                             drawPlayerSeatBold p (seatBold $ images screen),
-                             drawPlayerName p, drawPlayerBalance p,
-                             drawPlayerBet p chipImages,
-                             drawPot (pot screen) chipImages])
+                            playerOnSeatBold p, drawPlayerBet p chipImages,
+                            drawPot (pot screen) chipImages])
             (players screen))
     where
-        chipImages = (chipLayout $ images screen)
+        chipImages         = (chipLayout $ images screen)
+        playerOnSeatBold p = pictures [drawPlayerSeatBold p (seatBold $ images screen),
+            drawPlayerName p, drawPlayerBalance p]
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
