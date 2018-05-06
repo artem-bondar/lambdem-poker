@@ -47,6 +47,7 @@ createTableScreenWith generator imgs = TableScreen
   , turn         = Nothing
   , river        = Nothing
   , randomizer   = generator
+  , deck         = Deck 0 []
   , images       = imgs
   }
 
@@ -58,12 +59,17 @@ handleInput _ = id
 updateGame :: Float -> TableScreen -> TableScreen
 updateGame timePassed screen 
       | state screen == Dealing_Hand = screen
-        { players    = fst dealResult
+        { state      = Waiting_User_Input
+        , players    = trace (show dealResult) (fst dealResult)
         , randomizer = fst $ snd dealResult
         , deck       = snd $ snd dealResult
         }
-      | otherwise     = screen {state = Waiting_User_Input}
+      | otherwise    = screen {state = Waiting_User_Input}
       where
         dealResult = dealPlayers (players screen)
-          (randomizer screen) (deck screen)
+          (randomizer screen) createDeck
+        showH hnd = case hnd of
+          Nothing -> "[__ __]"
+          Just h  -> "[" ++ cardToShortName (fst h) ++ " "
+                         ++ cardToShortName (snd h) ++ "]"
       

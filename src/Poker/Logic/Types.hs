@@ -9,7 +9,7 @@ data Player = Player
   , balance  :: Int
   , position :: Position
   , hand     :: Maybe (Card, Card)
-  }
+  } deriving (Show)
 
 -- | Possible game states. 
 data GameState
@@ -54,11 +54,11 @@ createDeck = Deck
 
 -- | List of all card short names.
 allCardNames :: [String]
-allCardNames = map cardToShorName (cards createDeck)
+allCardNames = map cardToShortName (cards createDeck)
 
 -- | Convert card to short name.
-cardToShorName :: Card -> String
-cardToShorName card = rank ++ cardSuit
+cardToShortName :: Card -> String
+cardToShortName card = rank ++ cardSuit
       where
         rank = case cardRank card of
           Ten   -> "T"
@@ -81,8 +81,8 @@ allSuites = [minBound..maxBound]
 allCardRanks :: [CardRank]
 allCardRanks = [minBound..maxBound]
 
--- | Poker combinations.
-data Hand = Hand
+-- | Poker combination.
+data Combination = Combination
   { handRank   :: HandRank
   , body       :: [Card]  -- ^ from 5 to 7 cards
   , kicker     :: [Card]  -- ^ kicker cards, amount
