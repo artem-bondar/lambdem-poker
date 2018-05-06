@@ -65,4 +65,8 @@ takeBlind player blind
 
 -- | Time consumed to deal cards.
 dealTime :: Float
-dealTime = 0.76
+dealTime = 0.60
+
+-- | Time consumed to post blinds.
+postTime :: Float
+postTime = 1.0

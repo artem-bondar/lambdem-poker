@@ -47,6 +47,7 @@ data PlayerType
 -- | Possible game states. 
 data GameState
   = Dealing_Hand
+  | Posting_Blinds
   | Waiting_User_Input
   | AI_Thinking
   deriving (Eq)

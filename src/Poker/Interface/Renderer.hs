@@ -102,7 +102,9 @@ drawBet offset separation chips
 
 -- | Draw size of bet.
 drawBetSize :: Int -> (Float, Float) -> Picture
-drawBetSize bet offset = uncurry translate offset betSize
+drawBetSize bet offset
+    | bet == 0  = blank
+    | otherwise = uncurry translate offset betSize
     where
         betSize = color white $ scale 0.125 0.125 (text $ show bet)
 
