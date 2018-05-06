@@ -39,3 +39,27 @@ getNHands n (randomizer, deck) =
     let randomResult = getHand randomizer deck
         nextResult   = getNHands (n - 1) (snd randomResult)
     in (fst randomResult : fst nextResult, snd  nextResult)
+
+-- | Take blinds from players.
+takeBlinds :: [Player] -> Int -> [Player]
+takeBlinds [] _      = []
+takeBlinds (p:ps) bb = 
+    let takeBB player bb =
+        case position player of
+            SB -> takeBlind player (bb `div` 2)
+            BB -> takeBlind player bb
+            _  -> player
+    in (takeBB p bb : takeBlinds ps)
+
+-- | Take blind from player.
+takeBlind :: Player -> Int -> Player
+takeBlind player blind
+        | balance player == 0  = player
+        | balance player <= bb = player
+            { balance = 0
+            , move = Move All_In (balance player)
+            }
+        | otherwise = player
+        { balance = balance player - bb
+        , move = Move Raised blind
+        }

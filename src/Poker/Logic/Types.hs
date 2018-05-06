@@ -12,7 +12,23 @@ data Player = Player
   , seat     :: Seat
   , hand     :: Maybe (Card, Card)
   , hideHand :: Bool
+  , move     :: Move
   }
+
+-- | Contain information about player move.
+data Move = Move
+  { action  :: ActionType
+  , betSize :: Int
+  }
+
+-- | Type of actions that player can make.
+data ActionType
+  = No_action
+  | Checked
+  | Called
+  | Folded
+  | Raised
+  | All_In
 
 -- | Describes all seating positions.
 data Seat

@@ -13,6 +13,8 @@ data TableScreen = TableScreen
   , totalPlayers :: Int          -- ^ amount of current players
   , players      :: [Player]     -- ^ info about every player
   , handCount    :: Int          -- ^ current hand number
+  , dealer       :: Seat         -- ^ position of dealer
+  , blindSize    :: Int          -- ^ size of big blind
   , bank         :: Maybe Int    -- ^ bank size
   , sideBank     :: Maybe Int    -- ^ side bank size
   , flop         :: Maybe [Card] -- ^ flop cards
@@ -40,6 +42,6 @@ data DeckLayout = DeckLayout
 
 -- | Contains layout for chips.
 data ChipLayout = ChipLayout
-  { dealer :: Picture -- ^ dealer chip
+  { dealerChip :: Picture
 
   }
