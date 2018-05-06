@@ -20,8 +20,8 @@ loadedTableImages = do
     , table      = imgTable
     , seatBold   = imgSeatBold
     , deckLayout = DeckLayout
-      { back = imgBack
-      , deck = imgsDeck
+      { back  = imgBack
+      , front = imgsDeck
       }
     }
 

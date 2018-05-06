@@ -9,6 +9,7 @@ import Poker.Interface.Loader
 import Poker.Interface.Renderer
 import Poker.Interface.Types
 import Poker.Logic.Types
+import Poker.Logic.Dealer
 
 import Debug.Trace
 
@@ -37,7 +38,8 @@ createTableScreenWith generator imgs = TableScreen
   { state        = Dealing_Hand
   , timer        = 0.0
   , totalPlayers = 2
-  , playersData  = [Player "Player 1" 1500 SB, Player "Player 2" 1500 BB]
+  , players      = [Player "Player 1" 1500 SB Nothing,
+                    Player "Player 2" 1500 BB Nothing]
   , handCount    = 1
   , bank         = Nothing
   , sideBank     = Nothing
@@ -52,8 +54,16 @@ createTableScreenWith generator imgs = TableScreen
 handleInput :: Event -> TableScreen -> TableScreen
 handleInput _ = id
 
--- | Update game status. Is used to operate with timebank. 
+-- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen
-updateGame f s 
-      | timer s < 1.0 = s {timer = timer s + f}
-      | otherwise     = s {state = Waiting_User_Input}
+updateGame timePassed screen 
+      | state screen == Dealing_Hand = screen
+        { players    = fst dealResult
+        , randomizer = fst $ snd dealResult
+        , deck       = snd $ snd dealResult
+        }
+      | otherwise     = screen {state = Waiting_User_Input}
+      where
+        dealResult = dealPlayers (players screen)
+          (randomizer screen) (deck screen)
+      

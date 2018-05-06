@@ -11,7 +11,7 @@ data TableScreen = TableScreen
   { state        :: GameState    -- ^ current game state
   , timer        :: Float        -- ^ for detecting time  
   , totalPlayers :: Int          -- ^ amount of current players
-  , playersData  :: [Player]     -- ^ info about every player
+  , players      :: [Player]     -- ^ info about every player
   , handCount    :: Int          -- ^ current hand number
   , bank         :: Maybe Int    -- ^ bank size
   , sideBank     :: Maybe Int    -- ^ side bank size
@@ -19,6 +19,7 @@ data TableScreen = TableScreen
   , turn         :: Maybe Card   -- ^ turn card
   , river        :: Maybe Card   -- ^ river card
   , randomizer   :: StdGen       -- ^ random number generator
+  , deck         :: Deck         -- ^ cards to deal
   , images       :: TableImages  -- ^ images relative to screen
   }
 
@@ -32,6 +33,6 @@ data TableImages = TableImages
 
 -- | Contains layout for card deck.
 data DeckLayout = DeckLayout
-  { back :: Picture   -- ^ image for back side of card
-  , deck :: [Picture] -- ^ images for all 52 cards
+  { back  :: Picture   -- ^ image for back side of card
+  , front :: [Picture] -- ^ images for front side of cards
   }

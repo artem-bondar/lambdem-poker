@@ -8,6 +8,7 @@ data Player = Player
   { name     :: String
   , balance  :: Int
   , position :: Position
+  , hand     :: Maybe (Card, Card)
   }
 
 -- | Possible game states. 
