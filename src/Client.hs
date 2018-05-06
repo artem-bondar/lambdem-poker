@@ -9,6 +9,8 @@ import Poker.Interface.Renderer
 import Poker.Interface.Types
 import Poker.Logic.Types
 
+import Debug.Trace
+
 -- | Launches main (table) game screen.
 launchGame :: IO ()
 launchGame =  do
@@ -20,12 +22,12 @@ launchGame =  do
     where
       display           = InWindow "Lambdem Poker" windowSize
       backgroundColor   = white
-      fps               = 30
+      fps               = 25
 
 -- | Initialization of table screen.
 --   All images are loaded and all player data is set.
 initTableScreen :: IO TableScreen
-initTableScreen = createTableScreenWith <$> loadedImages
+initTableScreen = createTableScreenWith <$> loadedTableImages
 
 -- | Create new table screen made of images and set default parameters.
 createTableScreenWith :: TableImages -> TableScreen

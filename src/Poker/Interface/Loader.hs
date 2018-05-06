@@ -7,22 +7,25 @@ import Graphics.Gloss.Data.Picture
 import Poker.Interface.Types
 import Poker.Logic.Types
 
--- | Loades images from files.
-loadedImages :: IO TableImages
-loadedImages = do
+-- | Load all table images from files.
+loadedTableImages :: IO TableImages
+loadedTableImages = do
   Just imgBackground <- loadJuicyPNG "img/background.png"
   Just imgTable      <- loadJuicyPNG "img/table.png"
+  Just imgSeatBold   <- loadJuicyPNG "img/seatbold.png"
   Just imgBack       <- loadJuicyPNG "img/deck/back.png"
   imgsDeck           <- loadDeckLayout
   return TableImages
     { background = imgBackground
     , table      = imgTable
+    , seatBold   = imgSeatBold
     , deckLayout = DeckLayout
       { back = imgBack
       , deck = imgsDeck
       }
     }
 
+-- | Load deck layout.
 loadDeckLayout :: IO [Picture]
 loadDeckLayout = sequence (uwrapMaybes <$> loadedList)
   where
@@ -32,5 +35,5 @@ loadDeckLayout = sequence (uwrapMaybes <$> loadedList)
         Nothing -> return blank
         Just v  -> return v
     loadedList = map
-                (\x -> loadJuicyPNG $ "img/deck/" ++ x ++ ".png")
-                allCardNames
+      (\x -> loadJuicyPNG $ "img/deck/" ++ x ++ ".png")
+      allCardNames
