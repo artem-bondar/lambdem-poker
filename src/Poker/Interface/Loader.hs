@@ -15,6 +15,7 @@ loadedTableImages = do
   Just imgSeatBold   <- loadJuicyPNG "img/seatbold.png"
   Just imgBack       <- loadJuicyPNG "img/deck/back.png"
   imgsDeck           <- loadDeckLayout
+  Just imgDealerChip <- loadJuicyPNG "img/chips/dealer.png"
   return TableImages
     { background = imgBackground
     , table      = imgTable
@@ -22,6 +23,9 @@ loadedTableImages = do
     , deckLayout = DeckLayout
       { back  = imgBack
       , front = imgsDeck
+      }
+    , chipLayout = ChipLayout
+      { dealerChip = imgDealerChip
       }
     }
 

@@ -42,7 +42,7 @@ createTableScreenWith generator imgs = TableScreen
       [Player Human "Player 1" 1500 SB Bottom Nothing False (Move No_action 0),
        Player Human "Player 2" 1500 BB Top    Nothing True  (Move No_action 0)]
   , handCount    = 1
-  , dealer       = Bottom
+  , dealer       = Top
   , blindSize    = 30
   , bank         = Nothing
   , sideBank     = Nothing
@@ -63,7 +63,7 @@ updateGame :: Float -> TableScreen -> TableScreen
 updateGame timePassed screen 
       | state screen == Dealing_Hand = screen
         { state      = Waiting_User_Input
-        , players    = fst dealResult
+        , players    = takeBlinds (fst dealResult) (blindSize screen) 
         , randomizer = fst $ snd dealResult
         , deck       = snd $ snd dealResult
         }

@@ -44,22 +44,21 @@ getNHands n (randomizer, deck) =
 takeBlinds :: [Player] -> Int -> [Player]
 takeBlinds [] _      = []
 takeBlinds (p:ps) bb = 
-    let takeBB player bb =
-        case position player of
-            SB -> takeBlind player (bb `div` 2)
-            BB -> takeBlind player bb
+    let takeBB player blind = case position player of
+            SB -> takeBlind player (blind `div` 2)
+            BB -> takeBlind player blind
             _  -> player
-    in (takeBB p bb : takeBlinds ps)
+    in (takeBB p bb : takeBlinds ps bb)
 
 -- | Take blind from player.
 takeBlind :: Player -> Int -> Player
 takeBlind player blind
         | balance player == 0  = player
-        | balance player <= bb = player
+        | balance player <= blind = player
             { balance = 0
             , move = Move All_In (balance player)
             }
         | otherwise = player
-        { balance = balance player - bb
+        { balance = balance player - blind
         , move = Move Raised blind
         }

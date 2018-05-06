@@ -16,7 +16,8 @@ drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
     | state screen == Dealing_Hand = pictures
         [background $ images screen,  table $ images screen]
-    | otherwise = pictures ([background $ images screen,  table $ images screen] ++
+    | otherwise = pictures ([background $ images screen,  table $ images screen,
+        drawDealerChip (dealer screen) (chipLayout $ images screen)] ++
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
                              drawPlayerSeatBold p (seatBold $ images screen)])
             (players screen))
@@ -41,6 +42,11 @@ drawPlayerHand player layout =
     uncurry translate (getHandOffset $ seat player) img
     where
         img = drawHand (hideHand player) (hand player) layout
+
+-- | Draw dealer chip.
+drawDealerChip :: Seat -> ChipLayout -> Picture
+drawDealerChip s layout = 
+    uncurry translate (getDealerChipOffset s) (dealerChip layout)
 
 -------------------------------------------------------------------------------
 -- * Utility functions
@@ -67,6 +73,16 @@ getSeatBoldOffset s = case s of
     Left_Down  -> (0, 0)
     Left_Up    -> (0, 0)
     Top        -> (0, 218)
+    Right_Up   -> (0, 0)
+    Right_Down -> (0, 0) 
+
+ -- | Return offset for seatbold depending on seat.
+getDealerChipOffset :: Seat -> (Float, Float)
+getDealerChipOffset s = case s of
+    Bottom     -> (100, -60)
+    Left_Down  -> (0, 0)
+    Left_Up    -> (0, 0)
+    Top        -> (-110, 160)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0) 
 
