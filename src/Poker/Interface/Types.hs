@@ -6,7 +6,7 @@ import System.Random (StdGen)
 
 import Poker.Logic.Types
 
--- | Contains all data relative to table game screen.
+-- | Contain all data relative to table game screen.
 data TableScreen = TableScreen
   { state        :: GameState    -- ^ current game state
   , timer        :: Float        -- ^ for detecting time  
@@ -25,7 +25,7 @@ data TableScreen = TableScreen
   , images       :: TableImages  -- ^ images relative to screen
   }
 
--- | Contains all images relative to table game screen.
+-- | Contain all images relative to table game screen.
 data TableImages = TableImages
   { background :: Picture
   , table      :: Picture
@@ -34,14 +34,20 @@ data TableImages = TableImages
   , chipLayout :: ChipLayout
   }
 
--- | Contains layout for card deck.
+-- | Contain layout for card deck.
 data DeckLayout = DeckLayout
   { back  :: Picture   -- ^ image for back side of card
   , front :: [Picture] -- ^ images for front side of cards
   }
 
--- | Contains layout for chips.
+-- | Contain layout for chips.
 data ChipLayout = ChipLayout
   { dealerChip :: Picture
+  , stack      :: [Chip]
+  }
 
+-- | Contain chip size and image.
+data Chip = Chip
+  { value  :: Int
+  , sprite :: Picture
   }

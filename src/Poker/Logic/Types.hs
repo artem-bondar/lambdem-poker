@@ -3,7 +3,7 @@ module Poker.Logic.Types where
 
 import Data.List
 
--- | Contains all personal player data.
+-- | Contain all personal player data.
 data Player = Player
   { control  :: PlayerType
   , name     :: String
@@ -69,13 +69,13 @@ data Deck = Deck
 
 -- | Derive 'Show' class for 'Deck'.
 instance Show Deck where
-  show deck = "Deck contains " ++ show (size deck) ++ " cards:\n" ++ insides
+  show deck = "Deck Contain " ++ show (size deck) ++ " cards:\n" ++ insides
     where
       insides = intercalate " " (zipWith 
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
         (cards deck) [1 :: Int .. 52])
 
--- | Contains all 52 cards.
+-- | Contain all 52 cards.
 createDeck :: Deck
 createDeck = Deck
   { size = 52

@@ -20,7 +20,7 @@ drawTableScreen screen
         drawDealerChip (dealer screen) (chipLayout $ images screen)] ++
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
                              drawPlayerSeatBold p (seatBold $ images screen),
-                             drawPlayerName p])
+                             drawPlayerName p, drawPlayerBalance p])
             (players screen))
 
 -- | Draw player seatbold.
@@ -50,6 +50,13 @@ drawPlayerName player =
     uncurry translate (getTextNameOffset $ seat player) playerName
     where
         playerName = color white $ scale 0.125 0.125 (text $ name player)
+
+-- | Draw player balance.
+drawPlayerBalance :: Player -> Picture
+drawPlayerBalance player = 
+    uncurry translate (getBalanceOffset $ seat player) playerBalance
+    where
+        playerBalance = color white $ scale 0.125 0.125 (text . show $ balance player)
 
 -- | Draw dealer chip.
 drawDealerChip :: Seat -> ChipLayout -> Picture
@@ -104,6 +111,16 @@ getTextNameOffset s = case s of
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0) 
 
+-- | Return offset for player balance depending on seat.
+getBalanceOffset :: Seat -> (Float, Float)
+getBalanceOffset s = case s of
+    Bottom     -> (-16, -128)
+    Left_Down  -> (0, 0)
+    Left_Up    -> (0, 0)
+    Top        -> (-16, 200)
+    Right_Up   -> (0, 0)
+    Right_Down -> (0, 0)
+    
 -------------------------------------------------------------------------------
 -- * Constants
 -------------------------------------------------------------------------------

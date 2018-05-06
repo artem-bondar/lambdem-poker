@@ -1,4 +1,4 @@
--- | Contains functions for texture and sprites loading.
+-- | Contain functions for texture and sprites loading.
 module Poker.Interface.Loader where
 
 import Graphics.Gloss.Juicy (loadJuicyPNG)
