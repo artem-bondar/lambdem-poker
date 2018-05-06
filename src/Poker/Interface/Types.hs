@@ -51,3 +51,7 @@ data Chip = Chip
   { value  :: Int
   , sprite :: Picture
   }
+
+-- | Value of all chips.
+allChipValues :: [Int]
+allChipValues = [1000, 500, 100, 25, 5, 1]

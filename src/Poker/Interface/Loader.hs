@@ -16,6 +16,7 @@ loadedTableImages = do
   Just imgBack       <- loadJuicyPNG "img/deck/back.png"
   imgsDeck           <- loadDeckLayout
   Just imgDealerChip <- loadJuicyPNG "img/chips/dealer.png"
+  imgsChips          <- loadChipLayout
   return TableImages
     { background = imgBackground
     , table      = imgTable
@@ -26,6 +27,7 @@ loadedTableImages = do
       }
     , chipLayout = ChipLayout
       { dealerChip = imgDealerChip
+      , stack      = imgsChips
       }
     }
 
@@ -41,3 +43,18 @@ loadDeckLayout = sequence (uwrapMaybes <$> loadedList)
     loadedList = map
       (\x -> loadJuicyPNG $ "img/deck/" ++ x ++ ".png")
       allCardNames
+
+-- | Load chip layout.
+loadChipLayout :: IO [Chip]
+loadChipLayout = wrapInChip allChipValues <$> sequence (uwrapMaybes <$> loadedList)
+  where
+    wrapInChip values imgs =
+      zipWith (\val img -> Chip val img) values imgs
+    uwrapMaybes x = do
+      u <- x
+      case u of
+        Nothing -> return blank
+        Just v  -> return v
+    loadedList = map
+      (\x -> loadJuicyPNG $ "img/chips/" ++ x ++ ".png")
+      (map show allChipValues)

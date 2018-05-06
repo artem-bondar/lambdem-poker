@@ -6,7 +6,7 @@ import Graphics.Gloss.Data.Color
 
 import Poker.Interface.Types
 import Poker.Logic.Types
-
+import Debug.Trace
 -------------------------------------------------------------------------------
 -- * Render functions
 -------------------------------------------------------------------------------
@@ -20,7 +20,10 @@ drawTableScreen screen
         drawDealerChip (dealer screen) (chipLayout $ images screen)] ++
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
                              drawPlayerSeatBold p (seatBold $ images screen),
-                             drawPlayerName p, drawPlayerBalance p])
+                             drawPlayerName p, drawPlayerBalance p,
+                             drawPlayerBet p (chipLayout $ images screen),
+                             sprite $ (stack . chipLayout $ images screen) !! 0
+                             ])
             (players screen))
 
 -- | Draw player seatbold.
@@ -63,6 +66,29 @@ drawDealerChip :: Seat -> ChipLayout -> Picture
 drawDealerChip s layout = 
     uncurry translate (getDealerChipOffset s) (dealerChip layout)
 
+
+-- | Draw player bet.
+drawPlayerBet :: Player -> ChipLayout -> Picture
+drawPlayerBet player layout =
+    let bet        = betSize $ move player
+        separation = separateBet bet allChipValues
+        columns    = length (filter (> 0) separation)
+    in --uncurry translate (getChipsOffset (seat player) columns)
+        --(drawBet 0.0 separation (stack layout))
+        sprite $ (stack layout) !! 0
+
+-- | Draw bet in chips by separation and horizontal offset.
+drawBet :: Float -> [Int] -> [Chip] -> Picture    
+drawBet _ [] [] = blank
+drawBet offset separation chips
+    | head separation == 0 =
+        drawBet offset (tail separation) (tail chips)
+    | otherwise =
+        pictures [img, drawBet (offset + chipColumnOffset)
+                               (tail separation) (tail chips)]
+    where
+        img = translate offset 0 (sprite $ head chips)
+
 -------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------
@@ -70,6 +96,17 @@ drawDealerChip s layout =
 -- | Calculate margins for window depending on display resolutions.
 getMarginsFrom :: (Int, Int) -> (Int, Int)
 getMarginsFrom (w, h) = ((w - fst windowSize) `div` 2, (h - snd windowSize) `div` 2)
+
+-- | Separate bet into chip count array.
+separateBet :: Int -> [Int] -> [Int]
+separateBet _ [] = []
+separateBet bet separation
+    | partition /= 0 =
+        (partition : separateBet remainder (tail separation))
+    | otherwise = (0 : separateBet bet (tail separation))
+    where
+        partition = bet `div` head separation
+        remainder = bet `mod` head separation
 
 -- | Return offset for cards depending on seat.
 getHandOffset :: Seat -> (Float, Float)
@@ -120,7 +157,18 @@ getBalanceOffset s = case s of
     Top        -> (-16, 200)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0)
-    
+
+-- | Return chip offset for player bet depending on seat
+--   and amount of chip columns.
+getChipsOffset :: Seat -> Int -> (Float, Float)
+getChipsOffset s cols = case s of
+    Bottom     -> (0, 0)
+    Left_Down  -> (0, 0)
+    Left_Up    -> (0, 0)
+    Top        -> (0, 0)
+    Right_Up   -> (0, 0)
+    Right_Down -> (0, 0)
+
 -------------------------------------------------------------------------------
 -- * Constants
 -------------------------------------------------------------------------------
@@ -132,3 +180,7 @@ windowSize = (960, 720)
 -- | Right card offset.
 cardOffset :: (Float, Float)
 cardOffset = (65, 0)
+
+-- | Horizontal offset between chip columns.
+chipColumnOffset :: Float
+chipColumnOffset = 30
