@@ -32,7 +32,7 @@ drawHand hide hnd layout = case hnd of
         False -> pictures [front layout !! (fromEnum $ fst h),
             uncurry translate cardOffset (front layout !! (fromEnum $ snd h))]
 
--- | Offset for player hand.
+-- | Apply offset for player hand depending on seat.
 --drawPlayerHand :: Position -> Picture -> Picture
 
 -------------------------------------------------------------------------------

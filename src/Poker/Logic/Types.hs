@@ -9,9 +9,19 @@ data Player = Player
   , name     :: String
   , balance  :: Int
   , position :: Position
+  , seat     :: Seat
   , hand     :: Maybe (Card, Card)
   , hideHand :: Bool
   }
+
+-- | Describes all seating positions.
+data Seat
+  = Bottom
+  | Left_Down
+  | Left_Up
+  | Top
+  | Right_Up
+  | Right_Down
 
 -- | Types of players.
 data PlayerType
@@ -27,15 +37,12 @@ data GameState
 
 -- | Poker positions.
 data Position
-  = UTG1 -- ^ Under The Gun
-  | UTG2 -- ^ Under The Gun
-  | MP1  -- ^ Middle Position
-  | MP2  -- ^ Middle Position
-  | HJ   -- ^ High Jack
-  | CO   -- ^ Cut-Off
-  | BTN  -- ^ Button
-  | SB   -- ^ Small Blind
-  | BB   -- ^ Big Blind
+  = UTG -- ^ Under The Gun
+  | MP  -- ^ Middle Position
+  | CO  -- ^ Cut-Off
+  | BTN -- ^ Button
+  | SB  -- ^ Small Blind
+  | BB  -- ^ Big Blind
   deriving (Eq, Ord, Bounded, Enum, Show)
 
 -- | Card deck.
