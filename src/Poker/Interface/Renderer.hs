@@ -21,9 +21,7 @@ drawTableScreen screen
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
                              drawPlayerSeatBold p (seatBold $ images screen),
                              drawPlayerName p, drawPlayerBalance p,
-                             drawPlayerBet p (chipLayout $ images screen),
-                             sprite $ (stack . chipLayout $ images screen) !! 0
-                             ])
+                             drawPlayerBet p (chipLayout $ images screen)])
             (players screen))
 
 -- | Draw player seatbold.
@@ -73,9 +71,16 @@ drawPlayerBet player layout =
     let bet        = betSize $ move player
         separation = separateBet bet allChipValues
         columns    = length (filter (> 0) separation)
-    in --uncurry translate (getChipsOffset (seat player) columns)
-        --(drawBet 0.0 separation (stack layout))
-        sprite $ (stack layout) !! 0
+    in uncurry translate (getChipsOffset (seat player) columns)
+        (drawBet 0 separation (stack layout))
+
+-- | Draw column of chips.
+drawChipColumn :: Float -> Float -> Int -> Picture -> Picture
+drawChipColumn _ _ 0 _                   = blank
+drawChipColumn xOffset yOffset size chip = pictures
+    [img, drawChipColumn xOffset (yOffset + chipTowerOffset) (size - 1) chip]
+    where
+        img = translate xOffset yOffset chip
 
 -- | Draw bet in chips by separation and horizontal offset.
 drawBet :: Float -> [Int] -> [Chip] -> Picture    
@@ -87,7 +92,7 @@ drawBet offset separation chips
         pictures [img, drawBet (offset + chipColumnOffset)
                                (tail separation) (tail chips)]
     where
-        img = translate offset 0 (sprite $ head chips)
+        img = drawChipColumn offset 0 (head separation) (sprite $ head chips)
 
 -------------------------------------------------------------------------------
 -- * Utility functions
@@ -165,7 +170,7 @@ getChipsOffset s cols = case s of
     Bottom     -> (0, 0)
     Left_Down  -> (0, 0)
     Left_Up    -> (0, 0)
-    Top        -> (0, 0)
+    Top        -> (0, 100)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0)
 
@@ -183,4 +188,8 @@ cardOffset = (65, 0)
 
 -- | Horizontal offset between chip columns.
 chipColumnOffset :: Float
-chipColumnOffset = 30
+chipColumnOffset = 38
+
+-- | Vertical offset between chips in one column.
+chipTowerOffset :: Float
+chipTowerOffset = 5
