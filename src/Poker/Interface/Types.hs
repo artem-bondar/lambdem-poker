@@ -29,10 +29,17 @@ data TableImages = TableImages
   , table      :: Picture
   , seatBold   :: Picture
   , deckLayout :: DeckLayout
+  , chipLayout :: ChipLayout
   }
 
 -- | Contains layout for card deck.
 data DeckLayout = DeckLayout
   { back  :: Picture   -- ^ image for back side of card
   , front :: [Picture] -- ^ images for front side of cards
+  }
+
+-- | Contains layout for chips.
+data ChipLayout = ChipLayout
+  { dealer :: Picture -- ^ dealer chip
+
   }

@@ -16,9 +16,10 @@ drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
     | state screen == Dealing_Hand = pictures
         [background $ images screen,  table $ images screen]
-    | otherwise = pictures [background $ images screen,  table $ images screen,
-        drawPlayerHand (players screen !! 0) (deckLayout $ images screen),
-        drawPlayerSeatBold (players screen !! 0) (seatBold $ images screen)]
+    | otherwise = pictures ([background $ images screen,  table $ images screen] ++
+        map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
+                             drawPlayerSeatBold p (seatBold $ images screen)])
+            (players screen))
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
@@ -40,6 +41,7 @@ drawPlayerHand player layout =
     uncurry translate (getHandOffset $ seat player) img
     where
         img = drawHand (hideHand player) (hand player) layout
+
 -------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------
@@ -51,20 +53,20 @@ getMarginsFrom (w, h) = ((w - fst windowSize) `div` 2, (h - snd windowSize) `div
 -- | Return offset for cards depending on seat.
 getHandOffset :: Seat -> (Float, Float)
 getHandOffset s = case s of
-    Bottom     -> (-32, -57)
+    Bottom     -> (-32, -77)
     Left_Down  -> (0, 0)
     Left_Up    -> (0, 0)
-    Top        -> (-32, 239)
+    Top        -> (-32, 251)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0)
 
 -- | Return offset for seatbold depending on seat.
 getSeatBoldOffset :: Seat -> (Float, Float)
 getSeatBoldOffset s = case s of
-    Bottom     -> (0, -90)
+    Bottom     -> (0, -110)
     Left_Down  -> (0, 0)
     Left_Up    -> (0, 0)
-    Top        -> (0, 205)
+    Top        -> (0, 218)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0) 
 
