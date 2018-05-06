@@ -43,9 +43,9 @@ createTableScreenWith generator imgs = TableScreen
        Player Human "Player 2" 1500 BB Top    Nothing True  (Move No_action 0)]
   , handCount    = 1
   , dealer       = Top
-  , blindSize    = 128
-  , bank         = Nothing
-  , sideBank     = Nothing
+  , blindSize    = 30
+  , pot          = Nothing
+  , sidePot      = Nothing
   , flop         = Nothing
   , turn         = Nothing
   , river        = Nothing

@@ -71,8 +71,9 @@ drawPlayerBet player layout =
     let bet        = betSize $ move player
         separation = separateBet bet allChipValues
         columns    = length (filter (> 0) separation)
-    in uncurry translate (getChipsOffset (seat player) columns)
-        (drawBet 0 separation (stack layout))
+    in pictures [uncurry translate (getChipsOffset (seat player) columns)
+        (drawBet 0 separation (stack layout)),
+        drawBetSize bet (getChipsOffset (seat player) (-columns))]
 
 -- | Draw column of chips.
 drawChipColumn :: Float -> Float -> Int -> Picture -> Picture
@@ -93,6 +94,12 @@ drawBet offset separation chips
                                (tail separation) (tail chips)]
     where
         img = drawChipColumn offset 0 (head separation) (sprite $ head chips)
+
+-- | Draw size of bet.
+drawBetSize :: Int -> (Float, Float) -> Picture
+drawBetSize bet offset = uncurry translate offset betSize
+    where
+        betSize = color white $ scale 0.125 0.125 (text $ show bet)
 
 -------------------------------------------------------------------------------
 -- * Utility functions
@@ -166,11 +173,11 @@ getBalanceOffset s = case s of
 -- | Return chip offset for player bet depending on seat
 --   and amount of chip columns.
 getChipsOffset :: Seat -> Int -> (Float, Float)
-getChipsOffset s cols = case s of
-    Bottom     -> (0, 0)
+getChipsOffset s columns = case s of
+    Bottom     -> (fromIntegral (columns - 1) * (-chipColumnOffset / 2), -12)
     Left_Down  -> (0, 0)
     Left_Up    -> (0, 0)
-    Top        -> (0, 100)
+    Top        -> (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 162)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0)
 

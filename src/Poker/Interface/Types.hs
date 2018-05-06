@@ -15,8 +15,8 @@ data TableScreen = TableScreen
   , handCount    :: Int          -- ^ current hand number
   , dealer       :: Seat         -- ^ position of dealer
   , blindSize    :: Int          -- ^ size of big blind
-  , bank         :: Maybe Int    -- ^ bank size
-  , sideBank     :: Maybe Int    -- ^ side bank size
+  , pot          :: Maybe Int    -- ^ pot size
+  , sidePot      :: Maybe Int    -- ^ side pot size
   , flop         :: Maybe [Card] -- ^ flop cards
   , turn         :: Maybe Card   -- ^ turn card
   , river        :: Maybe Card   -- ^ river card
