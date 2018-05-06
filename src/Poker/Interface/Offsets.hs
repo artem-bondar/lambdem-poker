@@ -27,7 +27,7 @@ getSeatBoldOffset s = case s of
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0) 
 
- -- | Return offset for seatbold depending on seat.
+-- | Return offset for dealer chip depending on seat.
 getDealerChipOffset :: Seat -> (Float, Float)
 getDealerChipOffset s = case s of
     Bottom     -> (100, -60)
