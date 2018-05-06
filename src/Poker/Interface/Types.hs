@@ -2,12 +2,14 @@
 module Poker.Interface.Types where
 
 import Graphics.Gloss.Data.Picture
+import System.Random (StdGen)
 
 import Poker.Logic.Types
 
 -- | Contains all data relative to table game screen.
 data TableScreen = TableScreen
-  { state        :: GameState    -- ^ current game state  
+  { state        :: GameState    -- ^ current game state
+  , timer        :: Float        -- ^ for detecting time  
   , totalPlayers :: Int          -- ^ amount of current players
   , playersData  :: [Player]     -- ^ info about every player
   , handCount    :: Int          -- ^ current hand number
@@ -16,14 +18,9 @@ data TableScreen = TableScreen
   , flop         :: Maybe [Card] -- ^ flop cards
   , turn         :: Maybe Card   -- ^ turn card
   , river        :: Maybe Card   -- ^ river card
+  , randomizer   :: StdGen       -- ^ random number generator
   , images       :: TableImages  -- ^ images relative to screen
   }
-
--- | Possible game states. 
-data GameState
-  = Dealing_Hand
-  | Waiting_User_Input
-  | AI_Thinking
 
 -- | Contains all images relative to table game screen.
 data TableImages = TableImages

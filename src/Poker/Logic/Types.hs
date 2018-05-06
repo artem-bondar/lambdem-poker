@@ -10,6 +10,13 @@ data Player = Player
   , position :: Position
   }
 
+-- | Possible game states. 
+data GameState
+  = Dealing_Hand
+  | Waiting_User_Input
+  | AI_Thinking
+  deriving (Eq)
+
 -- | Poker positions.
 data Position
   = UTG1 -- ^ Under The Gun

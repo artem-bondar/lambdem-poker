@@ -2,17 +2,19 @@
 module Poker.Interface.Renderer where
 
 import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Data.Color
 
 import Poker.Interface.Types
-
+import Poker.Logic.Types
 -------------------------------------------------------------------------------
 -- * Render functions
 -------------------------------------------------------------------------------
 
 -- | Draw tablescreen.
 drawTableScreen :: TableScreen -> Picture
-drawTableScreen screen = pictures [background $ images screen, table $ images screen]
-
+drawTableScreen screen 
+    | state screen == Dealing_Hand = pictures [background $ images screen,  table $ images screen]
+    | otherwise = pictures [background $ images screen]
 -------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------
