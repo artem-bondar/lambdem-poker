@@ -5,11 +5,18 @@ import Data.List
 
 -- | Contains all personal player data.
 data Player = Player
-  { name     :: String
+  { control  :: PlayerType
+  , name     :: String
   , balance  :: Int
   , position :: Position
   , hand     :: Maybe (Card, Card)
-  } deriving (Show)
+  , hideHand :: Bool
+  }
+
+-- | Types of players.
+data PlayerType
+  = Human
+  | AI
 
 -- | Possible game states. 
 data GameState

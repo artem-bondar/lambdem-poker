@@ -11,7 +11,7 @@ dealPlayers players randomizer deck =
     let randomResult = getNHands (length players) (randomizer, deck)
     in (zipWith deal players (fst randomResult), snd randomResult)
     where
-        deal player card = player { hand = Just card }
+        deal player twoCards = player { hand = Just twoCards }
 
 -- | Get one random card from a deck.
 getCard :: StdGen -> Deck -> (Card, (StdGen, Deck))
