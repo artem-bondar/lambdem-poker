@@ -38,7 +38,7 @@ createTableScreenWith generator imgs = TableScreen
   { state        = Dealing_Hand
   , timer        = 0.0
   , totalPlayers = 2
-  , players      = [Player Human "Player 1" 1500 SB Bottom Nothing False,
+  , players      = [Player Human "Player 1" 1500 SB Top Nothing False,
                     Player Human "Player 2" 1500 BB Top Nothing False]
   , handCount    = 1
   , bank         = Nothing
