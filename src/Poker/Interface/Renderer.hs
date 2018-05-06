@@ -5,6 +5,7 @@ import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Data.Color
 
 import Poker.Interface.Types
+import Poker.Interface.Offsets
 import Poker.Logic.Types
 import Debug.Trace
 -------------------------------------------------------------------------------
@@ -101,6 +102,15 @@ drawBetSize bet offset = uncurry translate offset betSize
     where
         betSize = color white $ scale 0.125 0.125 (text $ show bet)
 
+-- | Draw pot by it'size.
+drawPot :: Int -> ChipLayout -> Picture
+drawPot potSize layout = 
+    let separation = separateBet potSize allChipValues
+        columns    = length (filter (> 0) separation)
+    in pictures [uncurry translate (getPotOffset columns)
+    (drawBet 0 separation (stack layout)),
+    drawBetSize potSize (getPotOffset (-columns))]
+
 -------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------
@@ -120,67 +130,6 @@ separateBet bet separation
         partition = bet `div` head separation
         remainder = bet `mod` head separation
 
--- | Return offset for cards depending on seat.
-getHandOffset :: Seat -> (Float, Float)
-getHandOffset s = case s of
-    Bottom     -> (-32, -77)
-    Left_Down  -> (0, 0)
-    Left_Up    -> (0, 0)
-    Top        -> (-32, 251)
-    Right_Up   -> (0, 0)
-    Right_Down -> (0, 0)
-
--- | Return offset for seatbold depending on seat.
-getSeatBoldOffset :: Seat -> (Float, Float)
-getSeatBoldOffset s = case s of
-    Bottom     -> (0, -110)
-    Left_Down  -> (0, 0)
-    Left_Up    -> (0, 0)
-    Top        -> (0, 218)
-    Right_Up   -> (0, 0)
-    Right_Down -> (0, 0) 
-
- -- | Return offset for seatbold depending on seat.
-getDealerChipOffset :: Seat -> (Float, Float)
-getDealerChipOffset s = case s of
-    Bottom     -> (100, -60)
-    Left_Down  -> (0, 0)
-    Left_Up    -> (0, 0)
-    Top        -> (-110, 160)
-    Right_Up   -> (0, 0)
-    Right_Down -> (0, 0) 
-
--- | Return offset for player name depending on seat.
-getTextNameOffset :: Seat -> (Float, Float)
-getTextNameOffset s = case s of
-    Bottom     -> (-32, -105)
-    Left_Down  -> (0, 0)
-    Left_Up    -> (0, 0)
-    Top        -> (-32, 223)
-    Right_Up   -> (0, 0)
-    Right_Down -> (0, 0) 
-
--- | Return offset for player balance depending on seat.
-getBalanceOffset :: Seat -> (Float, Float)
-getBalanceOffset s = case s of
-    Bottom     -> (-16, -128)
-    Left_Down  -> (0, 0)
-    Left_Up    -> (0, 0)
-    Top        -> (-16, 200)
-    Right_Up   -> (0, 0)
-    Right_Down -> (0, 0)
-
--- | Return chip offset for player bet depending on seat
---   and amount of chip columns.
-getChipsOffset :: Seat -> Int -> (Float, Float)
-getChipsOffset s columns = case s of
-    Bottom     -> (fromIntegral (columns - 1) * (-chipColumnOffset / 2), -12)
-    Left_Down  -> (0, 0)
-    Left_Up    -> (0, 0)
-    Top        -> (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 162)
-    Right_Up   -> (0, 0)
-    Right_Down -> (0, 0)
-
 -------------------------------------------------------------------------------
 -- * Constants
 -------------------------------------------------------------------------------
@@ -188,15 +137,3 @@ getChipsOffset s columns = case s of
 -- | Resolution.
 windowSize :: (Int, Int)
 windowSize = (960, 720)
-
--- | Right card offset.
-cardOffset :: (Float, Float)
-cardOffset = (65, 0)
-
--- | Horizontal offset between chip columns.
-chipColumnOffset :: Float
-chipColumnOffset = 38
-
--- | Vertical offset between chips in one column.
-chipTowerOffset :: Float
-chipTowerOffset = 5

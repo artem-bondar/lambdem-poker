@@ -16,6 +16,7 @@ library
   exposed-modules:     
     Client
     Poker.Interface.Loader
+    Poker.Interface.Offsets
     Poker.Interface.Renderer
     Poker.Interface.Types
     Poker.Logic.Types
