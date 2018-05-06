@@ -1,6 +1,6 @@
 module Main where
 
-import LambdemPoker
+import Client
 
 main :: IO ()
-main = run
+main = launchGame
