@@ -2,7 +2,7 @@
 module Poker.Interface.Renderer where
 
 import Graphics.Gloss.Data.Picture
---import Graphics.Gloss.Data.Color
+import Graphics.Gloss.Data.Color
 
 import Poker.Interface.Types
 import Poker.Logic.Types
@@ -19,7 +19,8 @@ drawTableScreen screen
     | otherwise = pictures ([background $ images screen,  table $ images screen,
         drawDealerChip (dealer screen) (chipLayout $ images screen)] ++
         map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
-                             drawPlayerSeatBold p (seatBold $ images screen)])
+                             drawPlayerSeatBold p (seatBold $ images screen),
+                             drawPlayerName p])
             (players screen))
 
 -- | Draw player seatbold.
@@ -42,6 +43,13 @@ drawPlayerHand player layout =
     uncurry translate (getHandOffset $ seat player) img
     where
         img = drawHand (hideHand player) (hand player) layout
+
+-- | Draw player name.
+drawPlayerName :: Player -> Picture
+drawPlayerName player = 
+    uncurry translate (getTextNameOffset $ seat player) playerName
+    where
+        playerName = color white $ scale 0.125 0.125 (text $ name player)
 
 -- | Draw dealer chip.
 drawDealerChip :: Seat -> ChipLayout -> Picture
@@ -83,6 +91,16 @@ getDealerChipOffset s = case s of
     Left_Down  -> (0, 0)
     Left_Up    -> (0, 0)
     Top        -> (-110, 160)
+    Right_Up   -> (0, 0)
+    Right_Down -> (0, 0) 
+
+-- | Return offset for player name depending on seat.
+getTextNameOffset :: Seat -> (Float, Float)
+getTextNameOffset s = case s of
+    Bottom     -> (-32, -105)
+    Left_Down  -> (0, 0)
+    Left_Up    -> (0, 0)
+    Top        -> (-32, 223)
     Right_Up   -> (0, 0)
     Right_Down -> (0, 0) 
 
