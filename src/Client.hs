@@ -30,8 +30,7 @@ initTableScreen = createTableScreenWith <$> loadedImages
 -- | Create new table screen made of images and set default parameters.
 createTableScreenWith :: TableImages -> TableScreen
 createTableScreenWith imgs = TableScreen
-  {
-  totalPlayers  = 2
+  { totalPlayers  = 2
   , playersData = [Player "1" 1500 SB, Player "2" 1500 BB]
   , handCount   = 1
   , images      = imgs

@@ -14,7 +14,14 @@ data TableScreen = TableScreen
   }
 
 -- | Contains all images relative to table game screen.
-data TableImages = Images
+data TableImages = TableImages
   { background :: Picture
   , table      :: Picture
+  , deckLayout :: DeckLayout
+  }
+
+-- | Contains layout for card deck.
+data DeckLayout = DeckLayout
+  { back :: Picture   -- ^ image for back side of card
+  , deck :: [Picture] -- ^ images for all 52 cards
   }

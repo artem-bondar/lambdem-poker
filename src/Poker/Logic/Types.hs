@@ -21,7 +21,7 @@ data Position
   | BTN  -- ^ Button
   | SB   -- ^ Small Blind
   | BB   -- ^ Big Blind
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Bounded, Enum, Show)
 
 -- | Card deck.
 data Deck = Deck
@@ -31,7 +31,7 @@ data Deck = Deck
 
 -- | Derive 'Show' class for 'Deck'.
 instance Show Deck where
-  show deck = "Deck contains " ++ show (size deck) ++ "cards:" ++ insides
+  show deck = "Deck contains " ++ show (size deck) ++ " cards:\n" ++ insides
     where
       insides = intercalate " " (zipWith 
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
@@ -43,6 +43,27 @@ createDeck = Deck
   { size = 52
   , cards = Card <$> allCardRanks <*> allSuites 
   }
+
+-- | List of all card short names.
+allCardNames :: [String]
+allCardNames = map cardToShorName (cards createDeck)
+
+-- | Convert card to short name.
+cardToShorName :: Card -> String
+cardToShorName card = rank ++ cardSuit
+      where
+        rank = case cardRank card of
+          Ten   -> "T"
+          Jack  -> "J"
+          Queen -> "Q"
+          King  -> "K"
+          Ace   -> "A"
+          _     -> show $ fromEnum (cardRank card) + 2
+        cardSuit = case suit card of
+          Diamonds -> "d"
+          Clubs    -> "c"
+          Hearts   -> "h"
+          Spades   -> "s"
 
 -- | List of all suites.
 allSuites :: [Suit]
@@ -70,6 +91,14 @@ data Card = Card
 -- | Derive 'Show' class for 'Card'.
 instance Show Card where
   show card = show (cardRank card) ++ " of " ++ show (suit card) 
+
+-- | Derive 'Enum' class for 'Card'.
+instance Enum Card where
+  toEnum index = Card
+    { cardRank = toEnum $ index `div` 4
+    , suit     = toEnum $ index `mod` 4
+    }
+  fromEnum card = fromEnum (cardRank card) * 4 + fromEnum (suit card)
 
 -- | Card suites.
 data Suit
