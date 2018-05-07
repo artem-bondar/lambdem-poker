@@ -14,12 +14,13 @@ data TableScreen = TableScreen
   , street     :: Street       -- ^ current street
   , acting     :: Position     -- ^ position of active player
   , inHand     :: Int          -- ^ amount of players in hand
+  , maxBet     :: Int          -- ^ maximal bet that occured
   , retrade    :: Bool         -- ^ need to repeat bet round
   , handCount  :: Int          -- ^ current hand number
   , dealer     :: Seat         -- ^ position of dealer
   , blindSize  :: Int          -- ^ size of big blind
-  , pot        :: Maybe Int    -- ^ pot size
-  , sidePot    :: Maybe Int    -- ^ side pot size
+  , pot        :: Int          -- ^ pot size
+  , sidePot    :: Int          -- ^ side pot size
   , flop       :: Maybe [Card] -- ^ flop cards
   , turn       :: Maybe Card   -- ^ turn card
   , river      :: Maybe Card   -- ^ river card

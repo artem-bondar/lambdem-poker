@@ -111,15 +111,15 @@ drawBetSize bet offset
         bt = drawText white (show bet)
 
 -- | Draw pot by it'size.
-drawPot :: Maybe Int -> ChipLayout -> Picture
-drawPot potSize layout = case potSize of
-    Nothing  -> blank
-    Just pt ->
-        let separation = separateBet pt allChipValues
+drawPot :: Int -> ChipLayout -> Picture
+drawPot potSize layout
+    | potSize == 0 = blank
+    | otherwise =
+        let separation = separateBet potSize allChipValues
             columns    = length (filter (> 0) separation)
         in pictures [uncurry translate (getPotOffset columns)
         (drawBet 0 separation (stack layout)),
-        drawBetSize pt (getPotOffset (-columns))]
+        drawBetSize potSize (getPotOffset (-columns))]
 
 -- | Draw small text. Size is unknown.
 drawText :: Color -> String -> Picture

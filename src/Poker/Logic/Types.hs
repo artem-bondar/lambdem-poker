@@ -14,14 +14,14 @@ data Player = Player
   , hideHand :: Bool
   , move     :: Move
   , active   :: Bool
-  }deriving (Show)
+  }
 
 -- | Contain information about player move.
 data Move = Move
   { action  :: ActionType
   , betSize :: Int
   }
-  deriving (Show)
+
 -- | Type of actions that player can make.
 data ActionType
   = No_Action
@@ -30,7 +30,7 @@ data ActionType
   | Folded
   | Raised
   | All_In
-  deriving (Eq,Show)
+  deriving (Eq)
 
 -- | Current hand progress.
 data Street
@@ -49,12 +49,12 @@ data Seat
   | Top
   | Right_Up
   | Right_Down
-  deriving (Show)
+
 -- | Types of players.
 data PlayerType
   = Human
   | AI
-  deriving (Show)
+
 -- | Possible game states. 
 data GameState
   = Dealing_Hand
@@ -62,6 +62,9 @@ data GameState
   | Bet_Round
   | Waiting_User_Input
   | AI_Thinking
+  | Next_Move
+  | Next_Round
+  | Finish_Hand
   deriving (Eq)
 
 -- | Poker positions.

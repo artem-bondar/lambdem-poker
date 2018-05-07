@@ -45,12 +45,13 @@ createTableScreenWith generator imgs = TableScreen
     , street     = Preflop
     , acting     = UTG
     , inHand     = 0
+    , maxBet     = 0
     , retrade    = False
     , handCount  = 1
     , dealer     = Bottom
     , blindSize  = 30
-    , pot        = Nothing
-    , sidePot    = Nothing
+    , pot        = 0
+    , sidePot    = 0
     , flop       = Nothing
     , turn       = Nothing
     , river      = Nothing
@@ -68,8 +69,7 @@ updateGame :: Float -> TableScreen -> TableScreen
 updateGame timePassed screen 
     | state screen == Dealing_Hand = 
         if (timer screen < dealTime)
-            then screen
-                { timer = timer screen + timePassed }
+            then screen { timer = timer screen + timePassed }
             else screen 
                 { state      = Posting_Blinds
                 , timer      = 0
@@ -81,23 +81,58 @@ updateGame timePassed screen
                 }
     | state screen == Posting_Blinds =
         if (timer screen < postTime)
-            then screen
-                { timer = timer screen + timePassed }
+            then screen { timer = timer screen + timePassed }
             else screen
                 { state    = Bet_Round
+                , players  = toggleNewActivePlayer 
+                    (takeBlinds (players screen) (blindSize screen))
+                    firstPosition
+                , acting   = firstPosition
+                , maxBet   = blindSize screen
+                }
+    | state screen == Bet_Round =
+        if (checkSkipForActivePlayer $ players screen)
+            then screen { state = Next_Move }
+            else screen
+                { state = case getActivePlayerType $ players screen of
+                    Human -> Waiting_User_Input
+                    AI    -> AI_Thinking
                 , timer    = 0
+                }
+    | state screen == Waiting_User_Input =
+        if (timer screen < humanThinkTime)
+            then screen { timer = timer screen + timePassed }
+            else screen
+                { state    = Bet_Round
                 , players  = toggleNewActivePlayer 
                     (takeBlinds (players screen) (blindSize screen))
                     firstPosition
                 , acting   = firstPosition
                 }
-    | state screen == Bet_Round = screen
-            -- { state = case getActivePlayerType $ players screen of
-            --     Human -> Waiting_User_Input
-            --     AI    -> AI_Thinking
-            -- }
+    | state screen == Next_Move = 
+        if (acting screen == lastPosition)
+            then if (retrade screen)
+                then screen
+                    { state  = Bet_Round
+                    , acting = firstPosition
+                    , players = toggleNewActivePlayer (players screen) firstPosition
+                    }
+                else screen
+                    { state   = Next_Round
+
+                    }
+            else screen
+                { state  = Bet_Round
+                , acting  = nextPosition
+                , players = toggleNewActivePlayer (players screen) nextPosition
+                }
+    | state screen == Next_Round = screen
+    | state screen == AI_Thinking = screen
     | otherwise = screen
     where
-        dealResult = dealPlayers (players screen) (randomizer screen) createDeck
+        dealResult    = dealPlayers (players screen) (randomizer screen) createDeck
         firstPosition = getFirstPosition (length $ players screen) (street screen)
+        nextPosition  = getNextPositon 
+            (length $ players screen) (street screen) (acting screen)
+        lastPosition  = getLastPosition  (length $ players screen) (street screen)
       

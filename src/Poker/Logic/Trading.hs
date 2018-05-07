@@ -27,6 +27,16 @@ getActivePlayerType players = case active $ head players of
     True  -> control $ head players
     False -> getActivePlayerType $ tail players
 
+-- | Check if active player is skippable in.
+checkSkipForActivePlayer :: [Player] -> Bool
+checkSkipForActivePlayer [] = False
+checkSkipForActivePlayer players
+    | active $ head players = case action . move $ head players of
+        All_In -> True
+        Folded -> True
+        _      -> False
+    | otherwise = checkSkipForActivePlayer $ tail players
+
 -- | Return first position depending on amount of players and street.
 getFirstPosition :: Int -> Street -> Position
 getFirstPosition amountOfPlayers street = case amountOfPlayers of
@@ -55,3 +65,20 @@ getLastPosition amountOfPlayers street = case amountOfPlayers of
 -------------------------------------------------------------------------------
 -- * Players actions processing functions
 -------------------------------------------------------------------------------
+
+-- | Return default move to proposed bet size when human didn't made any input.
+autoHumanMove :: Player -> Int -> Move
+autoHumanMove player bet
+    | bet == 0 = Move Checked 0
+    | bet == premadeBet = Move Checked bet
+    | otherwise = Move Folded premadeBet
+    where
+        premadeBet = betSize $ move player
+
+-- | Time to get response from AI player.
+aiThinkTime :: Float
+aiThinkTime = 1.0
+
+-- | Time to get response from human player.
+humanThinkTime :: Float
+humanThinkTime = 45.0
