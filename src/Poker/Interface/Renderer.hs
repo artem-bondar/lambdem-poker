@@ -22,8 +22,7 @@ drawTableScreen screen
     | otherwise = pictures ([background $ images screen,  table $ images screen,
         drawDealerChip (dealer screen) chipImages,
         drawPot (calculatePot $ players screen) chipImages,
-        drawCardsOnTable (flop screen) (turn screen) (river screen)
-        (front . deckLayout $ images screen)] ++
+        drawCardsOnTable (board screen) (front . deckLayout $ images screen)] ++
         map (\p -> pictures
             [drawPlayerHand p (deckLayout $ images screen),
             playerOnSeatBold p, drawPlayerBet p chipImages])
@@ -128,11 +127,13 @@ drawText :: Color -> String -> Picture
 drawText clr string =  color clr $ scale 0.125 0.125 (text string)
 
 -- | Draw cards on table.
-drawCardsOnTable :: Maybe [Card] -> Maybe Card -> Maybe Card -> [Picture] -> Picture
-drawCardsOnTable flopCard turnCard riverCard layout =
+drawCardsOnTable :: [Card] -> [Picture] -> Picture
+drawCardsOnTable [] _ = blank
+drawCardsOnTable cards layout =
     uncurry translate cardsOnTableOffset
-        (drawRow cardsOnTableRowOffset $
-        boardCardsToPicture flopCard turnCard riverCard layout)
+        (drawRow cardsOnTableRowOffset cardPictures)
+    where
+        cardPictures = map (\card -> layout !! (fromEnum card)) cards
 
 -- | Draw row of pictures.
 drawRow :: Float -> [Picture] -> Picture
@@ -158,17 +159,6 @@ separateBet bet separation
     where
         partition = bet `div` head separation
         remainder = bet `mod` head separation
-
--- | Convert possible board cards to picture array.
-boardCardsToPicture :: Maybe [Card] -> Maybe Card -> Maybe Card -> [Picture] -> [Picture]
-boardCardsToPicture flopCard turnCard riverCard layout =
-    let cardToPicture card = case card of
-            Nothing -> blank
-            Just c  -> layout !! (fromEnum c)
-        flopToPicture flopCards = case flopCards of
-            Nothing -> [blank]
-            Just fc -> map (\crd -> layout !! (fromEnum crd)) fc
-    in flopToPicture flopCard ++ [cardToPicture turnCard, cardToPicture riverCard]
 
 -------------------------------------------------------------------------------
 -- * Constants

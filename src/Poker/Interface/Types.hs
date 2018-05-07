@@ -16,9 +16,7 @@ data TableScreen = TableScreen
   , handCount  :: Int          -- ^ current hand number
   , dealer     :: Seat         -- ^ position of dealer
   , blindSize  :: Int          -- ^ size of big blind
-  , flop       :: Maybe [Card] -- ^ flop cards
-  , turn       :: Maybe Card   -- ^ turn card
-  , river      :: Maybe Card   -- ^ river card
+  , board      :: [Card]       -- ^ cards on board
   , randomizer :: StdGen       -- ^ random number generator
   , deck       :: Deck         -- ^ cards to deal
   , images     :: TableImages  -- ^ images relative to screen

@@ -47,9 +47,7 @@ createTableScreenWith generator imgs = TableScreen
     , handCount  = 1
     , dealer     = Bottom
     , blindSize  = 30
-    , flop       = Nothing
-    , turn       = Nothing
-    , river      = Nothing
+    , board      = []
     , randomizer = generator
     , deck       = Deck 0 []
     , images     = imgs
@@ -77,10 +75,15 @@ updateGame timePassed screen
         if (timer screen < postTime)
             then screen { timer = timer screen + timePassed }
             else screen
-                { state    = Bet_Round
-                , players  = toggleNewActivePlayer 
-                    (takeBlinds (players screen) (blindSize screen))
-                    firstPosition
+                { state    = Start_Round
+                , players  = takeBlinds (players screen) (blindSize screen)
+                }
+    | state screen == Start_Round =
+        if (street screen == Showdown)
+            then screen { state = Finish_Hand }
+            else screen 
+                { state   = Bet_Round
+                , players = toggleNewActivePlayer (players screen) firstPosition
                 , acting   = firstPosition
                 }
     | state screen == Bet_Round =
@@ -110,31 +113,23 @@ updateGame timePassed screen
                 }
     | state screen == Next_Move =
         if (countInHandPlayers (players screen) == 1)
-            then screen { state = All_Folded }
+            then screen
+                { state   = Finish_Hand
+                , players = applyMoveResults (players screen)
+                }
             else if (acting screen == lastPosition)
                 then if (checkReTrade (players screen) maxBet)
-                    then screen
-                        { state   = Bet_Round
-                        , acting  = firstPosition
-                        , players = toggleNewActivePlayer (players screen) firstPosition
-                        }
+                    then screen { state = Start_Round }
                     else screen
-                        { state   = Next_Round
+                        { state   = Start_Round
                         , players = applyMoveResults (players screen)
+                        , street  = succ $ street screen
                         }
                 else screen
                     { state   = Bet_Round
                     , acting  = nextPosition
                     , players = toggleNewActivePlayer (players screen) nextPosition
                     }
-    | state screen == Next_Round  =
-        if (street screen == River)
-            then screen { state = Finish_Hand }
-            else screen 
-                { state = Bet_Round
-                , street = succ (street screen)
-                }
-    | state screen == All_Folded  = screen
     | state screen == Finish_Hand = screen
     | otherwise = screen
     where

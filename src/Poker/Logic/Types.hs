@@ -39,6 +39,7 @@ data Street
   | Flop
   | Turn
   | River
+  | Showdown
   deriving (Eq, Enum)
 
 -- | Describes all seating positions.
@@ -63,8 +64,7 @@ data GameState
   | Waiting_User_Input
   | AI_Thinking
   | Next_Move
-  | Next_Round
-  | All_Folded
+  | Start_Round
   | Finish_Hand
   deriving (Eq)
 
@@ -81,7 +81,7 @@ data Position
 -- | Card deck.
 data Deck = Deck
   { size  :: Int
-  , cards :: [Card]
+  , body :: [Card]
   }
 
 -- | Derive 'Show' class for 'Deck'.
@@ -90,18 +90,18 @@ instance Show Deck where
     where
       insides = intercalate " " (zipWith 
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
-        (cards deck) [1 :: Int .. 52])
+        (body deck) [1 :: Int .. 52])
 
 -- | Contain all 52 cards.
 createDeck :: Deck
 createDeck = Deck
   { size = 52
-  , cards = Card <$> allCardRanks <*> allSuites 
+  , body = Card <$> allCardRanks <*> allSuites 
   }
 
 -- | List of all card short names.
 allCardNames :: [String]
-allCardNames = map cardToShortName (cards createDeck)
+allCardNames = map cardToShortName (body createDeck)
 
 -- | Convert card to short name.
 cardToShortName :: Card -> String
@@ -130,10 +130,10 @@ allCardRanks = [minBound..maxBound]
 
 -- | Poker combination.
 data Combination = Combination
-  { handRank   :: HandRank
-  , body       :: [Card]  -- ^ from 5 to 7 cards
-  , kicker     :: [Card]  -- ^ kicker cards, amount
-                          --   depends on hand rank
+  { handRank  :: HandRank
+  , structure :: [Card]  -- ^ from 5 to 7 cards
+  , kicker    :: [Card]  -- ^ kicker cards, amount
+                        --   depends on hand rank
   }
 
 -- | Poker card.

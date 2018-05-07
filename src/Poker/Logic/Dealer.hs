@@ -16,13 +16,13 @@ dealPlayers players randomizer deck =
 -- | Get one random card from a deck.
 getCard :: StdGen -> Deck -> (Card, (StdGen, Deck))
 getCard randomizer deck =
-    let (deckFirstPart, deckSecondPart) = splitAt index (cards deck)
+    let (deckFirstPart, deckSecondPart) = splitAt index (body deck)
         randomResult = randomR (1, size deck) randomizer
         index        = fst randomResult
         newGen       = snd randomResult    
-    in ((cards deck) !! index, (newGen, Deck
+    in ((body deck) !! index, (newGen, Deck
         { size  = size deck - 1
-        , cards = deckFirstPart ++ (tail deckSecondPart)
+        , body = deckFirstPart ++ (tail deckSecondPart)
         }))
 
 -- | Get hand from a deck.
