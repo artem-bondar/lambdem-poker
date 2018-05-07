@@ -30,6 +30,7 @@ data ActionType
   | Folded
   | Raised
   | All_In
+  deriving (Eq)
 
 -- | Current hand progress.
 data Street
@@ -38,6 +39,7 @@ data Street
   | Turn
   | River
   | Showdown
+  deriving (Eq)
 
 -- | Describes all seating positions.
 data Seat

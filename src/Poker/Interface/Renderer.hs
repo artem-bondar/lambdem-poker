@@ -86,8 +86,8 @@ drawPlayerBet player layout =
 -- | Draw column of chips.
 drawChipColumn :: Float -> Float -> Int -> Picture -> Picture
 drawChipColumn _ _ 0 _                   = blank
-drawChipColumn xOffset yOffset size chip = pictures
-    [img, drawChipColumn xOffset (yOffset + chipTowerOffset) (size - 1) chip]
+drawChipColumn xOffset yOffset height chip = pictures
+    [img, drawChipColumn xOffset (yOffset + chipTowerOffset) (height - 1) chip]
     where
         img = translate xOffset yOffset chip
 
@@ -107,20 +107,20 @@ drawBet offset separation chips
 drawBetSize :: Int -> (Float, Float) -> Picture
 drawBetSize bet offset
     | bet == 0  = blank
-    | otherwise = uncurry translate offset betSize
+    | otherwise = uncurry translate offset bt
     where
-        betSize = drawText white (show bet)
+        bt = drawText white (show bet)
 
 -- | Draw pot by it'size.
 drawPot :: Maybe Int -> ChipLayout -> Picture
 drawPot potSize layout = case potSize of
     Nothing  -> blank
-    Just pot ->
-        let separation = separateBet pot allChipValues
+    Just pt ->
+        let separation = separateBet pt allChipValues
             columns    = length (filter (> 0) separation)
         in pictures [uncurry translate (getPotOffset columns)
         (drawBet 0 separation (stack layout)),
-        drawBetSize pot (getPotOffset (-columns))]
+        drawBetSize pt (getPotOffset (-columns))]
 
 -- | Draw small text. Size is unknown.
 drawText :: Color -> String -> Picture
