@@ -13,6 +13,7 @@ data Player = Player
   , hand     :: Maybe (Card, Card)
   , hideHand :: Bool
   , move     :: Move
+  , active   :: Bool
   }
 
 -- | Contain information about player move.
@@ -23,7 +24,8 @@ data Move = Move
 
 -- | Type of actions that player can make.
 data ActionType
-  = No_action
+  = Out_Of_Game
+  | No_Action
   | Checked
   | Called
   | Folded

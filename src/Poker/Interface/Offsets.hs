@@ -78,8 +78,8 @@ getPotOffset columns =
 -------------------------------------------------------------------------------
 
 -- | Right card offset.
-cardOffset :: (Float, Float)
-cardOffset = (65, 0)
+cardOffset :: Float
+cardOffset = 65
 
 -- | Horizontal offset between chip columns.
 chipColumnOffset :: Float
@@ -88,3 +88,11 @@ chipColumnOffset = 38
 -- | Vertical offset between chips in one column.
 chipTowerOffset :: Float
 chipTowerOffset = 5
+
+-- | Offset for cards that are displayed on table.
+cardsOnTableOffset :: (Float, Float)
+cardsOnTableOffset = (-140, 57)
+
+-- | Offset between cards that are displayed on table.
+cardsOnTableRowOffset :: Float
+cardsOnTableRowOffset = 70

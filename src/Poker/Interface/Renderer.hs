@@ -20,11 +20,13 @@ drawTableScreen screen
         ([background $ images screen,  table $ images screen] ++
         map (\p -> playerOnSeatBold p) (players screen))
     | otherwise = pictures ([background $ images screen,  table $ images screen,
-        drawDealerChip (dealer screen) chipImages] ++
-        map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
-                            playerOnSeatBold p, drawPlayerBet p chipImages,
-                            drawPot (pot screen) chipImages])
-            (players screen))
+        drawDealerChip (dealer screen) chipImages, drawPot (pot screen) chipImages,
+        drawCardsOnTable (flop screen) (turn screen) (river screen)
+        (front . deckLayout $ images screen)] ++
+        map (\p -> pictures
+            [drawPlayerHand p (deckLayout $ images screen),
+            playerOnSeatBold p, drawPlayerBet p chipImages])
+        (players screen))
     where
         chipImages         = (chipLayout $ images screen)
         playerOnSeatBold p = pictures [drawPlayerSeatBold p (seatBold $ images screen),
@@ -40,9 +42,9 @@ drawHand :: Bool -> Maybe (Card, Card) -> DeckLayout -> Picture
 drawHand hide hnd layout = case hnd of
     Nothing -> blank
     Just h  -> case hide of
-        True  -> pictures [back layout, uncurry translate cardOffset (back layout)]
+        True  -> pictures [back layout, translate cardOffset 0 (back layout)]
         False -> pictures [front layout !! (fromEnum $ fst h),
-            uncurry translate cardOffset (front layout !! (fromEnum $ snd h))]
+            translate cardOffset 0 (front layout !! (fromEnum $ snd h))]
 
 -- | Apply offset for player hand depending on seat.
 drawPlayerHand :: Player -> DeckLayout -> Picture
@@ -56,14 +58,14 @@ drawPlayerName :: Player -> Picture
 drawPlayerName player = 
     uncurry translate (getTextNameOffset $ seat player) playerName
     where
-        playerName = color white $ scale 0.125 0.125 (text $ name player)
+        playerName = drawText white (name player)
 
 -- | Draw player balance.
 drawPlayerBalance :: Player -> Picture
 drawPlayerBalance player = 
     uncurry translate (getBalanceOffset $ seat player) playerBalance
     where
-        playerBalance = color white $ scale 0.125 0.125 (text . show $ balance player)
+        playerBalance = drawText white (show $ balance player)
 
 -- | Draw dealer chip.
 drawDealerChip :: Seat -> ChipLayout -> Picture
@@ -107,7 +109,7 @@ drawBetSize bet offset
     | bet == 0  = blank
     | otherwise = uncurry translate offset betSize
     where
-        betSize = color white $ scale 0.125 0.125 (text $ show bet)
+        betSize = drawText white (show bet)
 
 -- | Draw pot by it'size.
 drawPot :: Maybe Int -> ChipLayout -> Picture
@@ -119,6 +121,23 @@ drawPot potSize layout = case potSize of
         in pictures [uncurry translate (getPotOffset columns)
         (drawBet 0 separation (stack layout)),
         drawBetSize pot (getPotOffset (-columns))]
+
+-- | Draw small text. Size is unknown.
+drawText :: Color -> String -> Picture
+drawText clr string =  color clr $ scale 0.125 0.125 (text string)
+
+-- | Draw cards on table.
+drawCardsOnTable :: Maybe [Card] -> Maybe Card -> Maybe Card -> [Picture] -> Picture
+drawCardsOnTable flopCard turnCard riverCard layout =
+    uncurry translate cardsOnTableOffset
+        (drawRow cardsOnTableRowOffset $
+        boardCardsToPicture flopCard turnCard riverCard layout)
+
+-- | Draw row of pictures.
+drawRow :: Float -> [Picture] -> Picture
+drawRow _ [] = blank
+drawRow offset imgs = pictures [head imgs, translate offset 0 
+    (drawRow offset $ tail imgs)]
 
 -------------------------------------------------------------------------------
 -- * Utility functions
@@ -138,6 +157,17 @@ separateBet bet separation
     where
         partition = bet `div` head separation
         remainder = bet `mod` head separation
+
+-- | Convert possible board cards to picture array.
+boardCardsToPicture :: Maybe [Card] -> Maybe Card -> Maybe Card -> [Picture] -> [Picture]
+boardCardsToPicture flopCard turnCard riverCard layout =
+    let cardToPicture card = case card of
+            Nothing -> blank
+            Just c  -> layout !! (fromEnum c)
+        flopToPicture flopCards = case flopCards of
+            Nothing -> [blank]
+            Just fc -> map (\crd -> layout !! (fromEnum crd)) fc
+    in flopToPicture flopCard ++ [cardToPicture turnCard, cardToPicture riverCard]
 
 -------------------------------------------------------------------------------
 -- * Constants

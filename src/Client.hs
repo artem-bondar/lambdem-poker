@@ -39,8 +39,8 @@ createTableScreenWith generator imgs = TableScreen
   , timer        = 0.0
   , totalPlayers = 2
   , players      =
-      [Player Human "Player 1" 1500 SB Bottom Nothing False (Move No_action 0),
-       Player Human "Player 2" 1500 BB Top    Nothing True  (Move No_action 0)]
+      [Player Human "Player 1" 1500 SB Bottom Nothing False (Move No_Action 0) False,
+       Player Human "Player 2" 1500 BB Top    Nothing True  (Move No_Action 0) False]
   , handCount    = 1
   , dealer       = Bottom
   , blindSize    = 30
