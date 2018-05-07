@@ -13,8 +13,6 @@ data TableScreen = TableScreen
   , players    :: [Player]     -- ^ info about every player
   , street     :: Street       -- ^ current street
   , acting     :: Position     -- ^ position of active player
-  , maxBet     :: Int          -- ^ maximal bet that occured
-  , retrade    :: Bool         -- ^ need to repeat bet round
   , handCount  :: Int          -- ^ current hand number
   , dealer     :: Seat         -- ^ position of dealer
   , blindSize  :: Int          -- ^ size of big blind

@@ -44,8 +44,6 @@ createTableScreenWith generator imgs = TableScreen
          Player Human "Opponent" 1500 BB Top    Nothing True  (Move No_Action 0) False]
     , street     = Preflop
     , acting     = UTG
-    , maxBet     = 0
-    , retrade    = False
     , handCount  = 1
     , dealer     = Bottom
     , blindSize  = 30
@@ -86,7 +84,6 @@ updateGame timePassed screen
                     (takeBlinds (players screen) (blindSize screen))
                     firstPosition
                 , acting   = firstPosition
-                , maxBet   = blindSize screen
                 }
     | state screen == Bet_Round =
         if (checkSkipForActivePlayer $ players screen)
@@ -103,7 +100,7 @@ updateGame timePassed screen
             else screen
                 { state    = Bet_Round
                 , players  = applyMove (players screen) (acting screen)
-                    (autoHumanMove (getActivePlayer $ players screen) (maxBet screen))
+                    (autoHumanMove (getActivePlayer $ players screen) maxBet)
                 }
     | state screen == AI_Thinking = 
         if (timer screen < aiThinkTime)
@@ -111,13 +108,13 @@ updateGame timePassed screen
             else screen
                 { state    = Bet_Round
                 , players  = applyMove (players screen) (acting screen)
-                    (autoHumanMove (getActivePlayer $ players screen) (maxBet screen))
+                    (autoHumanMove (getActivePlayer $ players screen) maxBet)
                 }
     | state screen == Next_Move =
         if (countInHandPlayers (players screen) == 1)
             then screen { state = All_Folded }
             else if (acting screen == lastPosition)
-                then if (retrade screen)
+                then if (checkReTrade (players screen) maxBet)
                     then screen
                         { state   = Bet_Round
                         , acting  = firstPosition
@@ -141,4 +138,5 @@ updateGame timePassed screen
         nextPosition  = getNextPositon 
             (length $ players screen) (street screen) (acting screen)
         lastPosition  = getLastPosition  (length $ players screen) (street screen)
+        maxBet        = countMaxBet $ players screen
       

@@ -78,6 +78,23 @@ countInHandPlayers players = foldl1 (+) (map
         _         -> 1)
     players)
 
+-- | Return maximal bet that occured.
+countMaxBet :: [Player] -> Int
+countMaxBet players = maximum (map
+    (\player -> betSize $ move player)
+    players)
+
+-- | Return if repeating of trade is needed.
+checkReTrade :: [Player] -> Int -> Bool
+checkReTrade players bet = or (map
+    (\player ->
+        mv player /= No_Action && mv player /= Folded &&
+        mv player /= All_In && bt player /= bet)
+    players)
+    where
+        mv p = action  $ move p
+        bt p = betSize $ move p
+
 -- | Apply move to player on given position.
 applyMove :: [Player] -> Position -> Move -> [Player]
 applyMove players pos mv = map
