@@ -10,8 +10,10 @@ import Poker.Logic.Types
 data TableScreen = TableScreen
   { state        :: GameState    -- ^ current game state
   , timer        :: Float        -- ^ for detecting time  
-  , totalPlayers :: Int          -- ^ amount of current players
   , players      :: [Player]     -- ^ info about every player
+  , street       :: Street       -- ^ current street
+  , inHand       :: Int          -- ^ amount of players in hand
+  , retrade      :: Bool         -- ^ need to repeat bet round
   , handCount    :: Int          -- ^ current hand number
   , dealer       :: Seat         -- ^ position of dealer
   , blindSize    :: Int          -- ^ size of big blind

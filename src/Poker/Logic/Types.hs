@@ -24,13 +24,20 @@ data Move = Move
 
 -- | Type of actions that player can make.
 data ActionType
-  = Out_Of_Game
-  | No_Action
+  = No_Action
   | Checked
   | Called
   | Folded
   | Raised
   | All_In
+
+-- | Current hand progress.
+data Street
+  = Preflop
+  | Flop
+  | Turn
+  | River
+  | Showdown
 
 -- | Describes all seating positions.
 data Seat
@@ -50,6 +57,7 @@ data PlayerType
 data GameState
   = Dealing_Hand
   | Posting_Blinds
+  | Bet_Round
   | Waiting_User_Input
   | AI_Thinking
   deriving (Eq)

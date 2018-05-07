@@ -35,24 +35,26 @@ initTableScreen generator = createTableScreenWith generator <$> loadedTableImage
 -- | Create new table screen made of images and set default parameters.
 createTableScreenWith :: StdGen -> TableImages -> TableScreen
 createTableScreenWith generator imgs = TableScreen
-  { state        = Dealing_Hand
-  , timer        = 0.0
-  , totalPlayers = 2
-  , players      =
-      [Player Human "Player 1" 1500 SB Bottom Nothing False (Move No_Action 0) False,
-       Player Human "Player 2" 1500 BB Top    Nothing True  (Move No_Action 0) False]
-  , handCount    = 1
-  , dealer       = Bottom
-  , blindSize    = 30
-  , pot          = Nothing
-  , sidePot      = Nothing
-  , flop         = Nothing
-  , turn         = Nothing
-  , river        = Nothing
-  , randomizer   = generator
-  , deck         = Deck 0 []
-  , images       = imgs
-  }
+    { state      = Dealing_Hand
+    , timer      = 0.0
+    , players    =
+        [Player Human " Hero"    1500 SB Bottom Nothing False (Move No_Action 0) False,
+         Player Human "Opponent" 1500 BB Top    Nothing True  (Move No_Action 0) False]
+    , street     = Preflop
+    , inHand     = 0
+    , retrade    = False
+    , handCount  = 1
+    , dealer     = Bottom
+    , blindSize  = 30
+    , pot        = Nothing
+    , sidePot    = Nothing
+    , flop       = Nothing
+    , turn       = Nothing
+    , river      = Nothing
+    , randomizer = generator
+    , deck       = Deck 0 []
+    , images     = imgs
+    }
 
 -- | Operate with user input.
 handleInput :: Event -> TableScreen -> TableScreen
@@ -69,6 +71,8 @@ updateGame timePassed screen
                 { state      = Posting_Blinds
                 , timer      = 0
                 , players    = fst dealResult
+                , street     = Preflop
+                , inHand     = length $ players screen
                 , randomizer = fst $ snd dealResult
                 , deck       = snd $ snd dealResult
                 }
@@ -77,10 +81,11 @@ updateGame timePassed screen
             then screen
                 { timer = timer screen + timePassed }
             else screen
-                { state   = Waiting_User_Input
+                { state   = Bet_Round
                 , timer   = 0
                 , players = takeBlinds (players screen) (blindSize screen)
                 }
+    | state screen == Bet_Round = screen
     | otherwise = screen
     where
       dealResult = dealPlayers (players screen)
