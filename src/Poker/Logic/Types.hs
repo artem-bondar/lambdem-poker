@@ -39,8 +39,7 @@ data Street
   | Flop
   | Turn
   | River
-  | Showdown
-  deriving (Eq)
+  deriving (Eq, Enum)
 
 -- | Describes all seating positions.
 data Seat
@@ -77,7 +76,7 @@ data Position
   | BTN -- ^ Button
   | SB  -- ^ Small Blind
   | BB  -- ^ Big Blind
-  deriving (Eq, Ord, Bounded, Enum, Show)
+  deriving (Eq)
 
 -- | Card deck.
 data Deck = Deck
@@ -142,7 +141,7 @@ data Card = Card
   { cardRank :: CardRank
   , suit     :: Suit
   }
-  deriving (Eq, Ord)
+  deriving (Eq)
 
 -- | Derive 'Show' class for 'Card'.
 instance Show Card where
@@ -162,7 +161,7 @@ data Suit
   | Clubs    -- ^ ♣
   | Hearts   -- ^ ♥
   | Spades   -- ^ ♠
-  deriving (Eq, Ord, Bounded, Enum, Show)
+  deriving (Eq, Bounded, Enum, Show)
 
 -- | Card ranks.
 data CardRank
@@ -179,7 +178,7 @@ data CardRank
   | Queen -- ^ Q
   | King  -- ^ K
   | Ace   -- ^ A
-  deriving (Eq, Ord, Bounded, Enum, Show)
+  deriving (Eq, Bounded, Enum, Show)
 
 -- | Hand ranks.
 data HandRank
@@ -193,7 +192,7 @@ data HandRank
   | Four_of_a_kind
   | Straight_flush
   | Royal_flush
-  deriving (Eq, Ord, Bounded, Enum)
+  deriving (Eq, Ord)
 
 -- | Derive 'Show' class for 'HandRank'.
 instance Show HandRank where

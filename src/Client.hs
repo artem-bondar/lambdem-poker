@@ -97,7 +97,7 @@ updateGame timePassed screen
             then screen { timer = timer screen + timePassed }
             else screen
                 { state    = Bet_Round
-                , players  = applyMove (players screen) (acting screen)
+                , players  = writeMove (players screen) (acting screen)
                     (autoHumanMove (getActivePlayer $ players screen) maxBet)
                 }
     | state screen == AI_Thinking = 
@@ -105,7 +105,7 @@ updateGame timePassed screen
             then screen { timer = timer screen + timePassed }
             else screen
                 { state    = Bet_Round
-                , players  = applyMove (players screen) (acting screen)
+                , players  = writeMove (players screen) (acting screen)
                     (autoHumanMove (getActivePlayer $ players screen) maxBet)
                 }
     | state screen == Next_Move =
@@ -120,14 +120,20 @@ updateGame timePassed screen
                         }
                     else screen
                         { state   = Next_Round
-                      
+                        , players = applyMoveResults (players screen)
                         }
                 else screen
                     { state   = Bet_Round
                     , acting  = nextPosition
                     , players = toggleNewActivePlayer (players screen) nextPosition
                     }
-    | state screen == Next_Round  = screen
+    | state screen == Next_Round  =
+        if (street screen == River)
+            then screen { state = Finish_Hand }
+            else screen 
+                { state = Bet_Round
+                , street = succ (street screen)
+                }
     | state screen == All_Folded  = screen
     | state screen == Finish_Hand = screen
     | otherwise = screen
