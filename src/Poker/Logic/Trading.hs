@@ -7,10 +7,12 @@ import Poker.Logic.Types
 -- * Position processing functions
 -------------------------------------------------------------------------------
 
--- | Set first player to perform action depending on street.
-setFirstPlayer :: [Player] -> Street -> [Player]
-setFirstPlayer players street = 
-    toggleNewActivePlayer players (getFirstPosition (length players) street)
+-- | Return active player.
+--   Isn't safe for [] case.
+getActivePlayer :: [Player] -> Player
+getActivePlayer players
+    | active $ head players = head players
+    | otherwise = getActivePlayer (tail players)
 
 -- | Set active player depending to given position
 --   and unsets previous active player.
@@ -22,12 +24,13 @@ toggleNewActivePlayer players pos = map
     players    
 
 -- | Return type of active player.
+--   Isn't safe for [] case.
 getActivePlayerType :: [Player] -> PlayerType
 getActivePlayerType players = case active $ head players of
     True  -> control $ head players
     False -> getActivePlayerType $ tail players
 
--- | Check if active player is skippable in.
+-- | Check if active player is skippable.
 checkSkipForActivePlayer :: [Player] -> Bool
 checkSkipForActivePlayer [] = False
 checkSkipForActivePlayer players
@@ -47,7 +50,7 @@ getFirstPosition amountOfPlayers street = case amountOfPlayers of
 
 -- | Return next position depending on amount of players and street.
 getNextPositon :: Int -> Street -> Position -> Position
-getNextPositon amountOfPlayers street previousPosition =
+getNextPositon amountOfPlayers street _ = --previousPosition =
     case amountOfPlayers of
         2 -> if (street == Preflop)
                 then SB
@@ -65,6 +68,23 @@ getLastPosition amountOfPlayers street = case amountOfPlayers of
 -------------------------------------------------------------------------------
 -- * Players actions processing functions
 -------------------------------------------------------------------------------
+
+-- | Return amount of players left in hand.
+countInHandPlayers :: [Player] -> Int
+countInHandPlayers players = foldl1 (+) (map
+    (\player -> case action $ move player of
+        No_Action -> 0
+        Folded    -> 0
+        _         -> 1)
+    players)
+
+-- | Apply move to player on given position.
+applyMove :: [Player] -> Position -> Move -> [Player]
+applyMove players pos mv = map
+    (\player -> case position player == pos of
+        True  -> player { move = mv }
+        False -> player)
+    players    
 
 -- | Return default move to proposed bet size when human didn't made any input.
 autoHumanMove :: Player -> Int -> Move

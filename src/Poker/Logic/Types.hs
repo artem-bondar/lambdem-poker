@@ -64,6 +64,7 @@ data GameState
   | AI_Thinking
   | Next_Move
   | Next_Round
+  | All_Folded
   | Finish_Hand
   deriving (Eq)
 

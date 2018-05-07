@@ -44,7 +44,6 @@ createTableScreenWith generator imgs = TableScreen
          Player Human "Opponent" 1500 BB Top    Nothing True  (Move No_Action 0) False]
     , street     = Preflop
     , acting     = UTG
-    , inHand     = 0
     , maxBet     = 0
     , retrade    = False
     , handCount  = 1
@@ -75,7 +74,6 @@ updateGame timePassed screen
                 , timer      = 0
                 , players    = fst dealResult
                 , street     = Preflop
-                , inHand     = length $ players screen
                 , randomizer = fst $ snd dealResult
                 , deck       = snd $ snd dealResult
                 }
@@ -104,30 +102,38 @@ updateGame timePassed screen
             then screen { timer = timer screen + timePassed }
             else screen
                 { state    = Bet_Round
-                , players  = toggleNewActivePlayer 
-                    (takeBlinds (players screen) (blindSize screen))
-                    firstPosition
-                , acting   = firstPosition
+                , players  = applyMove (players screen) (acting screen)
+                    (autoHumanMove (getActivePlayer $ players screen) (maxBet screen))
                 }
-    | state screen == Next_Move = 
-        if (acting screen == lastPosition)
-            then if (retrade screen)
-                then screen
-                    { state  = Bet_Round
-                    , acting = firstPosition
-                    , players = toggleNewActivePlayer (players screen) firstPosition
-                    }
-                else screen
-                    { state   = Next_Round
-
-                    }
+    | state screen == AI_Thinking = 
+        if (timer screen < aiThinkTime)
+            then screen { timer = timer screen + timePassed }
             else screen
-                { state  = Bet_Round
-                , acting  = nextPosition
-                , players = toggleNewActivePlayer (players screen) nextPosition
+                { state    = Bet_Round
+                , players  = applyMove (players screen) (acting screen)
+                    (autoHumanMove (getActivePlayer $ players screen) (maxBet screen))
                 }
-    | state screen == Next_Round = screen
-    | state screen == AI_Thinking = screen
+    | state screen == Next_Move =
+        if (countInHandPlayers (players screen) == 1)
+            then screen { state = All_Folded }
+            else if (acting screen == lastPosition)
+                then if (retrade screen)
+                    then screen
+                        { state   = Bet_Round
+                        , acting  = firstPosition
+                        , players = toggleNewActivePlayer (players screen) firstPosition
+                        }
+                    else screen
+                        { state  = Next_Round
+                        }
+                else screen
+                    { state   = Bet_Round
+                    , acting  = nextPosition
+                    , players = toggleNewActivePlayer (players screen) nextPosition
+                    }
+    | state screen == Next_Round  = screen
+    | state screen == All_Folded  = screen
+    | state screen == Finish_Hand = screen
     | otherwise = screen
     where
         dealResult    = dealPlayers (players screen) (randomizer screen) createDeck
