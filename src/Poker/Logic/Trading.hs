@@ -112,6 +112,17 @@ autoHumanMove player bet
     where
         premadeBet = betSize $ move player
 
+-- | Summarize all moves result.
+--   Return vanished moves and pot with side pot changes.
+-- summarizeAllMoves :: [Player] -> ([Player], (Int, Int))
+-- summarizeAllMoves players 
+
+-- | Calculate pot.
+calculatePot :: [Player] -> Int
+calculatePot players = foldl1 (+) (map
+    (\player -> invested player)
+    players)
+
 -- | Time to get response from AI player.
 aiThinkTime :: Float
 aiThinkTime = 1.0

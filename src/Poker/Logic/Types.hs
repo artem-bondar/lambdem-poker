@@ -12,8 +12,9 @@ data Player = Player
   , seat     :: Seat
   , hand     :: Maybe (Card, Card)
   , hideHand :: Bool
-  , move     :: Move
   , active   :: Bool
+  , move     :: Move
+  , invested :: Int
   }
 
 -- | Contain information about player move.

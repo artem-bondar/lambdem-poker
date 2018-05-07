@@ -40,15 +40,13 @@ createTableScreenWith generator imgs = TableScreen
     { state      = Dealing_Hand
     , timer      = 0.0
     , players    =
-        [Player Human " Hero"    1500 SB Bottom Nothing False (Move No_Action 0) False,
-         Player Human "Opponent" 1500 BB Top    Nothing True  (Move No_Action 0) False]
+        [Player Human " Hero"    1500 SB Bottom Nothing False False (Move No_Action 0) 0,
+         Player Human "Opponent" 1500 BB Top    Nothing True  False (Move No_Action 0) 0]
     , street     = Preflop
     , acting     = UTG
     , handCount  = 1
     , dealer     = Bottom
     , blindSize  = 30
-    , pot        = 0
-    , sidePot    = 0
     , flop       = Nothing
     , turn       = Nothing
     , river      = Nothing
@@ -121,7 +119,8 @@ updateGame timePassed screen
                         , players = toggleNewActivePlayer (players screen) firstPosition
                         }
                     else screen
-                        { state  = Next_Round
+                        { state   = Next_Round
+                      
                         }
                 else screen
                     { state   = Bet_Round

@@ -6,6 +6,7 @@ import Graphics.Gloss.Data.Color
 
 import Poker.Interface.Types
 import Poker.Interface.Offsets
+import Poker.Logic.Trading
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
@@ -19,7 +20,8 @@ drawTableScreen screen
         ([background $ images screen,  table $ images screen] ++
         map (\p -> playerOnSeatBold p) (players screen))
     | otherwise = pictures ([background $ images screen,  table $ images screen,
-        drawDealerChip (dealer screen) chipImages, drawPot (pot screen) chipImages,
+        drawDealerChip (dealer screen) chipImages,
+        drawPot (calculatePot $ players screen) chipImages,
         drawCardsOnTable (flop screen) (turn screen) (river screen)
         (front . deckLayout $ images screen)] ++
         map (\p -> pictures
