@@ -15,16 +15,11 @@ setFirstPlayer players street =
 -- | Set active player depending to given position
 --   and unsets previous active player.
 toggleNewActivePlayer :: [Player] -> Position -> [Player]
-toggleNewActivePlayer [] _ = []
-toggleNewActivePlayer players pos
-    | (position $ head players) == pos =
-        ((head players) { active = True } : toggleNewActivePlayer (tail players) pos)
-    | otherwise =
-        (player : toggleNewActivePlayer (tail players) pos)
-    where
-        player = case active $ head players of
-            True  -> player { active = False }
-            False -> player
+toggleNewActivePlayer players pos = map
+    (\player -> case position player == pos of
+        True  -> player { active = True  }
+        False -> player { active = False })
+    players    
 
 -- | Return type of active player.
 getActivePlayerType :: [Player] -> PlayerType

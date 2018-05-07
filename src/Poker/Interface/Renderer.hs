@@ -7,7 +7,6 @@ import Graphics.Gloss.Data.Color
 import Poker.Interface.Types
 import Poker.Interface.Offsets
 import Poker.Logic.Types
-import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Render functions

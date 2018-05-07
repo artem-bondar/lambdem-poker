@@ -8,10 +8,12 @@ import System.Random (StdGen, getStdGen)
 import Poker.Interface.Loader
 import Poker.Interface.Renderer
 import Poker.Interface.Types
-import Poker.Logic.Types
-import Poker.Logic.Dealer
 
---import Debug.Trace
+import Poker.Logic.Dealer
+import Poker.Logic.Trading
+import Poker.Logic.Types
+
+import Debug.Trace
 
 -- | Launches main (table) game screen.
 launchGame :: IO ()
@@ -41,6 +43,7 @@ createTableScreenWith generator imgs = TableScreen
         [Player Human " Hero"    1500 SB Bottom Nothing False (Move No_Action 0) False,
          Player Human "Opponent" 1500 BB Top    Nothing True  (Move No_Action 0) False]
     , street     = Preflop
+    , acting     = UTG
     , inHand     = 0
     , retrade    = False
     , handCount  = 1
@@ -81,13 +84,20 @@ updateGame timePassed screen
             then screen
                 { timer = timer screen + timePassed }
             else screen
-                { state   = Bet_Round
-                , timer   = 0
-                , players = takeBlinds (players screen) (blindSize screen)
+                { state    = Bet_Round
+                , timer    = 0
+                , players  = toggleNewActivePlayer 
+                    (takeBlinds (players screen) (blindSize screen))
+                    firstPosition
+                , acting   = firstPosition
                 }
     | state screen == Bet_Round = screen
+            -- { state = case getActivePlayerType $ players screen of
+            --     Human -> Waiting_User_Input
+            --     AI    -> AI_Thinking
+            -- }
     | otherwise = screen
     where
-      dealResult = dealPlayers (players screen)
-        (randomizer screen) createDeck
+        dealResult = dealPlayers (players screen) (randomizer screen) createDeck
+        firstPosition = getFirstPosition (length $ players screen) (street screen)
       

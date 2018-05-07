@@ -8,23 +8,24 @@ import Poker.Logic.Types
 
 -- | Contain all data relative to table game screen.
 data TableScreen = TableScreen
-  { state        :: GameState    -- ^ current game state
-  , timer        :: Float        -- ^ for detecting time  
-  , players      :: [Player]     -- ^ info about every player
-  , street       :: Street       -- ^ current street
-  , inHand       :: Int          -- ^ amount of players in hand
-  , retrade      :: Bool         -- ^ need to repeat bet round
-  , handCount    :: Int          -- ^ current hand number
-  , dealer       :: Seat         -- ^ position of dealer
-  , blindSize    :: Int          -- ^ size of big blind
-  , pot          :: Maybe Int    -- ^ pot size
-  , sidePot      :: Maybe Int    -- ^ side pot size
-  , flop         :: Maybe [Card] -- ^ flop cards
-  , turn         :: Maybe Card   -- ^ turn card
-  , river        :: Maybe Card   -- ^ river card
-  , randomizer   :: StdGen       -- ^ random number generator
-  , deck         :: Deck         -- ^ cards to deal
-  , images       :: TableImages  -- ^ images relative to screen
+  { state      :: GameState    -- ^ current game state
+  , timer      :: Float        -- ^ for detecting time  
+  , players    :: [Player]     -- ^ info about every player
+  , street     :: Street       -- ^ current street
+  , acting     :: Position     -- ^ position of active player
+  , inHand     :: Int          -- ^ amount of players in hand
+  , retrade    :: Bool         -- ^ need to repeat bet round
+  , handCount  :: Int          -- ^ current hand number
+  , dealer     :: Seat         -- ^ position of dealer
+  , blindSize  :: Int          -- ^ size of big blind
+  , pot        :: Maybe Int    -- ^ pot size
+  , sidePot    :: Maybe Int    -- ^ side pot size
+  , flop       :: Maybe [Card] -- ^ flop cards
+  , turn       :: Maybe Card   -- ^ turn card
+  , river      :: Maybe Card   -- ^ river card
+  , randomizer :: StdGen       -- ^ random number generator
+  , deck       :: Deck         -- ^ cards to deal
+  , images     :: TableImages  -- ^ images relative to screen
   }
 
 -- | Contain all images relative to table game screen.
