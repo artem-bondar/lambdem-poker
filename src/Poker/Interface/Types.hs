@@ -12,7 +12,6 @@ data TableScreen = TableScreen
   , timer      :: Float        -- ^ for detecting time  
   , players    :: [Player]     -- ^ info about every player
   , street     :: Street       -- ^ current street
-  , acting     :: Position     -- ^ position of active player
   , handCount  :: Int          -- ^ current hand number
   , dealer     :: Seat         -- ^ position of dealer
   , blindSize  :: Int          -- ^ size of big blind

@@ -23,13 +23,6 @@ toggleNewActivePlayer players pos = map
         False -> player { active = False })
     players    
 
--- | Return type of active player.
---   Isn't safe for [] case.
-getActivePlayerType :: [Player] -> PlayerType
-getActivePlayerType players = case active $ head players of
-    True  -> control $ head players
-    False -> getActivePlayerType $ tail players
-
 -- | Check if active player is skippable.
 checkSkipForActivePlayer :: [Player] -> Bool
 checkSkipForActivePlayer [] = False

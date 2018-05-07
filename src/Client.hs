@@ -43,7 +43,6 @@ createTableScreenWith generator imgs = TableScreen
         [Player Human " Hero"    1500 SB Bottom Nothing False False (Move No_Action 0) 0,
          Player Human "Opponent" 1500 BB Top    Nothing True  False (Move No_Action 0) 0]
     , street     = Preflop
-    , acting     = UTG
     , handCount  = 1
     , dealer     = Bottom
     , blindSize  = 30
@@ -84,13 +83,12 @@ updateGame timePassed screen
             else screen 
                 { state   = Bet_Round
                 , players = toggleNewActivePlayer (players screen) firstPosition
-                , acting   = firstPosition
                 }
     | state screen == Bet_Round =
         if (checkSkipForActivePlayer $ players screen)
             then screen { state = Next_Move }
             else screen
-                { state = case getActivePlayerType $ players screen of
+                { state = case activePlayerType of
                     Human -> Waiting_User_Input
                     AI    -> AI_Thinking
                 , timer    = 0
@@ -100,7 +98,7 @@ updateGame timePassed screen
             then screen { timer = timer screen + timePassed }
             else screen
                 { state    = Bet_Round
-                , players  = writeMove (players screen) (acting screen)
+                , players  = writeMove (players screen) activePlayerPosition
                     (autoHumanMove (getActivePlayer $ players screen) maxBet)
                 }
     | state screen == AI_Thinking = 
@@ -108,7 +106,7 @@ updateGame timePassed screen
             then screen { timer = timer screen + timePassed }
             else screen
                 { state    = Bet_Round
-                , players  = writeMove (players screen) (acting screen)
+                , players  = writeMove (players screen) activePlayerPosition
                     (autoHumanMove (getActivePlayer $ players screen) maxBet)
                 }
     | state screen == Next_Move =
@@ -117,7 +115,7 @@ updateGame timePassed screen
                 { state   = Finish_Hand
                 , players = applyMoveResults (players screen)
                 }
-            else if (acting screen == lastPosition)
+            else if (activePlayerPosition == lastPosition)
                 then if (checkReTrade (players screen) maxBet)
                     then screen { state = Start_Round }
                     else screen
@@ -127,16 +125,17 @@ updateGame timePassed screen
                         }
                 else screen
                     { state   = Bet_Round
-                    , acting  = nextPosition
                     , players = toggleNewActivePlayer (players screen) nextPosition
                     }
     | state screen == Finish_Hand = screen
     | otherwise = screen
     where
+        activePlayerType     = control  . getActivePlayer $ players screen
+        activePlayerPosition = position . getActivePlayer $ players screen
         dealResult    = dealPlayers (players screen) (randomizer screen) createDeck
         firstPosition = getFirstPosition (length $ players screen) (street screen)
-        nextPosition  = getNextPositon 
-            (length $ players screen) (street screen) (acting screen)
+        nextPosition  = getNextPositon   (length $ players screen) (street screen)
+                                          activePlayerPosition
         lastPosition  = getLastPosition  (length $ players screen) (street screen)
         maxBet        = countMaxBet $ players screen
       
