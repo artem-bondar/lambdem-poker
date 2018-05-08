@@ -2,7 +2,6 @@
 module Poker.Logic.Trading where
 
 import Poker.Logic.Types
-import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Position processing functions
@@ -58,9 +57,10 @@ checkSkipForActivePlayer :: [Player] -> Bool
 checkSkipForActivePlayer [] = False
 checkSkipForActivePlayer players
   | active $ head players = case action . move $ head players of
-      All_In -> True
-      Folded -> True
-      _      -> False
+      Bankrupted -> True
+      Folded     -> True
+      All_In     -> True
+      _          -> False
   | otherwise = checkSkipForActivePlayer $ tail players
 
 -- | Return amount of players left in hand.
@@ -138,9 +138,10 @@ applyMoveResults players = map
     { balance  = balance  player - bet player
     , invested = invested player + bet player
     , move     = case action $ move player of
-        Folded -> Move Folded 0
-        All_In -> Move All_In 0
-        _      -> Move Waiting 0
+        Bankrupted -> Move Bankrupted 0
+        Folded     -> Move Folded 0
+        All_In     -> Move All_In 0
+        _          -> Move Waiting 0
     })
   players
   where

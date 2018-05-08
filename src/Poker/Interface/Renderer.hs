@@ -65,7 +65,8 @@ drawPlayerBalance :: Player -> Picture
 drawPlayerBalance player = 
   uncurry translate (getBalanceOffset $ seat player) playerBalance
   where
-    playerBalance = drawText white (show $ balance player)
+    playerBalance = drawText white
+      (show $ balance player - (betSize $ move player))
 
 -- | Draw dealer chip.
 drawDealerChip :: Seat -> ChipLayout -> Picture

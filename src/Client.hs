@@ -13,7 +13,7 @@ import Poker.Logic.Dealer
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
-import Debug.Trace
+--import Debug.Trace
 
 -- | Launches main (table) game screen.
 launchGame :: IO ()

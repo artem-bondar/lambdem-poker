@@ -51,15 +51,11 @@ getNHands n (randomizer, deck) =
 -- | Take blind from player.
 takeBlind :: Player -> Int -> Player
 takeBlind player blind
-    | balance player == 0  = player
+    | balance player == 0     = player
     | balance player <= blind = player
-      { balance = 0
-      , move = Move All_In (balance player)
-      }
-    | otherwise = player
-      { balance = balance player - blind
-      , move = Move Raised blind
-      }
+      { move = Move All_In (balance player) }
+    | otherwise               = player
+      { move = Move Raised blind }
 
 -- | Take blinds from players.
 takeBlinds :: [Player] -> Int -> [Player]
