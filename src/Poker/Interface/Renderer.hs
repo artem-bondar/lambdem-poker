@@ -29,7 +29,9 @@ drawTableScreen screen
     (players screen))
   where
     chipImages         = (chipLayout $ images screen)
-    playerOnSeatBold p = pictures [drawPlayerSeatBold p (seatBold $ images screen),
+    playerOnSeatBold p = pictures [drawPlayerSeatBold p (case active p of
+      True  -> seatBoldActive $ images screen
+      False -> seatBold       $ images screen),
       drawPlayerName p, drawPlayerBalance p]
 
 -- | Draw player seatbold.

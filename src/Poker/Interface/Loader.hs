@@ -10,18 +10,20 @@ import Poker.Logic.Types
 -- | Load all table images from files.
 loadedTableImages :: IO TableImages
 loadedTableImages = do
-  Just imgBackground <- loadJuicyPNG "img/background.png"
-  Just imgTable      <- loadJuicyPNG "img/table.png"
-  Just imgSeatBold   <- loadJuicyPNG "img/seatbold.png"
-  Just imgBack       <- loadJuicyPNG "img/deck/back.png"
-  imgsDeck           <- loadDeckLayout
-  Just imgDealerChip <- loadJuicyPNG "img/chips/dealer.png"
-  imgsChips          <- loadChipLayout
+  Just imgBackground     <- loadJuicyPNG "img/background.png"
+  Just imgTable          <- loadJuicyPNG "img/table.png"
+  Just imgSeatBold       <- loadJuicyPNG "img/seatbold.png"
+  Just imgSeatBoldActive <- loadJuicyPNG "img/seatbold active.png"
+  Just imgBack           <- loadJuicyPNG "img/deck/back.png"
+  imgsDeck               <- loadDeckLayout
+  Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"
+  imgsChips              <- loadChipLayout
   return TableImages
-    { background = imgBackground
-    , table      = imgTable
-    , seatBold   = imgSeatBold
-    , deckLayout = DeckLayout
+    { background     = imgBackground
+    , table          = imgTable
+    , seatBold       = imgSeatBold
+    , seatBoldActive = imgSeatBoldActive
+    , deckLayout     = DeckLayout
         { back  = imgBack
         , front = imgsDeck
         }

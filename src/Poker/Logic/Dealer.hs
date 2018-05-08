@@ -22,7 +22,7 @@ getCard :: StdGen -> Deck -> (Card, (StdGen, Deck))
 getCard randomizer deck =
   let (deckFirstPart, deckSecondPart) = splitAt index (body deck)
       randomResult = randomR (0, size deck - 1) randomizer
-      index        = trace (show $ fst randomResult) fst randomResult
+      index        = fst randomResult
       newGen       = snd randomResult    
   in ((body deck) !! index, (newGen, Deck
     { size  = size deck - 1

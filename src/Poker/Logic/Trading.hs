@@ -136,12 +136,13 @@ applyMoveResults :: [Player] -> [Player]
 applyMoveResults players = map
   (\player -> player
     { balance  = balance  player - bet player
-    , invested = invested player + bet player
     , move     = case action $ move player of
         Bankrupted -> Move Bankrupted 0
         Folded     -> Move Folded 0
         All_In     -> Move All_In 0
         _          -> Move Waiting 0
+    , active   = False
+    , invested = invested player + bet player
     })
   players
   where

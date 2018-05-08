@@ -23,11 +23,12 @@ data TableScreen = TableScreen
 
 -- | Contain all images relative to table game screen.
 data TableImages = TableImages
-  { background :: Picture
-  , table      :: Picture
-  , seatBold   :: Picture
-  , deckLayout :: DeckLayout
-  , chipLayout :: ChipLayout
+  { background     :: Picture
+  , table          :: Picture
+  , seatBold       :: Picture
+  , seatBoldActive :: Picture 
+  , deckLayout     :: DeckLayout
+  , chipLayout      :: ChipLayout
   }
 
 -- | Contain layout for card deck.
