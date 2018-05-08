@@ -22,39 +22,39 @@ loadedTableImages = do
     , table      = imgTable
     , seatBold   = imgSeatBold
     , deckLayout = DeckLayout
-      { back  = imgBack
-      , front = imgsDeck
-      }
+        { back  = imgBack
+        , front = imgsDeck
+        }
     , chipLayout = ChipLayout
-      { dealerChip = imgDealerChip
-      , stack      = imgsChips
-      }
+        { dealerChip = imgDealerChip
+        , stack      = imgsChips
+        }
     }
 
 -- | Load deck layout.
 loadDeckLayout :: IO [Picture]
-loadDeckLayout = sequence (uwrapMaybes <$> loadedList)
+loadDeckLayout = do 
+  maybePictures <- sequence loadedList
+  return $ map unwrapMaybePicture maybePictures
   where
-    uwrapMaybes x = do
-      u <- x
-      case u of
-        Nothing -> return blank
-        Just v  -> return v
     loadedList = map
       (\x -> loadJuicyPNG $ "img/deck/" ++ x ++ ".png")
       allCardNames
 
 -- | Load chip layout.
 loadChipLayout :: IO [Chip]
-loadChipLayout = wrapInChip allChipValues <$> sequence (uwrapMaybes <$> loadedList)
+loadChipLayout = do
+  maybePictures <- sequence loadedList
+  return $ wrapInChip allChipValues (map unwrapMaybePicture maybePictures)
   where
     wrapInChip values imgs =
       zipWith (\val img -> Chip val img) values imgs
-    uwrapMaybes x = do
-      u <- x
-      case u of
-        Nothing -> return blank
-        Just v  -> return v
     loadedList = map
       (\x -> loadJuicyPNG $ "img/chips/" ++ x ++ ".png")
       (map show allChipValues)
+
+-- | Return `Picture` or blank.
+unwrapMaybePicture :: Maybe Picture -> Picture
+unwrapMaybePicture image = case image of
+  Nothing  -> blank
+  Just img -> img

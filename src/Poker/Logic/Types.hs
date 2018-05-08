@@ -105,20 +105,21 @@ allCardNames = map cardToShortName (body createDeck)
 
 -- | Convert card to short name.
 cardToShortName :: Card -> String
-cardToShortName card = rank ++ cardSuit
-      where
-        rank = case cardRank card of
-          Ten   -> "T"
-          Jack  -> "J"
-          Queen -> "Q"
-          King  -> "K"
-          Ace   -> "A"
-          _     -> show $ fromEnum (cardRank card) + 2
-        cardSuit = case suit card of
-          Diamonds -> "d"
-          Clubs    -> "c"
-          Hearts   -> "h"
-          Spades   -> "s"
+cardToShortName card =
+  rank ++ cardSuit
+  where
+    rank = case cardRank card of
+      Ten   -> "T"
+      Jack  -> "J"
+      Queen -> "Q"
+      King  -> "K"
+      Ace   -> "A"
+      _     -> show $ fromEnum (cardRank card) + 2
+    cardSuit = case suit card of
+      Diamonds -> "d"
+      Clubs    -> "c"
+      Hearts   -> "h"
+      Spades   -> "s"
 
 -- | List of all suites.
 allSuites :: [Suit]
@@ -131,8 +132,8 @@ allCardRanks = [minBound..maxBound]
 -- | Poker combination.
 data Combination = Combination
   { handRank  :: HandRank
-  , structure :: [Card]  -- ^ from 5 to 7 cards
-  , kicker    :: [Card]  -- ^ kicker cards, amount
+  , structure :: [Card] -- ^ from 5 to 7 cards
+  , kicker    :: [Card] -- ^ kicker cards, amount
                         --   depends on hand rank
   }
 
