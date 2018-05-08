@@ -11,9 +11,13 @@ List of implemented features:
 - player seats
 - dealing cards
 - posting blinds
+- change of positions
 - bet display in chips
 - time delayed actions
 - bottom & up seatbolds
+- automove on timebank end
+- hightlighting of active player
+- something pretending to handle bet rounds
 - *another not really cool stuff*
 
 ~~Link to huge haddocs here, although no one will really read them...~~
@@ -21,10 +25,10 @@ List of implemented features:
 ## Status
 
 One phrase review: \
-*Do or die trying.*
+*Dead or alive: sleep.*
 
 Nothing really playable here yet,
-but you can at least get some cards.
+but you can at least watch some infinite loop of card dealing.
 
 Developing ...
 
@@ -32,12 +36,12 @@ Developing ...
 
 ## Build and run
 
-Just installed [Stack](https://www.haskellstack.org)?
+First of all - install [Stack](https://www.haskellstack.org).
 
-Then:
+Setup it on first launch:
 
 `stack setup`
 
-For normal run:
+For launching client:
 
 `stack build && stack exec poker`

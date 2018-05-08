@@ -12,7 +12,9 @@ data Player = Player
   , seat     :: Seat
   , hand     :: Maybe (Card, Card)
   , hideHand :: Bool
+  , active   :: Bool
   , move     :: Move
+  , invested :: Int
   }
 
 -- | Contain information about player move.
@@ -23,12 +25,23 @@ data Move = Move
 
 -- | Type of actions that player can make.
 data ActionType
-  = No_action
+  = Bankrupted
+  | Waiting
   | Checked
   | Called
   | Folded
   | Raised
   | All_In
+  deriving (Eq)
+
+-- | Current hand progress.
+data Street
+  = Preflop
+  | Flop
+  | Turn
+  | River
+  | Showdown
+  deriving (Eq, Enum)
 
 -- | Describes all seating positions.
 data Seat
@@ -48,8 +61,12 @@ data PlayerType
 data GameState
   = Dealing_Hand
   | Posting_Blinds
+  | Bet_Round
   | Waiting_User_Input
   | AI_Thinking
+  | Next_Move
+  | Start_Round
+  | Finish_Hand
   deriving (Eq)
 
 -- | Poker positions.
@@ -60,12 +77,12 @@ data Position
   | BTN -- ^ Button
   | SB  -- ^ Small Blind
   | BB  -- ^ Big Blind
-  deriving (Eq, Ord, Bounded, Enum, Show)
+  deriving (Eq)
 
 -- | Card deck.
 data Deck = Deck
   { size  :: Int
-  , cards :: [Card]
+  , body :: [Card]
   }
 
 -- | Derive 'Show' class for 'Deck'.
@@ -74,35 +91,36 @@ instance Show Deck where
     where
       insides = intercalate " " (zipWith 
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
-        (cards deck) [1 :: Int .. 52])
+        (body deck) [1 :: Int .. 52])
 
 -- | Contain all 52 cards.
 createDeck :: Deck
 createDeck = Deck
   { size = 52
-  , cards = Card <$> allCardRanks <*> allSuites 
+  , body = Card <$> allCardRanks <*> allSuites 
   }
 
 -- | List of all card short names.
 allCardNames :: [String]
-allCardNames = map cardToShortName (cards createDeck)
+allCardNames = map cardToShortName (body createDeck)
 
 -- | Convert card to short name.
 cardToShortName :: Card -> String
-cardToShortName card = rank ++ cardSuit
-      where
-        rank = case cardRank card of
-          Ten   -> "T"
-          Jack  -> "J"
-          Queen -> "Q"
-          King  -> "K"
-          Ace   -> "A"
-          _     -> show $ fromEnum (cardRank card) + 2
-        cardSuit = case suit card of
-          Diamonds -> "d"
-          Clubs    -> "c"
-          Hearts   -> "h"
-          Spades   -> "s"
+cardToShortName card =
+  rank ++ cardSuit
+  where
+    rank = case cardRank card of
+      Ten   -> "T"
+      Jack  -> "J"
+      Queen -> "Q"
+      King  -> "K"
+      Ace   -> "A"
+      _     -> show $ fromEnum (cardRank card) + 2
+    cardSuit = case suit card of
+      Diamonds -> "d"
+      Clubs    -> "c"
+      Hearts   -> "h"
+      Spades   -> "s"
 
 -- | List of all suites.
 allSuites :: [Suit]
@@ -114,10 +132,10 @@ allCardRanks = [minBound..maxBound]
 
 -- | Poker combination.
 data Combination = Combination
-  { handRank   :: HandRank
-  , body       :: [Card]  -- ^ from 5 to 7 cards
-  , kicker     :: [Card]  -- ^ kicker cards, amount
-                          --   depends on hand rank
+  { handRank  :: HandRank
+  , structure :: [Card] -- ^ from 5 to 7 cards
+  , kicker    :: [Card] -- ^ kicker cards, amount
+                        --   depends on hand rank
   }
 
 -- | Poker card.
@@ -125,7 +143,7 @@ data Card = Card
   { cardRank :: CardRank
   , suit     :: Suit
   }
-  deriving (Eq, Ord)
+  deriving (Eq)
 
 -- | Derive 'Show' class for 'Card'.
 instance Show Card where
@@ -145,7 +163,7 @@ data Suit
   | Clubs    -- ^ ♣
   | Hearts   -- ^ ♥
   | Spades   -- ^ ♠
-  deriving (Eq, Ord, Bounded, Enum, Show)
+  deriving (Eq, Bounded, Enum, Show)
 
 -- | Card ranks.
 data CardRank
@@ -162,7 +180,7 @@ data CardRank
   | Queen -- ^ Q
   | King  -- ^ K
   | Ace   -- ^ A
-  deriving (Eq, Ord, Bounded, Enum, Show)
+  deriving (Eq, Bounded, Enum, Show)
 
 -- | Hand ranks.
 data HandRank
@@ -176,7 +194,7 @@ data HandRank
   | Four_of_a_kind
   | Straight_flush
   | Royal_flush
-  deriving (Eq, Ord, Bounded, Enum)
+  deriving (Eq, Ord)
 
 -- | Derive 'Show' class for 'HandRank'.
 instance Show HandRank where
