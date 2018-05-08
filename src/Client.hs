@@ -40,8 +40,8 @@ createTableScreenWith generator imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
-    [Player Human " Hero"    1500 SB Bottom Nothing False False (Move No_Action 0) 0,
-     Player Human "Opponent" 1500 BB Top    Nothing True  False (Move No_Action 0) 0]
+    [Player Human " Hero"    1500 SB Bottom Nothing False False (Move Waiting 0) 0,
+     Player Human "Opponent" 1500 BB Top    Nothing True  False (Move Waiting 0) 0]
   , street     = Preflop
   , handCount  = 1
   , dealer     = Bottom
@@ -65,8 +65,9 @@ updateGame timePassed screen
       else screen 
         { state      = Posting_Blinds
         , timer      = 0
-        , players    = fst dealResult
+        , players    = hideHands $ fst dealResult
         , street     = Preflop
+        , dealer     = getSeatOfPosition buttonPosition (players screen)
         , randomizer = fst $ snd dealResult
         , deck       = snd $ snd dealResult
         }
@@ -74,12 +75,15 @@ updateGame timePassed screen
     if (timer screen < postTime)
       then screen { timer = timer screen + timePassed }
       else screen
-        { state    = Start_Round
-        , players  = takeBlinds (players screen) (blindSize screen)
+        { state   = Start_Round
+        , players = takeBlinds (players screen) (blindSize screen)
         }
   | state screen == Start_Round =
     if (street screen == Showdown)
-      then screen { state = Finish_Hand }
+      then screen
+      { state = Finish_Hand
+      , timer = 0
+      }
       else screen 
         { state   = Bet_Round
         , players = toggleNewActivePlayer (players screen) firstPosition
@@ -113,6 +117,7 @@ updateGame timePassed screen
     if (countInHandPlayers (players screen) == 1)
       then screen
         { state   = Finish_Hand
+        , timer   = 0
         , players = applyMoveResults (players screen)
         }
       else if (activePlayerPosition == lastPosition)
@@ -127,15 +132,26 @@ updateGame timePassed screen
           { state   = Bet_Round
           , players = toggleNewActivePlayer (players screen) nextPosition
           }
-  | state screen == Finish_Hand = screen
+  | state screen == Finish_Hand =
+    if (timer screen < showdownTime)
+      then screen { timer = timer screen + timePassed }
+      else screen
+        { state     = Dealing_Hand
+        , timer     = 0
+        , players   = changePlayerPositions $ computeHandResults (players screen)
+        , handCount = succ $ handCount screen
+        }
   | otherwise = screen
   where
     activePlayerType     = control  . getActivePlayer $ players screen
     activePlayerPosition = position . getActivePlayer $ players screen
-    dealResult    = dealPlayers (players screen) (randomizer screen) createDeck
-    firstPosition = getFirstPosition (length $ players screen) (street screen)
-    nextPosition  = getNextPositon   (length $ players screen) (street screen)
-                      activePlayerPosition
-    lastPosition  = getLastPosition  (length $ players screen) (street screen)
-    maxBet        = countMaxBet $ players screen
+    dealResult     = dealPlayers (players screen) (randomizer screen) createDeck
+    firstPosition  = getFirstPosition (length $ players screen) (street screen)
+    nextPosition   = getNextPositon   (length $ players screen) (street screen)
+                                       activePlayerPosition
+    lastPosition   = getLastPosition  (length $ players screen) (street screen)
+    maxBet         = countMaxBet $ players screen
+    buttonPosition = if (length (players screen) == 2)
+                      then SB
+                      else BTN 
     

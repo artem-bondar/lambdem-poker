@@ -5,6 +5,10 @@ import System.Random (StdGen, randomR)
 
 import Poker.Logic.Types
 
+-------------------------------------------------------------------------------
+-- * Operations with cards
+-------------------------------------------------------------------------------
+
 -- | Deal cards from deck to players.
 dealPlayers :: [Player] -> StdGen -> Deck -> ([Player], (StdGen, Deck))
 dealPlayers players randomizer deck = 
@@ -40,15 +44,9 @@ getNHands n (randomizer, deck) =
       nextResult   = getNHands (n - 1) (snd randomResult)
   in (fst randomResult : fst nextResult, snd  nextResult)
 
--- | Take blinds from players.
-takeBlinds :: [Player] -> Int -> [Player]
-takeBlinds [] _      = []
-takeBlinds (p:ps) bb = 
-  let takeBB player blind = case position player of
-        SB -> takeBlind player (blind `div` 2)
-        BB -> takeBlind player blind
-        _  -> player
-  in (takeBB p bb : takeBlinds ps bb)
+-------------------------------------------------------------------------------
+-- * Operations with players
+-------------------------------------------------------------------------------
 
 -- | Take blind from player.
 takeBlind :: Player -> Int -> Player
@@ -63,6 +61,28 @@ takeBlind player blind
       , move = Move Raised blind
       }
 
+-- | Take blinds from players.
+takeBlinds :: [Player] -> Int -> [Player]
+takeBlinds [] _      = []
+takeBlinds (p:ps) bb = 
+  let takeBB player blind = case position player of
+        SB -> takeBlind player (blind `div` 2)
+        BB -> takeBlind player blind
+        _  -> player
+  in (takeBB p bb : takeBlinds ps bb)
+
+-- | Hide hand depending on player type and settings.
+hideHands :: [Player] -> [Player]
+hideHands players = map
+    (\player -> case control player of
+        Human -> player { hideHand = hideHumaHand }
+        AI    -> player { hideHand = hideAIhand   })
+    players
+
+-------------------------------------------------------------------------------
+-- * Constants
+-------------------------------------------------------------------------------
+
 -- | Time consumed to deal cards.
 dealTime :: Float
 dealTime = 0.60
@@ -70,3 +90,11 @@ dealTime = 0.60
 -- | Time consumed to post blinds.
 postTime :: Float
 postTime = 1.0
+
+-- | Hide AI hand during bet rounds.
+hideAIhand :: Bool
+hideAIhand = True
+
+-- | Hide human hand during bet rounds.
+hideHumaHand :: Bool
+hideHumaHand = False

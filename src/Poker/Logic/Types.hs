@@ -25,7 +25,7 @@ data Move = Move
 
 -- | Type of actions that player can make.
 data ActionType
-  = No_Action
+  = Waiting
   | Checked
   | Called
   | Folded
