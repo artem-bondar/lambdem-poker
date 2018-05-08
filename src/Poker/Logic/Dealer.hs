@@ -47,7 +47,7 @@ takeBlinds (p:ps) bb =
   let takeBB player blind = case position player of
         SB -> takeBlind player (blind `div` 2)
         BB -> takeBlind player blind
-        s_  -> player
+        _  -> player
   in (takeBB p bb : takeBlinds ps bb)
 
 -- | Take blind from player.
