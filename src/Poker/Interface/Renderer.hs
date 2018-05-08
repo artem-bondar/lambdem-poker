@@ -19,6 +19,8 @@ drawTableScreen screen
   | state screen == Dealing_Hand = pictures
     ([background $ images screen,  table $ images screen] ++
     map (\p -> playerOnSeatBold p) (players screen))
+  | state screen == Finish_Hand = pictures
+    [background $ images screen,  table $ images screen]
   | otherwise = pictures ([background $ images screen,  table $ images screen,
     drawDealerChip (dealer screen) chipImages,
     drawPot (calculatePot $ players screen) chipImages,

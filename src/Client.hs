@@ -89,25 +89,25 @@ updateGame timePassed screen
       then screen { state = Next_Move }
       else screen
         { state = case activePlayerType of
-          Human -> Waiting_User_Input
-          AI    -> AI_Thinking
-        , timer    = 0
+            Human -> Waiting_User_Input
+            AI    -> AI_Thinking
+        , timer = 0
         }
   | state screen == Waiting_User_Input =
     if (timer screen < humanThinkTime)
       then screen { timer = timer screen + timePassed }
       else screen
-        { state   = Bet_Round
+        { state   = Next_Move
         , players = writeMove (players screen) activePlayerPosition
-          (autoHumanMove (getActivePlayer $ players screen) maxBet)
+            (autoHumanMove (getActivePlayer $ players screen) maxBet)
         }
   | state screen == AI_Thinking = 
     if (timer screen < aiThinkTime)
       then screen { timer = timer screen + timePassed }
       else screen
-        { state   = Bet_Round
+        { state   = Next_Move
         , players = writeMove (players screen) activePlayerPosition
-          (autoHumanMove (getActivePlayer $ players screen) maxBet)
+            (autoHumanMove (getActivePlayer $ players screen) maxBet)
         }
   | state screen == Next_Move =
     if (countInHandPlayers (players screen) == 1)

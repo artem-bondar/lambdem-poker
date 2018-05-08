@@ -37,8 +37,8 @@ checkSkipForActivePlayer players
 getFirstPosition :: Int -> Street -> Position
 getFirstPosition amountOfPlayers street = case amountOfPlayers of
   2 -> if (street == Preflop)
-        then BB
-        else SB
+        then SB
+        else BB
   _ -> UTG
 
 -- | Return next position depending on amount of players and street.
@@ -46,16 +46,16 @@ getNextPositon :: Int -> Street -> Position -> Position
 getNextPositon amountOfPlayers street _ = --previousPosition =
   case amountOfPlayers of
     2 -> if (street == Preflop)
-          then SB
-          else BB
+          then BB
+          else SB
     _ -> MP
 
 -- | Return last position depending on amount of players and street.
 getLastPosition :: Int -> Street -> Position
 getLastPosition amountOfPlayers street = case amountOfPlayers of
   2 -> if (street == Preflop)
-        then SB
-        else BB
+        then BB
+        else SB
   _ -> BTN
 
 -------------------------------------------------------------------------------
@@ -98,9 +98,9 @@ writeMove players pos mv = map
 -- | Return default move to proposed bet size when human didn't made any input.
 autoHumanMove :: Player -> Int -> Move
 autoHumanMove player bet
-  | bet == 0 = Move Checked 0
+  | bet == 0          = Move Checked 0
   | bet == premadeBet = Move Checked bet
-  | otherwise = Move Folded premadeBet
+  | otherwise         = Move Folded premadeBet
   where
     premadeBet = betSize $ move player
 
@@ -127,8 +127,8 @@ calculatePot players = foldl1 (+) (map
 
 -- | Time to get response from AI player.
 aiThinkTime :: Float
-aiThinkTime = 1.0
+aiThinkTime = 2.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
-humanThinkTime = 45.0
+humanThinkTime = 2.0
