@@ -13,7 +13,7 @@ import Poker.Logic.Dealer
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
---import Debug.Trace
+import Debug.Trace
 
 -- | Launches main (table) game screen.
 launchGame :: IO ()
@@ -54,7 +54,12 @@ createTableScreenWith generator imgs = TableScreen
 
 -- | Operate with user input.
 handleInput :: Event -> TableScreen -> TableScreen
-handleInput _ = id
+handleInput event screen 
+  | state screen == Waiting_User_Input = 
+    case event of
+      EventKey (MouseButton LeftButton) Down _ mouse -> trace (show mouse) screen
+      _ -> screen
+  | otherwise = screen
 
 -- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen
