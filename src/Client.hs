@@ -1,10 +1,11 @@
--- | Core module that handles all game processes.
+-- | Core module that handles all major game processes.
 module Client where
 
 import Graphics.Gloss.Interface.Environment (getScreenSize)
 import Graphics.Gloss.Interface.Pure.Game
 import System.Random (StdGen, getStdGen)
 
+import Poker.Interface.Handlers
 import Poker.Interface.Loader
 import Poker.Interface.Renderer
 import Poker.Interface.Types
@@ -13,7 +14,7 @@ import Poker.Logic.Dealer
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
-import Debug.Trace
+--import Debug.Trace
 
 -- | Launches main (table) game screen.
 launchGame :: IO ()

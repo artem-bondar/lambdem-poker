@@ -77,7 +77,7 @@ getPotOffset columns =
 getButtonsOffset :: ActionType -> (Float, Float)
 getButtonsOffset act = case act of
   Check -> (-buttonOffset / 2,   buttonPositionOffset)
-  _     -> (-buttonOffset, buttonPositionOffset)
+  _     -> (-buttonOffset,       buttonPositionOffset)
 
 -------------------------------------------------------------------------------
 -- * Constants
