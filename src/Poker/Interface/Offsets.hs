@@ -118,7 +118,7 @@ smallButtonOffset = 58
 -- | Offset for small buttons.
 smallButtonPositionOffset :: (Float, Float)
 smallButtonPositionOffset =
-  (-smallButtonOffset * 1.5 + buttonOffset / 2, -220)
+  (-5, -220)
 
 -- | Offset for slider.
 sliderOffset :: (Float, Float)

@@ -53,15 +53,6 @@ createTableScreenWith generator imgs = TableScreen
   , images     = imgs
   }
 
--- | Operate with user input.
-handleInput :: Event -> TableScreen -> TableScreen
-handleInput event screen 
-  | state screen == Waiting_User_Input = 
-    case event of
-      EventKey (MouseButton LeftButton) Down _ mouse -> trace (show mouse) screen
-      _ -> screen
-  | otherwise = screen
-
 -- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen
 updateGame timePassed screen 
