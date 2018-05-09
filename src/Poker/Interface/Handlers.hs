@@ -70,10 +70,6 @@ checkSliderHit hit =
 -- * Constants
 -------------------------------------------------------------------------------
 
--- | Height of button.
-buttonHeight :: Float
-buttonHeight = 56
-
 -- | Bounding rectangle for first button.
 buttonHitbox :: ((Float, Float), (Float, Float))
 buttonHitbox = ((-buttonOffset * 1.5, buttonPositionOffset - 0.5 * buttonHeight),

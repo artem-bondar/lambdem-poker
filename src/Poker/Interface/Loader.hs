@@ -7,6 +7,10 @@ import Graphics.Gloss.Data.Picture
 import Poker.Interface.Types
 import Poker.Logic.Types
 
+-------------------------------------------------------------------------------
+-- * Load functions
+-------------------------------------------------------------------------------
+
 -- | Load all table images from files.
 loadedTableImages :: IO TableImages
 loadedTableImages = do
@@ -96,6 +100,10 @@ loadChipLayout = do
     loadedList = map
       (\x -> loadJuicyPNG $ "img/chips/" ++ x ++ ".png")
       (map show allChipValues)
+
+-------------------------------------------------------------------------------
+-- * Utility functions
+-------------------------------------------------------------------------------
 
 -- | Return `Picture` or blank.
 unwrapMaybePicture :: Maybe Picture -> Picture

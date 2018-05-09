@@ -16,7 +16,11 @@ import Poker.Logic.Types
 
 --import Debug.Trace
 
--- | Launches main (table) game screen.
+-------------------------------------------------------------------------------
+-- * Game launch related functions
+-------------------------------------------------------------------------------
+
+-- | Launches game screen.
 launchGame :: IO ()
 launchGame =  do
   generator   <- getStdGen
@@ -47,12 +51,16 @@ createTableScreenWith generator imgs = TableScreen
   , handCount  = 1
   , dealer     = Bottom
   , blindSize  = 30
-  , sliderData = Slider 0 0 0 False
+  , sliderData = Slider 0 0 0 0 False
   , board      = []
   , randomizer = generator
   , deck       = Deck 0 []
   , images     = imgs
   }
+
+-------------------------------------------------------------------------------
+-- * Game maintance related functions
+-------------------------------------------------------------------------------
 
 -- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen

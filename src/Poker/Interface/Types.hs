@@ -6,6 +6,10 @@ import System.Random (StdGen)
 
 import Poker.Logic.Types
 
+-------------------------------------------------------------------------------
+-- * Declarations
+-------------------------------------------------------------------------------
+
 -- | Contain all data relative to table game screen.
 data TableScreen = TableScreen
   { state      :: GameState   -- ^ current game state
@@ -52,10 +56,6 @@ data SmallButtonText = SmallButtonText
   , betSizeText :: Picture
   }
 
--- | Value of all small buttons.
-allBetSizings :: [Int]
-allBetSizings = [40, 60, 80, 100]
-
 -- | Contain layout for card deck.
 data DeckLayout = DeckLayout
   { back  :: Picture   -- ^ image for back side of card
@@ -74,14 +74,27 @@ data Chip = Chip
   , sprite :: Picture
   }
 
--- | Value of all chips.
-allChipValues :: [Int]
-allChipValues = [1000, 500, 100, 25, 5, 1]
-
 -- | Contain slider data.
 data Slider = Slider
   { minValue     :: Int
   , maxValue     :: Int
   , currentValue :: Int
+  , stepSize     :: Int -- ^ in pixels
   , isSelected   :: Bool
   }
+
+-------------------------------------------------------------------------------
+-- * Constants
+-------------------------------------------------------------------------------
+
+-- | Value of all chips.
+allChipValues :: [Int]
+allChipValues = [1000, 500, 100, 25, 5, 1]
+
+-- | Value of all small buttons.
+allBetSizings :: [Int]
+allBetSizings = [40, 60, 80, 100]
+
+-- | Height of button.
+buttonHeight :: Float
+buttonHeight = 56

@@ -3,6 +3,26 @@ module Poker.Logic.Types where
 
 import Data.List
 
+-------------------------------------------------------------------------------
+-- * Declarations
+-------------------------------------------------------------------------------
+
+---------------------------------------
+-- ** Overall game types
+---------------------------------------
+
+-- | Possible game states. 
+data GameState
+  = Dealing_Hand
+  | Posting_Blinds
+  | Bet_Round
+  | Waiting_User_Input
+  | AI_Thinking
+  | Next_Move
+  | Start_Round
+  | Finish_Hand
+  deriving (Eq)
+
 -- | Contain all personal player data.
 data Player = Player
   { control  :: PlayerType
@@ -16,6 +36,30 @@ data Player = Player
   , move     :: Move
   , invested :: Int
   }
+
+-- | Types of players.
+data PlayerType
+  = Human
+  | AI
+
+-- | Poker positions.
+data Position
+  = UTG -- ^ Under The Gun
+  | MP  -- ^ Middle Position
+  | CO  -- ^ Cut-Off
+  | BTN -- ^ Button
+  | SB  -- ^ Small Blind
+  | BB  -- ^ Big Blind
+  deriving (Eq)
+
+-- | Describes all seating positions.
+data Seat
+  = Bottom
+  | Left_Down
+  | Left_Up
+  | Top
+  | Right_Up
+  | Right_Down
 
 -- | Contain information about player move.
 data Move = Move
@@ -44,11 +88,6 @@ data ActionType
   | All_In
   deriving (Eq, Bounded, Enum, Show)
 
--- | Return list with all action names.
-allActionNames :: [String]
-allActionNames = map
-  (show . (toEnum :: Int -> ActionType)) [0..4] ++ ["All-In"]
-
 -- | Current hand progress.
 data Street
   = Preflop
@@ -58,41 +97,9 @@ data Street
   | Showdown
   deriving (Eq, Enum)
 
--- | Describes all seating positions.
-data Seat
-  = Bottom
-  | Left_Down
-  | Left_Up
-  | Top
-  | Right_Up
-  | Right_Down
-
--- | Types of players.
-data PlayerType
-  = Human
-  | AI
-
--- | Possible game states. 
-data GameState
-  = Dealing_Hand
-  | Posting_Blinds
-  | Bet_Round
-  | Waiting_User_Input
-  | AI_Thinking
-  | Next_Move
-  | Start_Round
-  | Finish_Hand
-  deriving (Eq)
-
--- | Poker positions.
-data Position
-  = UTG -- ^ Under The Gun
-  | MP  -- ^ Middle Position
-  | CO  -- ^ Cut-Off
-  | BTN -- ^ Button
-  | SB  -- ^ Small Blind
-  | BB  -- ^ Big Blind
-  deriving (Eq)
+---------------------------------------
+-- ** Types related to playing cards
+---------------------------------------
 
 -- | Card deck.
 data Deck = Deck
@@ -108,43 +115,6 @@ instance Show Deck where
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
         (body deck) [1 :: Int .. 52])
 
--- | Contain all 52 cards.
-createDeck :: Deck
-createDeck = Deck
-  { size = 52
-  , body = Card <$> allCardRanks <*> allSuites 
-  }
-
--- | List of all card short names.
-allCardNames :: [String]
-allCardNames = map cardToShortName (body createDeck)
-
--- | Convert card to short name.
-cardToShortName :: Card -> String
-cardToShortName card =
-  rank ++ cardSuit
-  where
-    rank = case cardRank card of
-      Ten   -> "T"
-      Jack  -> "J"
-      Queen -> "Q"
-      King  -> "K"
-      Ace   -> "A"
-      _     -> show $ fromEnum (cardRank card) + 2
-    cardSuit = case suit card of
-      Diamonds -> "d"
-      Clubs    -> "c"
-      Hearts   -> "h"
-      Spades   -> "s"
-
--- | List of all suites.
-allSuites :: [Suit]
-allSuites = [minBound..maxBound]
-
--- | List of all card ranks.
-allCardRanks :: [CardRank]
-allCardRanks = [minBound..maxBound]
-
 -- | Poker combination.
 data Combination = Combination
   { handRank  :: HandRank
@@ -152,6 +122,34 @@ data Combination = Combination
   , kicker    :: [Card] -- ^ kicker cards, amount
                         --   depends on hand rank
   }
+
+-- | Hand ranks.
+data HandRank
+  = High_card
+  | One_pair
+  | Two_pair
+  | Three_of_a_kind
+  | Straight
+  | Flush
+  | Full_house
+  | Four_of_a_kind
+  | Straight_flush
+  | Royal_flush
+  deriving (Eq, Ord)
+
+-- | Derive 'Show' class for 'HandRank'.
+instance Show HandRank where
+  show rank = case rank of
+    High_card       -> "High card"
+    One_pair        -> "Pair"
+    Two_pair        -> "Two pair"
+    Three_of_a_kind -> "Three of a kind"
+    Straight        -> "Straight"
+    Flush           -> "Flush"
+    Full_house      -> "Full house"
+    Four_of_a_kind  -> "Four of a kind"
+    Straight_flush  -> "Straigh flush"
+    Royal_flush     -> "Royal flush"
 
 -- | Poker card.
 data Card = Card
@@ -197,30 +195,48 @@ data CardRank
   | Ace   -- ^ A
   deriving (Eq, Bounded, Enum, Show)
 
--- | Hand ranks.
-data HandRank
-  = High_card
-  | One_pair
-  | Two_pair
-  | Three_of_a_kind
-  | Straight
-  | Flush
-  | Full_house
-  | Four_of_a_kind
-  | Straight_flush
-  | Royal_flush
-  deriving (Eq, Ord)
+-------------------------------------------------------------------------------
+-- * Utility functions
+-------------------------------------------------------------------------------
 
--- | Derive 'Show' class for 'HandRank'.
-instance Show HandRank where
-  show rank = case rank of
-    High_card       -> "High card"
-    One_pair        -> "Pair"
-    Two_pair        -> "Two pair"
-    Three_of_a_kind -> "Three of a kind"
-    Straight        -> "Straight"
-    Flush           -> "Flush"
-    Full_house      -> "Full house"
-    Four_of_a_kind  -> "Four of a kind"
-    Straight_flush  -> "Straigh flush"
-    Royal_flush     -> "Royal flush"
+-- | Contain all 52 cards.
+createDeck :: Deck
+createDeck = Deck
+  { size = 52
+  , body = Card <$> allCardRanks <*> allSuites 
+  }
+
+-- | List of all card short names.
+allCardNames :: [String]
+allCardNames = map cardToShortName (body createDeck)
+
+-- | Convert card to short name.
+cardToShortName :: Card -> String
+cardToShortName card =
+  rank ++ cardSuit
+  where
+    rank = case cardRank card of
+      Ten   -> "T"
+      Jack  -> "J"
+      Queen -> "Q"
+      King  -> "K"
+      Ace   -> "A"
+      _     -> show $ fromEnum (cardRank card) + 2
+    cardSuit = case suit card of
+      Diamonds -> "d"
+      Clubs    -> "c"
+      Hearts   -> "h"
+      Spades   -> "s"
+
+-- | Return list with all action names.
+allActionNames :: [String]
+allActionNames = map
+  (show . (toEnum :: Int -> ActionType)) [0..4] ++ ["All-In"]
+
+-- | List of all suites.
+allSuites :: [Suit]
+allSuites = [minBound..maxBound]
+
+-- | List of all card ranks.
+allCardRanks :: [CardRank]
+allCardRanks = [minBound..maxBound]

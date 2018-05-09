@@ -11,7 +11,7 @@ import Poker.Logic.Trading
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
--- * Render functionsd
+-- * Render functions
 -------------------------------------------------------------------------------
 
 -- | Draw tablescreen.

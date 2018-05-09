@@ -201,6 +201,7 @@ updateSlideData sliderr player bet bb = Slider
   { minValue     = minRaiseSize
   , maxValue     = balance player
   , currentValue = minRaiseSize
+  , stepSize     = 1
   }
   where
     minRaiseSize = if (bet == 0)

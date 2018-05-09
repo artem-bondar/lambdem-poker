@@ -4,7 +4,7 @@ module Poker.Interface.Offsets where
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
--- * Offsets
+-- * Computed offsets
 -------------------------------------------------------------------------------
 
 -- | Return offset for cards depending on seat.
@@ -80,7 +80,7 @@ getButtonsOffset act = case act of
   _     -> (-buttonOffset,       buttonPositionOffset)
 
 -------------------------------------------------------------------------------
--- * Constants
+-- * Constant offsets
 -------------------------------------------------------------------------------
 
 -- | Right card offset.
