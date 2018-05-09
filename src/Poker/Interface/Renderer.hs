@@ -144,6 +144,10 @@ drawRow _ [] = blank
 drawRow offset imgs = pictures [head imgs,
   translate offset 0 (drawRow offset $ tail imgs)]
 
+-- | Draw buttons with possible actions for player.
+drawButtons :: (ActionType, ActionType) -> Picture -> [ButtonText] -> Picture
+drawButtons actions button texts = blank
+
 -------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------

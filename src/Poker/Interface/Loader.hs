@@ -16,6 +16,7 @@ loadedTableImages = do
   Just imgSeatBoldActive <- loadJuicyPNG "img/seatbold active.png"
   Just imgButton         <- loadJuicyPNG "img/button.png"
   Just imgButtonClicked  <- loadJuicyPNG "img/button clicked.png"
+  imgsButtonTexts        <- loadButtonTexts
   Just imgBack           <- loadJuicyPNG "img/deck/back.png"
   imgsDeck               <- loadDeckLayout
   Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"
@@ -27,6 +28,7 @@ loadedTableImages = do
     , seatBoldActive = imgSeatBoldActive
     , button         = imgButton
     , buttonClicked  = imgButtonClicked
+    , buttonTexts    = imgsButtonTexts
     , deckLayout     = DeckLayout
         { back  = imgBack
         , front = imgsDeck
@@ -36,6 +38,19 @@ loadedTableImages = do
         , stack      = imgsChips
         }
     }
+
+-- | Load button texts.
+loadButtonTexts :: IO [ButtonText]
+loadButtonTexts = do
+  maybePictures <- sequence loadedList
+  return $ wrapInButtonText [minBound..maxBound :: ActionType]
+    (map unwrapMaybePicture maybePictures)
+  where
+    wrapInButtonText values imgs =
+      zipWith (\val img -> ButtonText val img) values imgs
+    loadedList = map
+      (\x -> loadJuicyPNG $ "img/text/" ++ x ++ ".png")
+      allActionNames
 
 -- | Load deck layout.
 loadDeckLayout :: IO [Picture]

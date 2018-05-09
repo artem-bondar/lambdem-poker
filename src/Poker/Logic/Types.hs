@@ -19,20 +19,35 @@ data Player = Player
 
 -- | Contain information about player move.
 data Move = Move
-  { action  :: ActionType
+  { action  :: MadeActionType
   , betSize :: Int
   }
 
--- | Type of actions that player can make.
-data ActionType
+-- | Types of action that player made.
+data MadeActionType
   = Bankrupted
   | Waiting
   | Checked
   | Called
   | Folded
   | Raised
-  | All_In
+  | All_In_ed
   deriving (Eq)
+
+-- | Types of possible action that player can make.
+data ActionType
+  = Fold
+  | Check
+  | Call
+  | Bet
+  | Raise
+  | All_In
+  deriving (Eq, Bounded, Enum, Show)
+
+-- | Return list with all action names.
+allActionNames :: [String]
+allActionNames = map
+  (show . (toEnum :: Int -> ActionType)) [0..4] ++ ["All-In"]
 
 -- | Current hand progress.
 data Street

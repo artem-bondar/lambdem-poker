@@ -29,9 +29,16 @@ data TableImages = TableImages
   , seatBoldActive :: Picture
   , button         :: Picture
   , buttonClicked  :: Picture
+  , buttonTexts    :: [ButtonText]
   , deckLayout     :: DeckLayout
   , chipLayout     :: ChipLayout
   }
+
+-- | Contains text to show on buttons.
+data ButtonText = ButtonText
+ { action     :: ActionType
+ , actionText :: Picture
+ }
 
 -- | Contain layout for card deck.
 data DeckLayout = DeckLayout

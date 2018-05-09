@@ -4,7 +4,7 @@ module Poker.Logic.Trading where
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
--- * Position processing functions
+-- * Operations with positions
 -------------------------------------------------------------------------------
 
 -- | Return first position depending on amount of players and street.
@@ -59,7 +59,7 @@ checkSkipForActivePlayer players
   | active $ head players = case action . move $ head players of
       Bankrupted -> True
       Folded     -> True
-      All_In     -> True
+      All_In_ed     -> True
       _          -> False
   | otherwise = checkSkipForActivePlayer $ tail players
 
@@ -82,7 +82,7 @@ checkReTrade :: [Player] -> Int -> Bool
 checkReTrade players bet = or (map
   (\player ->
       mv player /= Waiting && mv player /= Folded &&
-      mv player /= All_In && bt player /= bet)
+      mv player /= All_In_ed && bt player /= bet)
   players)
   where
     mv p = action  $ move p
@@ -139,7 +139,7 @@ applyMoveResults players = map
     , move     = case action $ move player of
         Bankrupted -> Move Bankrupted 0
         Folded     -> Move Folded 0
-        All_In     -> Move All_In 0
+        All_In_ed     -> Move All_In_ed 0
         _          -> Move Waiting 0
     , active   = False
     , invested = invested player + bet player
@@ -184,6 +184,14 @@ changePlayerPositions players = map
     (\player -> player
       { position = getNextPositionClockwise (position player) (length players) })
     players
+
+-- | Get possible actions for player depending on incoming bet.
+--   Return only second two actions. Fold action is calculated independently.
+getPossibleActions :: Player -> Int -> (MadeActionType, MadeActionType)
+getPossibleActions player bet
+    | bet == 0              = (Checked,  Raised)
+    | bet >= balance player = (All_In_ed,   All_In_ed)
+    | otherwise             = (Called,   Raised)
 
 -------------------------------------------------------------------------------
 -- * Constants

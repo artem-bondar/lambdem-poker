@@ -53,7 +53,7 @@ takeBlind :: Player -> Int -> Player
 takeBlind player blind
     | balance player == 0     = player
     | balance player <= blind = player
-      { move = Move All_In (balance player) }
+      { move = Move All_In_ed (balance player) }
     | otherwise               = player
       { move = Move Raised blind }
 
