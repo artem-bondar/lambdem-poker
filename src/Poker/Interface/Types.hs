@@ -36,7 +36,7 @@ data TableImages = TableImages
 
 -- | Contains text to show on buttons.
 data ButtonText = ButtonText
- { action     :: ActionType
+ { actionType :: ActionType
  , actionText :: Picture
  }
 

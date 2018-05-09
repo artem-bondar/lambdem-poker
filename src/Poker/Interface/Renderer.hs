@@ -19,6 +19,9 @@ drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
   | state screen == Dealing_Hand = pictures ([tableWithDealerChip] ++
       map (\p -> playerOnSeatBold p) (players screen))
+  | state screen == Waiting_User_Input = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
+    drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
+      (buttonTexts $ images screen) 0]
   | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
       
   where
@@ -33,6 +36,9 @@ drawTableScreen screen
       drawCardsOnTable (board screen) (front . deckLayout $ images screen)]
     playersWithHands    = pictures (map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
       playerOnSeatBold p, drawPlayerBet p chipImages]) (players screen))
+    activePlayer    = getActivePlayer $ players screen
+    maxBet          = countMaxBet $ players screen
+    possibleActions = getPossibleActions activePlayer maxBet
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
@@ -73,7 +79,7 @@ drawPlayerBalance player =
 -- | Draw dealer chip.
 drawDealerChip :: Seat -> ChipLayout -> Picture
 drawDealerChip s layout = 
-  uncurry translate (getDealerChipOffset s) (dealerChip layout)
+  uncurry translate (getDealerChipOffset s) $ dealerChip layout
 
 
 -- | Draw player bet.
@@ -133,8 +139,8 @@ drawText clr string =  color clr $ scale 0.125 0.125 (text string)
 drawCardsOnTable :: [Card] -> [Picture] -> Picture
 drawCardsOnTable [] _ = blank
 drawCardsOnTable cards layout =
-  uncurry translate cardsOnTableOffset
-    (drawRow cardsOnTableRowOffset cardPictures)
+  uncurry translate cardsOnTableOffset $ 
+    drawRow cardsOnTableRowOffset cardPictures
   where
     cardPictures = map (\card -> layout !! (fromEnum card)) cards
 
@@ -145,8 +151,21 @@ drawRow offset imgs = pictures [head imgs,
   translate offset 0 (drawRow offset $ tail imgs)]
 
 -- | Draw buttons with possible actions for player.
-drawButtons :: (ActionType, ActionType) -> Picture -> [ButtonText] -> Picture
-drawButtons actions button texts = blank
+drawButtons :: (ActionType, ActionType) -> (Picture, Picture) -> [ButtonText] -> Int -> Picture
+drawButtons actions buttons texts buttonPressed = 
+  uncurry translate (getButtonsOffset $ fst actions) $ drawRow buttonOffset imgsButtons
+  where
+    getButtonImg pressed = if (buttonPressed /= pressed)
+      then fst buttons
+      else snd buttons
+    fstImg = case fst actions of
+      Check  -> blank
+      _      -> pictures [getButtonImg 1, getActionText texts Fold]
+    sndImg   =  pictures [getButtonImg 2, getActionText texts $ fst actions]
+    thdImg   = case fst actions of
+      All_In -> blank
+      _      -> pictures [getButtonImg 3, getActionText texts $ snd actions]
+    imgsButtons = [fstImg, sndImg, thdImg]
 
 -------------------------------------------------------------------------------
 -- * Utility functions
@@ -167,6 +186,13 @@ separateBet bet separation
   where
     partition = bet `div` head separation
     remainder = bet `mod` head separation
+
+-- | Return button text for action.
+--   Unsafe function for [] and lists without that action.
+getActionText :: [ButtonText] -> ActionType -> Picture
+getActionText buttons actionName
+  | (actionType $ head buttons) == actionName = actionText $ head buttons
+  | otherwise = getActionText (tail buttons) actionName 
 
 -------------------------------------------------------------------------------
 -- * Constants

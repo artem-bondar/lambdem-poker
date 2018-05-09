@@ -41,7 +41,7 @@ getLastPosition amountOfPlayers street = case amountOfPlayers of
   _ -> BTN
 
 -- | Return seat of player on given position.
---   Unsafe function for [] and arrays without
+--   Unsafe function for [] and lists without
 --   player with given position.
 getSeatOfPosition :: Position -> [Player] -> Seat
 getSeatOfPosition pos players
@@ -187,11 +187,11 @@ changePlayerPositions players = map
 
 -- | Get possible actions for player depending on incoming bet.
 --   Return only second two actions. Fold action is calculated independently.
-getPossibleActions :: Player -> Int -> (MadeActionType, MadeActionType)
+getPossibleActions :: Player -> Int -> (ActionType, ActionType)
 getPossibleActions player bet
-    | bet == 0              = (Checked,  Raised)
-    | bet >= balance player = (All_In_ed,   All_In_ed)
-    | otherwise             = (Called,   Raised)
+    | bet == 0              = (Check,  Bet)
+    | bet >= balance player = (All_In, All_In)
+    | otherwise             = (Call,   Raise)
 
 -------------------------------------------------------------------------------
 -- * Constants
@@ -203,7 +203,7 @@ aiThinkTime = 2.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
-humanThinkTime = 2.0
+humanThinkTime = 20.0
 
 -- | Time to display showdown results.
 showdownTime :: Float

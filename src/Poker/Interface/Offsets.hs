@@ -73,6 +73,12 @@ getPotOffset :: Int -> (Float, Float)
 getPotOffset columns = 
   (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 125)    
 
+-- | Return buttons offset depending on possible middle action.
+getButtonsOffset :: ActionType -> (Float, Float)
+getButtonsOffset act = case act of
+  Check -> (-buttonOffset / 2,   buttonPositionOffset)
+  _     -> (-buttonOffset, buttonPositionOffset)
+
 -------------------------------------------------------------------------------
 -- * Constants
 -------------------------------------------------------------------------------
@@ -96,3 +102,11 @@ cardsOnTableOffset = (-140, 57)
 -- | Offset between cards that are displayed on table.
 cardsOnTableRowOffset :: Float
 cardsOnTableRowOffset = 70
+
+-- | Offset for button.
+buttonOffset :: Float
+buttonOffset = 134
+
+-- | Vertical offset for buttons.
+buttonPositionOffset :: Float
+buttonPositionOffset = -300
