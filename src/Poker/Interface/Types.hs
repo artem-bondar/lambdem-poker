@@ -23,15 +23,19 @@ data TableScreen = TableScreen
 
 -- | Contain all images relative to table game screen.
 data TableImages = TableImages
-  { background     :: Picture
-  , table          :: Picture
-  , seatBold       :: Picture
-  , seatBoldActive :: Picture
-  , button         :: Picture
-  , buttonClicked  :: Picture
-  , buttonTexts    :: [ButtonText]
-  , deckLayout     :: DeckLayout
-  , chipLayout     :: ChipLayout
+  { background       :: Picture
+  , table            :: Picture
+  , seatBold         :: Picture
+  , seatBoldActive   :: Picture
+  , slider           :: Picture
+  , sliderBall       :: Picture   
+  , button           :: Picture
+  , buttonClicked    :: Picture
+  , buttonTexts      :: [ButtonText]
+  , smallButton      :: Picture
+  , smallButtonTexts :: [SmallButtonText]    
+  , deckLayout       :: DeckLayout
+  , chipLayout       :: ChipLayout
   }
 
 -- | Contains text to show on buttons.
@@ -39,6 +43,16 @@ data ButtonText = ButtonText
  { actionType :: ActionType
  , actionText :: Picture
  }
+
+-- | Contains text to show on small buttons.
+data SmallButtonText = SmallButtonText
+  { betSizing   :: Int     -- ^ size of pot in percentage
+  , betSiseText :: Picture
+  }
+
+-- | Value of all small buttons.
+allBetSizings :: [Int]
+allBetSizings = [40, 60, 80, 100]
 
 -- | Contain layout for card deck.
 data DeckLayout = DeckLayout
