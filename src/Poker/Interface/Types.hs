@@ -8,17 +8,17 @@ import Poker.Logic.Types
 
 -- | Contain all data relative to table game screen.
 data TableScreen = TableScreen
-  { state      :: GameState    -- ^ current game state
-  , timer      :: Float        -- ^ for detecting time  
-  , players    :: [Player]     -- ^ info about every player
-  , street     :: Street       -- ^ current street
-  , handCount  :: Int          -- ^ current hand number
-  , dealer     :: Seat         -- ^ position of dealer
-  , blindSize  :: Int          -- ^ size of big blind
-  , board      :: [Card]       -- ^ cards on board
-  , randomizer :: StdGen       -- ^ random number generator
-  , deck       :: Deck         -- ^ cards to deal
-  , images     :: TableImages  -- ^ images relative to screen
+  { state      :: GameState   -- ^ current game state
+  , timer      :: Float       -- ^ for detecting time  
+  , players    :: [Player]    -- ^ info about every player
+  , street     :: Street      -- ^ current street
+  , handCount  :: Int         -- ^ current hand number
+  , dealer     :: Seat        -- ^ position of dealer
+  , blindSize  :: Int         -- ^ size of big blind
+  , board      :: [Card]      -- ^ cards on board
+  , randomizer :: StdGen      -- ^ random number generator
+  , deck       :: Deck        -- ^ cards to deal
+  , images     :: TableImages -- ^ images relative to screen
   }
 
 -- | Contain all images relative to table game screen.
@@ -26,9 +26,11 @@ data TableImages = TableImages
   { background     :: Picture
   , table          :: Picture
   , seatBold       :: Picture
-  , seatBoldActive :: Picture 
+  , seatBoldActive :: Picture
+  , button         :: Picture
+  , buttonClicked  :: Picture
   , deckLayout     :: DeckLayout
-  , chipLayout      :: ChipLayout
+  , chipLayout     :: ChipLayout
   }
 
 -- | Contain layout for card deck.

@@ -14,6 +14,8 @@ loadedTableImages = do
   Just imgTable          <- loadJuicyPNG "img/table.png"
   Just imgSeatBold       <- loadJuicyPNG "img/seatbold.png"
   Just imgSeatBoldActive <- loadJuicyPNG "img/seatbold active.png"
+  Just imgButton         <- loadJuicyPNG "img/button.png"
+  Just imgButtonClicked  <- loadJuicyPNG "img/button clicked.png"
   Just imgBack           <- loadJuicyPNG "img/deck/back.png"
   imgsDeck               <- loadDeckLayout
   Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"
@@ -23,6 +25,8 @@ loadedTableImages = do
     , table          = imgTable
     , seatBold       = imgSeatBold
     , seatBoldActive = imgSeatBoldActive
+    , button         = imgButton
+    , buttonClicked  = imgButtonClicked
     , deckLayout     = DeckLayout
         { back  = imgBack
         , front = imgsDeck

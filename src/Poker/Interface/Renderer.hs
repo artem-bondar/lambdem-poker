@@ -6,6 +6,7 @@ import Graphics.Gloss.Data.Color
 
 import Poker.Interface.Types
 import Poker.Interface.Offsets
+
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
@@ -16,23 +17,22 @@ import Poker.Logic.Types
 -- | Draw tablescreen.
 drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
-  | state screen == Dealing_Hand = pictures
-    ([background $ images screen, table $ images screen] ++
-    map (\p -> playerOnSeatBold p) (players screen))
-  | otherwise = pictures ([background $ images screen, table $ images screen,
-    drawDealerChip (dealer screen) chipImages,
-    drawPot (calculatePot $ players screen) chipImages,
-    drawCardsOnTable (board screen) (front . deckLayout $ images screen)] ++
-    map (\p -> pictures
-      [drawPlayerHand p (deckLayout $ images screen),
-      playerOnSeatBold p, drawPlayerBet p chipImages])
-    (players screen))
+  | state screen == Dealing_Hand = pictures ([tableWithDealerChip] ++
+      map (\p -> playerOnSeatBold p) (players screen))
+  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
+      
   where
-    chipImages         = (chipLayout $ images screen)
-    playerOnSeatBold p = pictures [drawPlayerSeatBold p (case active p of
+    chipImages          = (chipLayout $ images screen)
+    playerOnSeatBold p  = pictures [drawPlayerSeatBold p (case active p of
       True  -> seatBoldActive $ images screen
       False -> seatBold       $ images screen),
       drawPlayerName p, drawPlayerBalance p]
+    tableWithDealerChip = pictures [background $ images screen, table $ images screen,
+      drawDealerChip (dealer screen) chipImages]
+    potWithBoard        = pictures [drawPot (calculatePot $ players screen) chipImages,
+      drawCardsOnTable (board screen) (front . deckLayout $ images screen)]
+    playersWithHands    = pictures (map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
+      playerOnSeatBold p, drawPlayerBet p chipImages]) (players screen))
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
