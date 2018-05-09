@@ -46,7 +46,7 @@ createTableScreenWith generator imgs = TableScreen
   , handCount  = 1
   , dealer     = Bottom
   , blindSize  = 30
-  , sliderData = Slider 0 0 17 False
+  , sliderData = Slider 0 0 0 False
   , board      = []
   , randomizer = generator
   , deck       = Deck 0 []
@@ -101,7 +101,9 @@ updateGame timePassed screen
         { state = case activePlayerType of
             Human -> Waiting_User_Input
             AI    -> AI_Thinking
-        , timer = 0
+        , timer      = 0
+        , sliderData = updateSlideData (sliderData screen)
+            (getActivePlayer $ players screen) maxBet (blindSize screen)
         }
   | state screen == Waiting_User_Input =
     if (timer screen < humanThinkTime)
