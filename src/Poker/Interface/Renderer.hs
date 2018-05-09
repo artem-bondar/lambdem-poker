@@ -22,7 +22,8 @@ drawTableScreen screen
   | state screen == Waiting_User_Input = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
     drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
       (buttonTexts $ images screen) 0, drawSlider (sliderData screen) (slider $ images screen)
-      (sliderBall $ images screen), smallButtons]
+      (sliderBall $ images screen), smallButtons, drawBetWindow (currentValue $ sliderData screen)
+      (betWindow $ images screen)]
   | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
       
   where
@@ -173,15 +174,20 @@ drawButtons actions buttons texts buttonPressed =
 -- | Draw small buttons.
 drawSmallButtons :: Picture -> [Picture] -> Picture
 drawSmallButtons img buttons =
-  translate (-smallButtonOffset * 1.5 + buttonOffset / 2)
-    smallButtonPositionOffset $ drawRow smallButtonOffset buttonsWithText
+  uncurry translate smallButtonPositionOffset $ drawRow smallButtonOffset buttonsWithText
   where
     buttonsWithText = map (\textImage -> pictures [img, textImage]) buttons
 
 -- | Draw slider with possible raise values for player.
 drawSlider :: Slider -> Picture -> Picture -> Picture
 drawSlider sliderr img ball = 
-  translate (buttonOffset / 2) sliderOffset $ pictures [img, ball]
+  uncurry translate sliderOffset $ pictures [img, ball]
+
+-- | Draw bet window with selected bet/raise size.
+drawBetWindow :: Int -> Picture -> Picture
+drawBetWindow bet img = 
+  uncurry translate betWindowOffset (pictures [img, 
+    uncurry translate betWindowTextOffset $ (drawText white $ show bet)])
 
 -------------------------------------------------------------------------------
 -- * Utility functions

@@ -21,7 +21,7 @@ loadedTableImages = do
   imgsButtonTexts        <- loadButtonTexts
   Just imgSmallButton    <- loadJuicyPNG "img/small button.png"
   imgsSmallButtonTexts   <- loadSmallButtonTexts
-  imgBetWindow           <- loadJuicyPNG "img/bet window.png"
+  Just imgBetWindow      <- loadJuicyPNG "img/bet window.png"
   Just imgBack           <- loadJuicyPNG "img/deck/back.png"
   imgsDeck               <- loadDeckLayout
   Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"

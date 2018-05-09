@@ -115,10 +115,19 @@ buttonPositionOffset = -300
 smallButtonOffset :: Float
 smallButtonOffset = 58
 
--- | Vertical offset for small buttons.
-smallButtonPositionOffset :: Float
-smallButtonPositionOffset = -220
+-- | Offset for small buttons.
+smallButtonPositionOffset :: (Float, Float)
+smallButtonPositionOffset =
+  (-smallButtonOffset * 1.5 + buttonOffset / 2, -220)
 
--- | Vertical offset for slider.
-sliderOffset :: Float
-sliderOffset = -250
+-- | Offset for slider.
+sliderOffset :: (Float, Float)
+sliderOffset = (0, -250)
+
+-- | Offset for bet window.
+betWindowOffset :: (Float, Float)
+betWindowOffset = (buttonOffset * 1.5 - 33, -250)
+
+-- | Offset for test in bet window.
+betWindowTextOffset :: (Float, Float)
+betWindowTextOffset = (-20, -6)
