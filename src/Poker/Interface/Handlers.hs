@@ -20,7 +20,7 @@ handleInput event screen
   | state screen == Waiting_User_Input = 
     case event of
       EventKey (MouseButton LeftButton) Down _ mouse -> trace (show mouse ++ " " ++
-        (show $ checkButtonHit mouse)) screen
+        (show $ checkButtonHit mouse smallButtonHitbox True)) screen
       _ -> screen
   | otherwise = screen
 
@@ -28,23 +28,30 @@ handleInput event screen
 -- * Utility functions
 -------------------------------------------------------------------------------
 
--- | Return button number if clicked one.
-checkButtonHit :: (Float, Float) -> Int
-checkButtonHit hit = 
-    if (hitY > minY && hitY < maxY && hitX > minX && hitX < (maxX + 2 * buttonOffset))
+-- | Return button number if clicked one depending on first button rectangle.
+checkButtonHit :: (Float, Float) -> ((Float, Float), (Float, Float)) -> Bool -> Int
+checkButtonHit hit rectangle isSmall = 
+    if (hitY > minY && hitY < maxY && hitX > minX && hitX < (maxX + 3 * offset))
         then if (hitX < maxX)
             then 1
-            else if (hitX < (maxX + buttonOffset))
+            else if (hitX < (maxX + offset))
                 then 2
-                else 3
+                else if (hitX < (maxX + 2 * offset))
+                    then 3
+                    else case isSmall of
+                        True  -> 4
+                        False -> 0
         else 0
     where
-        hitX = fst hit
-        hitY = snd hit
-        minX = fst $ fst buttonHitbox
-        minY = snd $ fst buttonHitbox
-        maxX = fst $ snd buttonHitbox
-        maxY = snd $ snd buttonHitbox
+        offset = case isSmall of
+            True  -> smallButtonOffset
+            False -> buttonOffset
+        hitX   = fst hit
+        hitY   = snd hit
+        minX   = fst $ fst rectangle
+        minY   = snd $ fst rectangle
+        maxX   = fst $ snd rectangle
+        maxY   = snd $ snd rectangle
 
 -------------------------------------------------------------------------------
 -- * Constants
@@ -65,6 +72,8 @@ smallButtonHeight = 24
 
 -- | Bounding rectangle for first small button.
 smallButtonHitbox :: ((Float, Float), (Float, Float))
-smallButtonHitbox = ((fst smallButtonPositionOffset, snd smallButtonPositionOffset),
-                     (fst smallButtonPositionOffset + smallButtonOffset,
-                      snd smallButtonPositionOffset + smallButtonHeight))
+smallButtonHitbox = 
+    ((fst smallButtonPositionOffset - 0.5 * smallButtonOffset,
+      snd smallButtonPositionOffset - 0.5 * smallButtonHeight),
+     (fst smallButtonPositionOffset + 0.5 * smallButtonOffset,
+      snd smallButtonPositionOffset + 0.5 * smallButtonHeight))
