@@ -173,14 +173,15 @@ drawButtons actions buttons texts buttonPressed =
 -- | Draw small buttons.
 drawSmallButtons :: Picture -> [Picture] -> Picture
 drawSmallButtons img buttons =
-  translate 0 smallButtonPositionOffset $ drawRow smallButtonOffset buttonsWithText
+  translate (-smallButtonOffset * 1.5 + buttonOffset / 2)
+    smallButtonPositionOffset $ drawRow smallButtonOffset buttonsWithText
   where
     buttonsWithText = map (\textImage -> pictures [img, textImage]) buttons
 
 -- | Draw slider with possible raise values for player.
 drawSlider :: Slider -> Picture -> Picture -> Picture
 drawSlider sliderr img ball = 
-  translate 0 sliderOffset $ pictures [img, ball]
+  translate (buttonOffset / 2) sliderOffset $ pictures [img, ball]
 
 -------------------------------------------------------------------------------
 -- * Utility functions

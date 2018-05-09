@@ -34,7 +34,8 @@ data TableImages = TableImages
   , buttonClicked    :: Picture
   , buttonTexts      :: [ButtonText]
   , smallButton      :: Picture
-  , smallButtonTexts :: [SmallButtonText]    
+  , smallButtonTexts :: [SmallButtonText]
+  , betWindow        :: Picture  
   , deckLayout       :: DeckLayout
   , chipLayout       :: ChipLayout
   }

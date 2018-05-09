@@ -21,6 +21,7 @@ loadedTableImages = do
   imgsButtonTexts        <- loadButtonTexts
   Just imgSmallButton    <- loadJuicyPNG "img/small button.png"
   imgsSmallButtonTexts   <- loadSmallButtonTexts
+  imgBetWindow           <- loadJuicyPNG "img/bet window.png"
   Just imgBack           <- loadJuicyPNG "img/deck/back.png"
   imgsDeck               <- loadDeckLayout
   Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"
@@ -37,6 +38,7 @@ loadedTableImages = do
     , buttonTexts      = imgsButtonTexts
     , smallButton      = imgSmallButton
     , smallButtonTexts = imgsSmallButtonTexts
+    , betWindow        = imgBetWindow
     , deckLayout       = DeckLayout
         { back  = imgBack
         , front = imgsDeck
