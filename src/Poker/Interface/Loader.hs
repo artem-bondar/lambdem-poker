@@ -14,30 +14,51 @@ loadedTableImages = do
   Just imgTable          <- loadJuicyPNG "img/table.png"
   Just imgSeatBold       <- loadJuicyPNG "img/seatbold.png"
   Just imgSeatBoldActive <- loadJuicyPNG "img/seatbold active.png"
+  Just imgSlider         <- loadJuicyPNG "img/slider.png"
+  Just imgSliderBall     <- loadJuicyPNG "img/slider ball.png"
   Just imgButton         <- loadJuicyPNG "img/button.png"
   Just imgButtonClicked  <- loadJuicyPNG "img/button clicked.png"
   imgsButtonTexts        <- loadButtonTexts
+  Just imgSmallButton    <- loadJuicyPNG "img/small button.png"
+  imgsSmallButtonTexts   <- loadSmallButtonTexts
   Just imgBack           <- loadJuicyPNG "img/deck/back.png"
   imgsDeck               <- loadDeckLayout
   Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"
   imgsChips              <- loadChipLayout
   return TableImages
-    { background     = imgBackground
-    , table          = imgTable
-    , seatBold       = imgSeatBold
-    , seatBoldActive = imgSeatBoldActive
-    , button         = imgButton
-    , buttonClicked  = imgButtonClicked
-    , buttonTexts    = imgsButtonTexts
-    , deckLayout     = DeckLayout
+    { background       = imgBackground
+    , table            = imgTable
+    , seatBold         = imgSeatBold
+    , seatBoldActive   = imgSeatBoldActive
+    , slider           = imgSlider
+    , sliderBall       = imgSliderBall
+    , button           = imgButton
+    , buttonClicked    = imgButtonClicked
+    , buttonTexts      = imgsButtonTexts
+    , smallButton      = imgSmallButton
+    , smallButtonTexts = imgsSmallButtonTexts
+    , deckLayout       = DeckLayout
         { back  = imgBack
         , front = imgsDeck
         }
-    , chipLayout = ChipLayout
+    , chipLayout       = ChipLayout
         { dealerChip = imgDealerChip
         , stack      = imgsChips
         }
     }
+
+-- | Load small button texts.
+loadSmallButtonTexts :: IO [SmallButtonText]
+loadSmallButtonTexts = do
+  maybePictures <- sequence loadedList
+  return $ wrapInSmallButtonText allBetSizings
+    (map unwrapMaybePicture maybePictures)
+  where
+    wrapInSmallButtonText values imgs =
+      zipWith (\val img -> SmallButtonText val img) values imgs
+    loadedList = map
+      (\x -> loadJuicyPNG $ "img/text/" ++ show x ++ ".png")
+      allBetSizings
 
 -- | Load button texts.
 loadButtonTexts :: IO [ButtonText]
