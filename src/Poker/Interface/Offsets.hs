@@ -110,3 +110,15 @@ buttonOffset = 134
 -- | Vertical offset for buttons.
 buttonPositionOffset :: Float
 buttonPositionOffset = -300
+
+-- | Offset for small button.
+smallButtonOffset :: Float
+smallButtonOffset = 58
+
+-- | Vertical offset for small buttons.
+smallButtonPositionOffset :: Float
+smallButtonPositionOffset = -220
+
+-- | Vertical offset for slider.
+sliderOffset :: Float
+sliderOffset = -250

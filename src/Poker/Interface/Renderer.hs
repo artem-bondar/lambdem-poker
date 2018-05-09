@@ -11,7 +11,7 @@ import Poker.Logic.Trading
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
--- * Render functions
+-- * Render functionsd
 -------------------------------------------------------------------------------
 
 -- | Draw tablescreen.
@@ -21,7 +21,8 @@ drawTableScreen screen
       map (\p -> playerOnSeatBold p) (players screen))
   | state screen == Waiting_User_Input = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
     drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
-      (buttonTexts $ images screen) 0]
+      (buttonTexts $ images screen) 0, drawSlider (sliderData screen) (slider $ images screen)
+      (sliderBall $ images screen), smallButtons]
   | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
       
   where
@@ -39,6 +40,8 @@ drawTableScreen screen
     activePlayer    = getActivePlayer $ players screen
     maxBet          = countMaxBet $ players screen
     possibleActions = getPossibleActions activePlayer maxBet
+    smallButtons    = drawSmallButtons (smallButton $ images screen) (map
+      (\buttonText -> betSizeText buttonText) (smallButtonTexts $ images screen))
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
@@ -166,6 +169,18 @@ drawButtons actions buttons texts buttonPressed =
       All_In -> blank
       _      -> pictures [getButtonImg 3, getActionText texts $ snd actions]
     imgsButtons = [fstImg, sndImg, thdImg]
+
+-- | Draw small buttons.
+drawSmallButtons :: Picture -> [Picture] -> Picture
+drawSmallButtons img buttons =
+  translate 0 smallButtonPositionOffset $ drawRow smallButtonOffset buttonsWithText
+  where
+    buttonsWithText = map (\textImage -> pictures [img, textImage]) buttons
+
+-- | Draw slider with possible raise values for player.
+drawSlider :: Slider -> Picture -> Picture -> Picture
+drawSlider sliderr img ball = 
+  translate 0 sliderOffset $ pictures [img, ball]
 
 -------------------------------------------------------------------------------
 -- * Utility functions

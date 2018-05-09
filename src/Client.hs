@@ -46,6 +46,7 @@ createTableScreenWith generator imgs = TableScreen
   , handCount  = 1
   , dealer     = Bottom
   , blindSize  = 30
+  , sliderData = Slider 0 0 0 False
   , board      = []
   , randomizer = generator
   , deck       = Deck 0 []

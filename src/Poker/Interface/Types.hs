@@ -15,6 +15,7 @@ data TableScreen = TableScreen
   , handCount  :: Int         -- ^ current hand number
   , dealer     :: Seat        -- ^ position of dealer
   , blindSize  :: Int         -- ^ size of big blind
+  , sliderData :: Slider      -- ^ slider properties
   , board      :: [Card]      -- ^ cards on board
   , randomizer :: StdGen      -- ^ random number generator
   , deck       :: Deck        -- ^ cards to deal
@@ -47,7 +48,7 @@ data ButtonText = ButtonText
 -- | Contains text to show on small buttons.
 data SmallButtonText = SmallButtonText
   { betSizing   :: Int     -- ^ size of pot in percentage
-  , betSiseText :: Picture
+  , betSizeText :: Picture
   }
 
 -- | Value of all small buttons.
@@ -75,3 +76,11 @@ data Chip = Chip
 -- | Value of all chips.
 allChipValues :: [Int]
 allChipValues = [1000, 500, 100, 25, 5, 1]
+
+-- | Contain slider data.
+data Slider = Slider
+  { minValue     :: Int
+  , maxValue     :: Int
+  , currentValue :: Int
+  , isSelected   :: Bool
+  }
