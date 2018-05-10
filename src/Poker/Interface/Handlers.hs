@@ -19,15 +19,71 @@ handleInput :: Event -> TableScreen -> TableScreen
 handleInput event screen 
   | state screen == Waiting_User_Input = 
   case event of
-    EventKey (MouseButton LeftButton) Down _ mouse -> trace (show mouse ++ " " ++
-      (show $ checkSliderHit mouse)) screen
-    --EventMotion (x, _) -> trace (show x) screen
+    EventKey (MouseButton LeftButton) Down _ coords -> handleClick coords screen
+    EventKey (MouseButton LeftButton) Up   _ _      ->
+      screen { sliderData = (sliderData screen) { isSelected = False }}
+    EventMotion (x, _) -> if (isSelected $ sliderData screen)
+      then moveSliderBall screen
+      else screen
     _ -> screen
   | otherwise = screen
+
+-- | Handle mouse click.
+handleClick :: (Float, Float) -> TableScreen -> TableScreen
+handleClick hit screen
+  | hittedButton      /= 0 = screen
+  | hittedSmallButton /= 0 = screen
+  | checkSliderHit hit = handleSliderClick (fst hit) screen
+  | otherwise = screen
+  where
+    hittedButton      = checkButtonHit hit buttonHitbox      False
+    hittedSmallButton = checkButtonHit hit smallButtonHitbox True
+
+-- | Handle button click depending on button number.
+handleButtonClick :: Int -> TableScreen -> TableScreen
+handleButtonClick btn screen = screen
+
+-- | Handle small button click depending on button number.
+handleSmallButtonClick :: Int -> TableScreen -> TableScreen
+handleSmallButtonClick btn screen = screen
+
+-- | Handle slider click depending on click horizontal position.
+handleSliderClick :: Float -> TableScreen -> TableScreen
+handleSliderClick x screen =
+  screen { sliderData = (sliderData screen)
+    { isSelected   = True
+    , ballPosition = trace (show realX) realX
+    , currentValue = bet
+    }}
+  where
+    realX = round x + sliderHalfWidth
+    bet = (minValue $ sliderData screen) +
+      (realX `div` (stepSize $ sliderData screen)) * (blindSize screen)
+    sliderHalfWidth  = round (fst sliderDimensions / 2 - 2 * fst sliderPadding)
 
 -------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------
+
+-- | Updates slider min and max values depending on player and incoming bet.
+updateSlideData :: Slider -> Player -> Int -> Int -> Slider
+updateSlideData sliderr player bet bb = sliderr
+  { minValue     = minRaiseSize
+  , maxValue     = balance player
+  , currentValue = minRaiseSize
+  , stepSize     = sliderWidth `div` (1 + (balance player - minRaiseSize) `div` bb)
+  }
+  where
+    minRaiseSize = if (bet == 0)
+      then bb
+      else if (bet < balance player `div` 2)
+        then bet * 2
+        else balance player
+    sliderWidth  = round (fst sliderDimensions - 2 * fst sliderPadding)
+
+-- | Moves slider ball if possible.
+moveSliderBall :: TableScreen -> TableScreen
+moveSliderBall screen = screen
 
 -- | Return clicked button number depending on first button bounding rectangle.
 checkButtonHit :: (Float, Float) -> ((Float, Float), (Float, Float)) -> Bool -> Int

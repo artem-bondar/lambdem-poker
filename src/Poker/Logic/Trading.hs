@@ -1,15 +1,13 @@
 -- | Contains stuff to process bet rounds.
 module Poker.Logic.Trading where
 
-import Poker.Interface.Types
-
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
 -- * Operations with positions
 -------------------------------------------------------------------------------
 
--- | Return first position depending on amount of players and street.
+-- | Return first position depending on amount of players and street
 getFirstPosition :: Int -> Street -> Position
 getFirstPosition amountOfPlayers street = case amountOfPlayers of
   2 -> if (street == Preflop)
@@ -194,21 +192,6 @@ getPossibleActions player bet
     | bet == 0              = (Check,  Bet)
     | bet >= balance player = (All_In, All_In)
     | otherwise             = (Call,   Raise)
-
--- | Updates slider min and max values depending on player and incoming bet.
-updateSlideData :: Slider -> Player -> Int -> Int -> Slider
-updateSlideData sliderr player bet bb = Slider
-  { minValue     = minRaiseSize
-  , maxValue     = balance player
-  , currentValue = minRaiseSize
-  , stepSize     = 1
-  }
-  where
-    minRaiseSize = if (bet == 0)
-      then bb
-      else if (bet < balance player `div` 2)
-        then bet * 2
-        else balance player
 
 -------------------------------------------------------------------------------
 -- * Constants

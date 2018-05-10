@@ -4,6 +4,7 @@ module Poker.Interface.Renderer where
 import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Data.Color
 
+import Poker.Interface.Handlers (sliderDimensions, sliderPadding)
 import Poker.Interface.Types
 import Poker.Interface.Offsets
 
@@ -181,7 +182,11 @@ drawSmallButtons img buttons =
 -- | Draw slider with possible raise values for player.
 drawSlider :: Slider -> Picture -> Picture -> Picture
 drawSlider sliderr img ball = 
-  uncurry translate sliderOffset $ pictures [img, ball]
+  uncurry translate sliderOffset $ pictures [img, ballOnSlider]
+  where
+    ballOnSlider = translate ballOffset 0 ball
+    ballOffset   = -(fst sliderDimensions) / 2 + 2 * fst sliderPadding +
+      (fromIntegral $ ballPosition sliderr)
 
 -- | Draw bet window with selected bet/raise size.
 drawBetWindow :: Int -> Picture -> Picture

@@ -80,6 +80,7 @@ data Slider = Slider
   , maxValue     :: Int
   , currentValue :: Int
   , stepSize     :: Int -- ^ in pixels
+  , ballPosition :: Int -- ^ in pixels
   , isSelected   :: Bool
   }
 
