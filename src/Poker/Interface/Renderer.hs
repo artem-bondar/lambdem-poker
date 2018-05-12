@@ -11,6 +11,8 @@ import Poker.Interface.Offsets
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
+import Debug.Trace
+
 -------------------------------------------------------------------------------
 -- * Render functions
 -------------------------------------------------------------------------------
@@ -22,9 +24,7 @@ drawTableScreen screen
       map (\p -> playerOnSeatBold p) (players screen))
   | state screen == Waiting_User_Input = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
     drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
-      (buttonTexts $ images screen) 0, drawSlider (sliderData screen) (slider $ images screen)
-      (sliderBall $ images screen), smallButtons, drawBetWindow (currentValue $ sliderData screen)
-      (betWindow $ images screen)]
+      (buttonTexts $ images screen) 0, sliderImage, smallButtons, betWindowImage]
   | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
       
   where
@@ -42,9 +42,15 @@ drawTableScreen screen
     activePlayer    = getActivePlayer $ players screen
     maxBet          = countMaxBet $ players screen
     possibleActions = getPossibleActions activePlayer maxBet
-    smallButtons    = case (calculatePot $ players screen) /= 0 of
+    smallButtons    = case (calculatePot $ players screen) /= 0 && fst possibleActions /= All_In of
       True  -> drawSmallButtons (smallButton $ images screen) (map
         (\buttonText -> betSizeText buttonText) (smallButtonTexts $ images screen))
+      False -> blank
+    sliderImage    = case fst possibleActions /= All_In of
+      True  -> drawSlider (sliderData screen) (slider $ images screen) (sliderBall $ images screen)
+      False -> blank
+    betWindowImage = case fst possibleActions /= All_In of
+      True  -> drawBetWindow (currentValue $ sliderData screen) (betWindow $ images screen)
       False -> blank
 
 -- | Draw player seatbold.
