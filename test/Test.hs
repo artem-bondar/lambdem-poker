@@ -3,6 +3,7 @@ import Poker.Logic.Types
 
 main :: IO ()
 main = do
+  putStrLn ("\n" ++ show (computeHandRank hand00r))
   putStrLn ("\n" ++ show (computeHandRank hand00))
   putStrLn ("\n" ++ show (computeHandRank hand01))
   putStrLn ("\n" ++ show (computeHandRank hand02))
@@ -18,6 +19,18 @@ main = do
   putStrLn ("\n" ++ show (computeHandRank hand12))
 
 -- | Test cases for combinations.
+
+-- T-A Royal Flush
+hand00r :: [Card]
+hand00r =
+  [ Card Deuce Spades
+  , Card King Spades
+  , Card Four  Spades
+  , Card Queen  Spades
+  , Card Ten   Spades
+  , Card Ace Spades
+  , Card Jack Spades]
+
 -- 2-8 Straigh Flush
 hand00 :: [Card]
 hand00 =

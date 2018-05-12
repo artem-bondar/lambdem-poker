@@ -39,7 +39,7 @@ checkFlush cards = (hasFlush, map toEnum kickerCards)
 computeHandRank :: [Card] -> (HandRank, ([CardRank], [CardRank]))
 computeHandRank cards
   | hasStraightFlush =
-    if (head flushRank == Ace)
+    if (straighFlushRank == Ace)
       then (Royal_flush,    ([], []))
       else (Straight_flush, ([straighFlushRank], []))
   | 4 `elem` rankList =
