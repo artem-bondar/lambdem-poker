@@ -59,7 +59,7 @@ checkSkipForActivePlayer players
   | active $ head players = case action . move $ head players of
       Bankrupted -> True
       Folded     -> True
-      All_In_ed     -> True
+      All_In_ed  -> True
       _          -> False
   | otherwise = checkSkipForActivePlayer $ tail players
 
@@ -112,7 +112,9 @@ getMoveFromButtonPressed btn actions bet selectedBet player
       Check -> Move Checked 0
       Call  -> Move Called bet
       _     -> Move All_In_ed (balance player)
-  | otherwise = Move Raised selectedBet
+  | otherwise = if (selectedBet /= balance player)
+      then Move Raised     selectedBet
+      else Move All_In_ed (balance player)
 
 -------------------------------------------------------------------------------
 -- * Operations with player(-s)
