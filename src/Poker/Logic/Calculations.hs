@@ -24,28 +24,24 @@ checkStraight cards = (hasStraight, kickerCard)
       then Five
       else toEnum $ kickerCardNum + 4
 
--- | Return if card array is a flush and 5 kicker cards.
+-- | Return if card array is a flush and 5-7 kicker cards.
 checkFlush :: [Card] -> (Bool, [CardRank])
 checkFlush cards = (hasFlush, map toEnum kickerCards)
   where
     numSuits    = countSuits cards
     hasFlush    = or (map (\x -> x >= 5) numSuits)
     kickerCards = case hasFlush of
-      True  -> takeBest5 (map (\card -> fromEnum $ cardRank card) $
+      True  -> map (\card -> fromEnum $ cardRank card) $ reverse (
         filter (\card -> numSuits !! (fromEnum $ suit card) >= 5) cards)
       False -> []
-    takeBest5 crds
-      | length crds == 7 = tail . tail $ sort crds
-      | length crds == 6 = tail $ sort crds
-      | otherwise        = crds
 
 -- | Return hand rank and kicker cards depending on card array.
 computeHandRank :: [Card] -> (HandRank, ([CardRank], [CardRank]))
 computeHandRank cards
-  | hasFlush && fst (checkStraight (map (\rank -> Card rank Spades) flushRank)) =
+  | hasStraightFlush =
     if (head flushRank == Ace)
-      then (Royal_flush,    ([],        []))
-      else (Straight_flush, (flushRank, []))
+      then (Royal_flush,    ([], []))
+      else (Straight_flush, ([straighFlushRank], []))
   | 4 `elem` rankList = (Four_of_a_kind, ([fourOfAKindKicker], []))
   | 3 `elem` rankList && 2 `elem` rankList =
     (Full_house, ([toEnum (head $ takeEqualBestN 1 3 rankList),
@@ -67,8 +63,11 @@ computeHandRank cards
     hasStraight = fst $ checkStraight cards
     flushRank   = snd $ checkFlush    cards
     straighRank = snd $ checkStraight cards
-    rankList    = countRanks cards
-    fourOfAKindKicker = toEnum . maximum $ map
+    hasStraightFlush = hasFlush &&
+                      (fst $ checkStraight (map (\rank -> Card rank Spades) flushRank))
+    straighFlushRank = snd $ checkStraight (map (\rank -> Card rank Spades) flushRank)
+    rankList    = countRanks cards 
+    fourOfAKindKicker   = toEnum . maximum $ map
       (\x -> head $ takeEqualBestN 1 x rankList) [1, 2, 3]
 
 -- | Compute combination from hand and board.
