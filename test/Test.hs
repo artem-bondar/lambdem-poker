@@ -9,6 +9,13 @@ main = do
   putStrLn ("\n" ++ show (computeHandRank hand03))
   putStrLn ("\n" ++ show (computeHandRank hand04))
   putStrLn ("\n" ++ show (computeHandRank hand05))
+  putStrLn ("\n" ++ show (computeHandRank hand06))
+  putStrLn ("\n" ++ show (computeHandRank hand07))
+  putStrLn ("\n" ++ show (computeHandRank hand08))
+  putStrLn ("\n" ++ show (computeHandRank hand09))
+  putStrLn ("\n" ++ show (computeHandRank hand10))
+  putStrLn ("\n" ++ show (computeHandRank hand11))
+  putStrLn ("\n" ++ show (computeHandRank hand12))
 
 -- | Test cases for combinations.
 -- 2-8 Straigh Flush
@@ -66,7 +73,7 @@ hand04 =
     , Card Jack  Spades
     , Card Nine  Hearts]
 
--- 4x T
+-- 4x T + K
 hand05 :: [Card]
 hand05 =
     [ Card Ten Hearts
@@ -76,3 +83,80 @@ hand05 =
     , Card King  Spades
     , Card Jack  Spades
     , Card Ten   Hearts]
+
+-- 4x 5 + 7
+hand06 :: [Card]
+hand06 =
+    [ Card Five  Hearts
+    , Card Deuce Spades
+    , Card Five  Spades
+    , Card Five  Clubs
+    , Card Jack  Spades
+    , Card Seven Spades
+    , Card Five  Hearts]
+
+-- 3/2 Q+6
+hand07 :: [Card]
+hand07 =
+    [ Card Queen Hearts
+    , Card Deuce Spades
+    , Card Six   Spades
+    , Card King  Clubs
+    , Card Six   Hearts
+    , Card Queen  Spades
+    , Card Queen  Diamonds]
+
+-- 3/2 3+A
+hand08 :: [Card]
+hand08 =
+    [ Card Three Hearts
+    , Card Deuce Spades
+    , Card Three Spades
+    , Card Three Clubs
+    , Card King  Spades
+    , Card Ace   Spades
+    , Card Ace   Hearts]
+
+-- 3x 4
+hand09 :: [Card]
+hand09 =
+    [ Card Ten Hearts
+    , Card Deuce Spades
+    , Card Four  Spades
+    , Card Four  Clubs
+    , Card King  Spades
+    , Card Jack  Spades
+    , Card Four  Hearts]
+
+-- 2x2 KK+AA
+hand10 :: [Card]
+hand10 =
+    [ Card Queen Hearts
+    , Card Deuce Spades
+    , Card Ace   Spades
+    , Card Ace   Clubs
+    , Card Six   Hearts
+    , Card King  Spades
+    , Card King  Diamonds]
+
+-- 2 8
+hand11 :: [Card]
+hand11 =
+    [ Card Three Hearts
+    , Card Deuce Spades
+    , Card Eight Spades
+    , Card Eight Clubs
+    , Card King  Spades
+    , Card Seven Spades
+    , Card Ace   Hearts]
+
+-- h
+hand12 :: [Card]
+hand12 =
+    [ Card Ten Hearts
+    , Card Deuce Spades
+    , Card Four  Spades
+    , Card Queen Clubs
+    , Card King  Spades
+    , Card Jack  Spades
+    , Card Three Hearts]

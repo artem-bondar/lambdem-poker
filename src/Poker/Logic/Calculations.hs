@@ -42,17 +42,17 @@ computeHandRank cards
     if (head flushRank == Ace)
       then (Royal_flush,    ([], []))
       else (Straight_flush, ([straighFlushRank], []))
-  | 4 `elem` rankList = (Four_of_a_kind, ([fourOfAKindKicker], []))
+  | 4 `elem` rankList =
+    (Four_of_a_kind, ([toEnum (head $ takeEqualBestN 1 4 rankList)], [fourOfAKindKicker]))
   | 3 `elem` rankList && 2 `elem` rankList =
     (Full_house, ([toEnum (head $ takeEqualBestN 1 3 rankList),
                    toEnum (head $ takeEqualBestN 1 2 rankList)], []))
   | hasFlush    = (Flush,    (flushRank,     []))
   | hasStraight = (Straight, ([straighRank], []))
   | 3 `elem` rankList =
-    (Three_of_a_kind, ([toEnum (head $ takeEqualBestN 1 3 rankList)], []))
+    (Three_of_a_kind, ([toEnum (head $ takeEqualBestN 1 3 rankList)], threeOfAKingKicker))
   | length (takeEqualBestN 3 2 rankList) > 1 =
-    (Two_pair, (map toEnum     (takeEqualBestN 2 2 rankList),
-                [toEnum (head $ takeEqualBestN 1 1 rankList)]))
+    (Two_pair, (map toEnum     (takeEqualBestN 2 2 rankList), [twoPairKicker]))
   | 2 `elem` rankList =
     (One_pair, ([toEnum (head $ takeEqualBestN 1 2 rankList)],
              map toEnum        (takeEqualBestN 3 1 rankList)))
@@ -63,12 +63,18 @@ computeHandRank cards
     hasStraight = fst $ checkStraight cards
     flushRank   = snd $ checkFlush    cards
     straighRank = snd $ checkStraight cards
-    hasStraightFlush = hasFlush &&
-                      (fst $ checkStraight (map (\rank -> Card rank Spades) flushRank))
-    straighFlushRank = snd $ checkStraight (map (\rank -> Card rank Spades) flushRank)
     rankList    = countRanks cards 
-    fourOfAKindKicker   = toEnum . maximum $ map
-      (\x -> head $ takeEqualBestN 1 x rankList) [1, 2, 3]
+    hasStraightFlush  = hasFlush &&
+                       (fst $ checkStraight (map (\rank -> Card rank Spades) flushRank))
+    straighFlushRank  = snd $ checkStraight (map (\rank -> Card rank Spades) flushRank)
+    fourOfAKindKicker = toEnum . maximum . concat $ map
+      (\x -> takeEqualBestN 1 x rankList) [1, 2, 3]
+    threeOfAKingKicker = (map toEnum) . (take 2) . reverse . sort . concat $ map
+      (\x -> takeEqualBestN 2 x rankList) [1, 3]
+    twoPairKicker      = toEnum $ maximum [head $ takeEqualBestN 1 1 rankList, trdPairRank]
+    trdPairRank        = if (length (takeEqualBestN 3 2 rankList) == 3)
+      then (takeEqualBestN 3 2 rankList) !! 2
+      else -1
 
 -- | Compute combination from hand and board.
 computeCombination :: Maybe (Card, Card) -> [Card] -> Combination
