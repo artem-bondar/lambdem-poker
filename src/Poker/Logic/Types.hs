@@ -120,9 +120,10 @@ instance Show Deck where
 -- | Poker combination.
 data Combination = Combination
   { handRank  :: HandRank
-  , structure :: [Card] -- ^ from 5 to 7 cards
-  , kicker    :: [Card] -- ^ kicker cards, amount
-                        --   depends on hand rank
+  , structure :: [CardRank] -- ^ card ranks to indicate
+                            --   combination strength
+  , kicker    :: [CardRank] -- ^ kicker card ranks,
+                            --   from 0 to 5
   }
 
 -- | Hand ranks.

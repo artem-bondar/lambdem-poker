@@ -3,11 +3,11 @@ import Poker.Logic.Types
 
 main :: IO ()
 main = do
-  putStrLn . show $ checkStraight hand00
-  putStrLn . show $ checkStraight hand01
-  putStrLn . show $ checkStraight hand02
-  putStrLn . show $ checkStraight hand03
-  putStrLn . show $ checkStraight hand04
+  putStrLn . show $ checkFlush hand00
+  putStrLn . show $ checkFlush hand01
+  putStrLn . show $ checkFlush hand02
+  putStrLn . show $ checkFlush hand03
+  putStrLn . show $ checkFlush hand04
 
 -- | Test cases for combinations.
 -- 2-8 Straigh Flush
