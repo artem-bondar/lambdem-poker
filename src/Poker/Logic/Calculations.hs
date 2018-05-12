@@ -41,7 +41,35 @@ checkFlush cards = (hasFlush, map toEnum kickerCards)
 
 -- | Return hand rank and kicker cards depending on card array.
 computeHandRank :: [Card] -> (HandRank, ([CardRank], [CardRank]))
-computeHandRank cards = (High_card, ([], []))
+computeHandRank cards
+  | hasFlush && fst (checkStraight (map (\rank -> Card rank Spades) flushRank)) =
+    if (head flushRank == Ace)
+      then (Royal_flush,    ([],        []))
+      else (Straight_flush, (flushRank, []))
+  | 4 `elem` rankList = (Four_of_a_kind, ([fourOfAKindKicker], []))
+  | 3 `elem` rankList && 2 `elem` rankList =
+    (Full_house, ([toEnum (head $ takeEqualBestN 1 3 rankList),
+                   toEnum (head $ takeEqualBestN 1 2 rankList)], []))
+  | hasFlush    = (Flush,    (flushRank,     []))
+  | hasStraight = (Straight, ([straighRank], []))
+  | 3 `elem` rankList =
+    (Three_of_a_kind, ([toEnum (head $ takeEqualBestN 1 3 rankList)], []))
+  | length (takeEqualBestN 3 2 rankList) > 1 =
+    (Two_pair, (map toEnum     (takeEqualBestN 2 2 rankList),
+                [toEnum (head $ takeEqualBestN 1 1 rankList)]))
+  | 2 `elem` rankList =
+    (One_pair, ([toEnum (head $ takeEqualBestN 1 2 rankList)],
+             map toEnum        (takeEqualBestN 3 1 rankList)))
+  | otherwise =
+    (High_card, (map toEnum (takeEqualBestN 5 1 rankList), []))
+  where
+    hasFlush    = fst $ checkFlush    cards
+    hasStraight = fst $ checkStraight cards
+    flushRank   = snd $ checkFlush    cards
+    straighRank = snd $ checkStraight cards
+    rankList    = countRanks cards
+    fourOfAKindKicker = toEnum . maximum $ map
+      (\x -> head $ takeEqualBestN 1 x rankList) [1, 2, 3]
 
 -- | Compute combination from hand and board.
 computeCombination :: Maybe (Card, Card) -> [Card] -> Combination
@@ -98,3 +126,16 @@ countSuits cards = foldl (\(d:c:h:s:v) card -> case suit card of
   Clubs    -> (d:c + 1:h:s:v)
   Hearts   -> (d:c:h + 1:s:v)
   Spades   -> (d:c:h:s + 1:v)) [0, 0, 0, 0] cards
+
+-- | Count amount of each rank in card list.
+countRanks :: [Card] -> [Int]
+countRanks cards = foldl (\ranks card -> addRank ranks $ fromEnum (cardRank card))
+  (replicate 13 0) cards
+  where
+    addRank list pos = fst (splitAt pos list) ++
+      (head (snd (splitAt pos list)) + 1:tail (snd (splitAt pos list)))
+
+-- | Return indexes of n last elements that are equal to given.
+takeEqualBestN :: Int -> Int -> [Int] -> [Int]
+takeEqualBestN n num list = snd . unzip . take n $ reverse
+  (filter (\x -> fst x == num) (zip list [0..12]))

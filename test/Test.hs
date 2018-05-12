@@ -3,11 +3,12 @@ import Poker.Logic.Types
 
 main :: IO ()
 main = do
-  putStrLn . show $ checkFlush hand00
-  putStrLn . show $ checkFlush hand01
-  putStrLn . show $ checkFlush hand02
-  putStrLn . show $ checkFlush hand03
-  putStrLn . show $ checkFlush hand04
+  putStrLn ("\n" ++ show (computeHandRank hand00))
+  putStrLn ("\n" ++ show (computeHandRank hand01))
+  putStrLn ("\n" ++ show (computeHandRank hand02))
+  putStrLn ("\n" ++ show (computeHandRank hand03))
+  putStrLn ("\n" ++ show (computeHandRank hand04))
+  putStrLn ("\n" ++ show (computeHandRank hand05))
 
 -- | Test cases for combinations.
 -- 2-8 Straigh Flush
@@ -64,3 +65,14 @@ hand04 =
     , Card Ten   Spades
     , Card Jack  Spades
     , Card Nine  Hearts]
+
+-- 4x T
+hand05 :: [Card]
+hand05 =
+    [ Card Ten Hearts
+    , Card Deuce Spades
+    , Card Ten   Spades
+    , Card Ten   Clubs
+    , Card King  Spades
+    , Card Jack  Spades
+    , Card Ten   Hearts]
