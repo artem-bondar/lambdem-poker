@@ -6,6 +6,7 @@ import Graphics.Gloss.Interface.Pure.Game
 import Poker.Interface.Types
 import Poker.Interface.Offsets
 
+import Poker.Logic.Trading
 import Poker.Logic.Types
 
 import Debug.Trace
@@ -33,8 +34,10 @@ handleClick :: (Float, Float) -> TableScreen -> TableScreen
 handleClick hit screen
   | hittedButton      /= 0 = screen
   | hittedSmallButton /= 0 = screen
+    { sliderData = handleSmallButtonClick hittedSmallButton (calculatePot $ players screen)
+        (sliderData screen) }
   | checkSliderHit hit = screen
-    { sliderData = handleSliderClick (fst hit) (blindSize screen) $ sliderData screen }
+    { sliderData = handleSliderClick (fst hit) (blindSize screen) (sliderData screen) }
   | otherwise = screen
   where
     hittedButton      = checkButtonHit hit buttonHitbox      False
@@ -44,9 +47,25 @@ handleClick hit screen
 handleButtonClick :: Int -> TableScreen -> TableScreen
 handleButtonClick btn screen = screen
 
--- | Handle small button click depending on button number.
-handleSmallButtonClick :: Int -> TableScreen -> TableScreen
-handleSmallButtonClick btn screen = screen
+-- | Handle small button click depending on button number and pot size.
+handleSmallButtonClick :: Int -> Int -> Slider -> Slider
+handleSmallButtonClick btn pot sliderr
+  | pot /= 0 = sliderr
+  { currentValue = newBetSize
+  , ballPosition = newBallPosition
+  }
+  | otherwise = sliderr
+  where
+    sliderWidth     = fst sliderDimensions - 2 * fst sliderPadding
+    potPercent      = allBetSizings !! (btn - 1)
+    countedBet      = (potPercent * pot) `div` 100
+    newBetSize      = if (countedBet < minValue sliderr)
+      then minValue sliderr
+      else if (countedBet > maxValue sliderr)
+        then maxValue sliderr
+        else countedBet
+    newBallPosition = sliderWidth * (fromIntegral (newBetSize - minValue sliderr) /
+      fromIntegral (maxValue sliderr - minValue sliderr))
 
 -- | Handle slider click depending on click horizontal position.
 handleSliderClick :: Float -> Int -> Slider -> Slider

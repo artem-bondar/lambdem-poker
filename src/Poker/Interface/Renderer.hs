@@ -42,8 +42,10 @@ drawTableScreen screen
     activePlayer    = getActivePlayer $ players screen
     maxBet          = countMaxBet $ players screen
     possibleActions = getPossibleActions activePlayer maxBet
-    smallButtons    = drawSmallButtons (smallButton $ images screen) (map
-      (\buttonText -> betSizeText buttonText) (smallButtonTexts $ images screen))
+    smallButtons    = case (calculatePot $ players screen) /= 0 of
+      True  -> drawSmallButtons (smallButton $ images screen) (map
+        (\buttonText -> betSizeText buttonText) (smallButtonTexts $ images screen))
+      False -> blank
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
