@@ -203,7 +203,7 @@ aiThinkTime = 2.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
-humanThinkTime = 20.0
+humanThinkTime = 10.0
 
 -- | Time to display showdown results.
 showdownTime :: Float

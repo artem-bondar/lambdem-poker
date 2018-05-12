@@ -161,5 +161,5 @@ updateGame timePassed screen
     maxBet         = countMaxBet $ players screen
     buttonPosition = if (length (players screen) == 2)
                       then SB
-                      else BTN 
+                      else BTN
     

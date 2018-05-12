@@ -6,7 +6,7 @@ import Graphics.Gloss.Interface.Pure.Game
 import Poker.Interface.Types
 import Poker.Interface.Offsets
 
-import Poker.Logic.Types   
+import Poker.Logic.Types
 
 import Debug.Trace
 
@@ -23,7 +23,7 @@ handleInput event screen
     EventKey (MouseButton LeftButton) Up   _ _      ->
       screen { sliderData = (sliderData screen) { isSelected = False }}
     EventMotion (x, _) -> if (isSelected $ sliderData screen)
-      then moveSliderBall screen
+      then screen { sliderData = moveSliderBall x (blindSize screen) (sliderData screen) }
       else screen
     _ -> screen
   | otherwise = screen
@@ -33,7 +33,8 @@ handleClick :: (Float, Float) -> TableScreen -> TableScreen
 handleClick hit screen
   | hittedButton      /= 0 = screen
   | hittedSmallButton /= 0 = screen
-  | checkSliderHit hit = handleSliderClick (fst hit) screen
+  | checkSliderHit hit = screen
+    { sliderData = handleSliderClick (fst hit) (blindSize screen) $ sliderData screen }
   | otherwise = screen
   where
     hittedButton      = checkButtonHit hit buttonHitbox      False
@@ -48,18 +49,30 @@ handleSmallButtonClick :: Int -> TableScreen -> TableScreen
 handleSmallButtonClick btn screen = screen
 
 -- | Handle slider click depending on click horizontal position.
-handleSliderClick :: Float -> TableScreen -> TableScreen
-handleSliderClick x screen =
-  screen { sliderData = (sliderData screen)
+handleSliderClick :: Float -> Int -> Slider -> Slider
+handleSliderClick x bb sliderr = sliderr
     { isSelected   = True
-    , ballPosition = trace (show realX) realX
+    , ballPosition = realX
     , currentValue = bet
-    }}
+    }
   where
-    realX = round x + sliderHalfWidth
-    bet = (minValue $ sliderData screen) +
-      (realX `div` (stepSize $ sliderData screen)) * (blindSize screen)
-    sliderHalfWidth  = round (fst sliderDimensions / 2 - 2 * fst sliderPadding)
+    realX = x + fromIntegral (round sliderHalfWidth)
+    bet = if (realX >= sliderHalfWidth * 2)
+      then maxValue sliderr
+      else minValue sliderr + floor (realX / stepSize sliderr) * bb
+    sliderHalfWidth  = (fst sliderDimensions - 2 * fst sliderPadding) / 2
+
+-- | Moves slider ball if possible.
+moveSliderBall :: Float -> Int -> Slider -> Slider
+moveSliderBall x bb sliderr = handleSliderClick newX bb sliderr
+  where
+    minX = fst $ fst sliderHitbox
+    maxX = fst $ snd sliderHitbox
+    newX = if (x < minX)
+      then minX
+      else if (x > maxX)
+        then maxX
+        else x
 
 -------------------------------------------------------------------------------
 -- * Utility functions
@@ -71,7 +84,11 @@ updateSlideData sliderr player bet bb = sliderr
   { minValue     = minRaiseSize
   , maxValue     = balance player
   , currentValue = minRaiseSize
-  , stepSize     = sliderWidth `div` (1 + (balance player - minRaiseSize) `div` bb)
+  , stepSize     = if (forRaise == 0)
+      then sliderWidth
+      else sliderWidth / (forRaise / fromIntegral bb)
+  , ballPosition = 0
+  , isSelected   = False
   }
   where
     minRaiseSize = if (bet == 0)
@@ -79,11 +96,8 @@ updateSlideData sliderr player bet bb = sliderr
       else if (bet < balance player `div` 2)
         then bet * 2
         else balance player
-    sliderWidth  = round (fst sliderDimensions - 2 * fst sliderPadding)
-
--- | Moves slider ball if possible.
-moveSliderBall :: TableScreen -> TableScreen
-moveSliderBall screen = screen
+    forRaise = fromIntegral $ balance player - minRaiseSize
+    sliderWidth  = fst sliderDimensions - 2 * fst sliderPadding
 
 -- | Return clicked button number depending on first button bounding rectangle.
 checkButtonHit :: (Float, Float) -> ((Float, Float), (Float, Float)) -> Bool -> Int
@@ -154,10 +168,12 @@ sliderDimensions = (263, 24)
 -- | Slider horizontal bounds.
 sliderHitbox :: ((Float, Float), (Float, Float))
 sliderHitbox =
-  ((fst sliderOffset - 0.5 * sliderBallAreaWidth,
-    snd sliderOffset - 0.5 * sliderBallAreaHeight),
-   (fst sliderOffset + 0.5 * sliderBallAreaWidth,
-    snd sliderOffset + 0.5 * sliderBallAreaHeight))
+  ((fst sliderOffset - sliderBallAreaWidth,
+    snd sliderOffset - sliderBallAreaHeight),
+   (fst sliderOffset + sliderBallAreaWidth,
+    snd sliderOffset + sliderBallAreaHeight))
   where
-    sliderBallAreaWidth  = fst sliderDimensions - 2 * fst sliderPadding
-    sliderBallAreaHeight = snd sliderDimensions - 2 * snd sliderPadding
+    sliderBallAreaWidth  = fromIntegral . round $ 
+      (fst sliderDimensions - 2 * fst sliderPadding) / 2
+    sliderBallAreaHeight = fromIntegral . round $
+      (snd sliderDimensions - 2 * snd sliderPadding) / 2

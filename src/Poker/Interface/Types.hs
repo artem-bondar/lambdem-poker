@@ -79,8 +79,8 @@ data Slider = Slider
   { minValue     :: Int
   , maxValue     :: Int
   , currentValue :: Int
-  , stepSize     :: Int -- ^ in pixels
-  , ballPosition :: Int -- ^ in pixels
+  , stepSize     :: Float -- ^ in pixels
+  , ballPosition :: Float -- ^ in pixels
   , isSelected   :: Bool
   }
 

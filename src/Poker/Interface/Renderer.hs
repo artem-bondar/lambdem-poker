@@ -185,8 +185,8 @@ drawSlider sliderr img ball =
   uncurry translate sliderOffset $ pictures [img, ballOnSlider]
   where
     ballOnSlider = translate ballOffset 0 ball
-    ballOffset   = -(fst sliderDimensions) / 2 + 2 * fst sliderPadding +
-      (fromIntegral $ ballPosition sliderr)
+    ballOffset   = (-(fst sliderDimensions) + 2 * fst sliderPadding) / 2 +
+      (ballPosition sliderr)
 
 -- | Draw bet window with selected bet/raise size.
 drawBetWindow :: Int -> Picture -> Picture
