@@ -3,20 +3,38 @@ import Poker.Logic.Types
 
 main :: IO ()
 main = do
-  putStrLn ("\n" ++ show (computeHandRank hand00r))
-  putStrLn ("\n" ++ show (computeHandRank hand00))
-  putStrLn ("\n" ++ show (computeHandRank hand01))
-  putStrLn ("\n" ++ show (computeHandRank hand02))
-  putStrLn ("\n" ++ show (computeHandRank hand03))
-  putStrLn ("\n" ++ show (computeHandRank hand04))
-  putStrLn ("\n" ++ show (computeHandRank hand05))
-  putStrLn ("\n" ++ show (computeHandRank hand06))
-  putStrLn ("\n" ++ show (computeHandRank hand07))
-  putStrLn ("\n" ++ show (computeHandRank hand08))
-  putStrLn ("\n" ++ show (computeHandRank hand09))
-  putStrLn ("\n" ++ show (computeHandRank hand10))
-  putStrLn ("\n" ++ show (computeHandRank hand11))
-  putStrLn ("\n" ++ show (computeHandRank hand12))
+  putStrLn ("\n  1: " ++ show (computeHandRank hand00r))
+  putStrLn ("\n  2: " ++ show (computeHandRank hand00))
+  putStrLn ("\n  3: " ++ show (computeHandRank hand01))
+  putStrLn ("\n  4: " ++ show (computeHandRank hand02))
+  putStrLn ("\n  5: " ++ show (computeHandRank hand03))
+  putStrLn ("\n  6: " ++ show (computeHandRank hand04))
+  putStrLn ("\n  7: " ++ show (computeHandRank hand05))
+  putStrLn ("\n  8: " ++ show (computeHandRank hand06))
+  putStrLn ("\n  9: " ++ show (computeHandRank hand07))
+  putStrLn ("\n 10: " ++ show (computeHandRank hand08))
+  putStrLn ("\n 11: " ++ show (computeHandRank hand09))
+  putStrLn ("\n 12: " ++ show (computeHandRank hand10))
+  putStrLn ("\n 13: " ++ show (computeHandRank hand11))
+  putStrLn ("\n 14: " ++ show (computeHandRank hand12))
+  putStrLn ("\n 14: " ++ show (computeHandRank hand13))
+  putStrLn ("\n" ++ show (getCombination hand00r > getCombination hand00))
+  putStrLn ("\n" ++ show (getCombination hand00  > getCombination hand01))
+  putStrLn ("\n" ++ show (getCombination hand02  > getCombination hand03))
+  putStrLn ("\n" ++ show (getCombination hand03  > getCombination hand04))
+  putStrLn ("\n" ++ show (getCombination hand05  > getCombination hand06))
+  putStrLn ("\n" ++ show (getCombination hand07  > getCombination hand07c))
+  putStrLn ("\n" ++ show (getCombination hand10  > getCombination hand12))
+  putStrLn ("\n" ++ show (getCombination hand12  < getCombination hand12c))
+  putStrLn ("\n" ++ show (getCombination hand09  > getCombination hand09c))
+  putStrLn ("\n" ++ show (getCombination hand08  > getCombination hand08c))
+  where
+    handRankComputations cards = computeHandRank cards
+    getCombination cards = Combination
+      { handRank  = fst $ handRankComputations cards
+      , structure = fst . snd $ handRankComputations cards
+      , kicker    = snd . snd $ handRankComputations cards }
+
 
 -- | Test cases for combinations.
 
@@ -119,6 +137,17 @@ hand07 =
     , Card Queen  Spades
     , Card Queen  Diamonds]
 
+-- 3/2 Q+5
+hand07c :: [Card]
+hand07c =
+    [ Card Queen Hearts
+    , Card Deuce Spades
+    , Card Five   Spades
+    , Card King  Clubs
+    , Card Five   Hearts
+    , Card Queen  Spades
+    , Card Queen  Diamonds]
+
 -- 3/2 3+A
 hand08 :: [Card]
 hand08 =
@@ -130,6 +159,17 @@ hand08 =
     , Card Ace   Spades
     , Card Ace   Hearts]
 
+-- 3/2 3+K
+hand08c :: [Card]
+hand08c =
+    [ Card Three Hearts
+    , Card Deuce Spades
+    , Card Three Spades
+    , Card Three Clubs
+    , Card Ace   Spades
+    , Card King  Spades
+    , Card King  Hearts]
+
 -- 3x 4
 hand09 :: [Card]
 hand09 =
@@ -138,6 +178,17 @@ hand09 =
     , Card Four  Spades
     , Card Four  Clubs
     , Card King  Spades
+    , Card Jack  Spades
+    , Card Four  Hearts]
+
+-- 3x 4
+hand09c :: [Card]
+hand09c =
+    [ Card Ten Hearts
+    , Card Deuce Spades
+    , Card Four  Spades
+    , Card Four  Clubs
+    , Card Ace   Spades
     , Card Jack  Spades
     , Card Four  Hearts]
 
@@ -173,3 +224,25 @@ hand12 =
     , Card King  Spades
     , Card Jack  Spades
     , Card Three Hearts]
+
+-- h
+hand12c :: [Card]
+hand12c =
+    [ Card Ten   Hearts
+    , Card Deuce Spades
+    , Card Four  Spades
+    , Card Queen Clubs
+    , Card King  Spades
+    , Card Jack  Spades
+    , Card Five  Hearts]
+
+-- 2x3
+hand13 :: [Card]
+hand13 =
+    [ Card Ten   Hearts
+    , Card Ten   Spades
+    , Card Ten   Clubs
+    , Card Queen Clubs
+    , Card Queen Spades
+    , Card Queen Spades
+    , Card Five  Hearts]

@@ -117,15 +117,6 @@ instance Show Deck where
         (\x index -> (show index ++ ". " ++ show x ++ "\n"))
         (body deck) [1 :: Int .. 52])
 
--- | Poker combination.
-data Combination = Combination
-  { handRank  :: HandRank
-  , structure :: [CardRank] -- ^ card ranks to indicate
-                            --   combination strength
-  , kicker    :: [CardRank] -- ^ kicker card ranks,
-                            --   from 0 to 5
-  }
-
 -- | Hand ranks.
 data HandRank
   = High_card

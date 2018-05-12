@@ -47,6 +47,9 @@ computeHandRank cards
   | 3 `elem` rankList && 2 `elem` rankList =
     (Full_house, ([toEnum (head $ takeEqualBestN 1 3 rankList),
                    toEnum (head $ takeEqualBestN 1 2 rankList)], []))
+  | length (takeEqualBestN 2 3 rankList) == 2 =
+    (Full_house, ([toEnum (head       $ takeEqualBestN 1 3 rankList),
+                   toEnum (head .tail $ takeEqualBestN 2 3 rankList)], []))
   | hasFlush    = (Flush,    (flushRank,     []))
   | hasStraight = (Straight, ([straighRank], []))
   | 3 `elem` rankList =
@@ -67,6 +70,7 @@ computeHandRank cards
     hasStraightFlush  = hasFlush &&
                        (fst $ checkStraight (map (\rank -> Card rank Spades) flushRank))
     straighFlushRank  = snd $ checkStraight (map (\rank -> Card rank Spades) flushRank)
+
     fourOfAKindKicker = toEnum . maximum . concat $ map
       (\x -> takeEqualBestN 1 x rankList) [1, 2, 3]
     threeOfAKingKicker = (map toEnum) . (take 2) . reverse . sort . concat $ map
@@ -91,6 +95,17 @@ computeCombination handCards board = Combination
 -------------------------------------------------------------------------------
 -- * Functions to operate with combinations
 -------------------------------------------------------------------------------
+
+-- | Poker combination.
+data Combination = Combination
+  { handRank  :: HandRank
+  , structure :: [CardRank] -- ^ card ranks to indicate combination strength
+  , kicker    :: [CardRank] -- ^ kicker card ranks
+  } deriving (Eq, Ord)
+
+-- instance Eq Combination where
+--   (==) a b = handRank a == handRank b && structure a == structure b &&
+--     kicker a == kicker b
 
 -------------------------------------------------------------------------------
 -- * Utility functions
