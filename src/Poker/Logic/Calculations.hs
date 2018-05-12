@@ -93,21 +93,6 @@ computeCombination handCards board = Combination
       Just cards -> [fst cards, snd cards] ++ board
 
 -------------------------------------------------------------------------------
--- * Functions to operate with combinations
--------------------------------------------------------------------------------
-
--- | Poker combination.
-data Combination = Combination
-  { handRank  :: HandRank
-  , structure :: [CardRank] -- ^ card ranks to indicate combination strength
-  , kicker    :: [CardRank] -- ^ kicker card ranks
-  } deriving (Eq, Ord)
-
--- instance Eq Combination where
---   (==) a b = handRank a == handRank b && structure a == structure b &&
---     kicker a == kicker b
-
--------------------------------------------------------------------------------
 -- * Utility functions
 -------------------------------------------------------------------------------
 

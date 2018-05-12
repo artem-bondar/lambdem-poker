@@ -1,5 +1,5 @@
 name:                lambdem-poker
-version:             0.3
+version:             0.4
 synopsis:            Poker client
 -- description:
 homepage:            https://github.com/cmc-haskell-2018/lambdem-poker
