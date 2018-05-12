@@ -5,19 +5,24 @@ import Data.List (sort)
 
 import Poker.Logic.Types
 
+import Debug.Trace
+
 -------------------------------------------------------------------------------
 -- * Functions to operate with cards
 -------------------------------------------------------------------------------
 
 -- | Return if card array is a straight and kicker card.
 checkStraight :: [Card] -> (Bool, CardRank)
-checkStraight cards = (hasStraight, kickerCard)
+checkStraight cards = trace (show cardWithLength) (hasStraight, kickerCard)
   where
     numCards       = cardToStraightNumList cards
     cardWithLength = zip numCards (getSequencesLength numCards)
     hasStraight    = or (map (\x -> snd x >= 5) cardWithLength)
-    kickerCard     = toEnum (4 + fst (foldl1 (\x y -> if (snd x == 5)
-      then x else y) cardWithLength))
+    kickerCardNum  = fst (foldl1 (\x y -> if (snd x == 5)
+      then x else y) cardWithLength)
+    kickerCard     = if (kickerCardNum == -1)
+      then Five
+      else toEnum $ kickerCardNum + 4
 
 -- | Return hand rank and kicker cards depending on card array.
 computeHandRank :: [Card] -> (HandRank, [Card])
