@@ -34,6 +34,7 @@ data Player = Player
   , hand     :: Maybe (Card, Card)
   , hideHand :: Bool
   , active   :: Bool
+  , pressed  :: Int
   , move     :: Move
   , invested :: Int
   }

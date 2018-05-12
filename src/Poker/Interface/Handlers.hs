@@ -33,15 +33,14 @@ handleInput event screen
 handleClick :: (Float, Float) -> TableScreen -> TableScreen
 handleClick hit screen
   | hittedButton      /= 0 =
-    if ((fst possibleActions /= Check  && hittedButton /= 1) &&
-        (fst possibleActions /= All_In && hittedButton /= 3))
+    if ((fst possibleActions == Check  && hittedButton == 1) ||
+        (fst possibleActions == All_In && hittedButton == 3))
       then screen
+      else screen
         { state   = Show_Click
         , timer   = 0
-        , players = writeMove (players screen) (position activePlayer) $ 
-            handleButtonClick hittedButton possibleActions
-            maxBet selectedBet madeBet (balance activePlayer) }
-      else screen
+        , players = writeButtonClick hittedButton (players screen)
+        }
   | hittedSmallButton /= 0 = screen
     { sliderData = handleSmallButtonClick hittedSmallButton (calculatePot $ players screen)
         (sliderData screen) }
@@ -51,22 +50,8 @@ handleClick hit screen
   where
     hittedButton      = checkButtonHit hit buttonHitbox      False
     hittedSmallButton = checkButtonHit hit smallButtonHitbox True
-    maxBet            = countMaxBet $ players screen
-    activePlayer      = getActivePlayer $ players screen
-    possibleActions   = getPossibleActions activePlayer maxBet
-    selectedBet       = currentValue $ sliderData screen
-    madeBet           = betSize $ move activePlayer
-
--- | Handle button click depending on button number, possible actions, incoming bet,
---   selected bet, made bet and player balance.
-handleButtonClick :: Int -> (ActionType, ActionType) -> Int -> Int -> Int -> Int -> Move
-handleButtonClick btn actions bet selectedBet madeBet playerBalance
-  | btn == 1  = Move Folded madeBet
-  | btn == 2  = case fst actions of
-      Check -> Move Checked 0
-      Call  -> Move Called bet
-      _     -> Move All_In_ed playerBalance
-  | otherwise = Move Raised selectedBet
+    possibleActions   = getPossibleActions (getActivePlayer $ players screen)
+      (countMaxBet $ players screen)
 
 -- | Handle small button click depending on button number and pot size.
 handleSmallButtonClick :: Int -> Int -> Slider -> Slider

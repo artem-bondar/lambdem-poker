@@ -22,14 +22,11 @@ drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
   | state screen == Dealing_Hand = pictures ([tableWithDealerChip] ++
       map (\p -> playerOnSeatBold p) (players screen))
-  | state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
-    drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
-    (buttonTexts $ images screen) buttonPressed, sliderImage, smallButtons, betWindowImage]
-  | state screen == Waiting_User_Input = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
+  | state screen == Waiting_User_Input ||
+    state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
       drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
-      (buttonTexts $ images screen) 0, sliderImage, smallButtons, betWindowImage]
-  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
-      
+      (buttonTexts $ images screen) (pressed activePlayer), sliderImage, smallButtons, betWindowImage]
+  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands] 
   where
     chipImages          = (chipLayout $ images screen)
     playerOnSeatBold p  = pictures [drawPlayerSeatBold p (case active p of
@@ -55,10 +52,6 @@ drawTableScreen screen
     betWindowImage = case fst possibleActions /= All_In of
       True  -> drawBetWindow (currentValue $ sliderData screen) (betWindow $ images screen)
       False -> blank
-    buttonPressed = case action $ move activePlayer of
-      Folded -> 1
-      Raised -> 3
-      _      -> 2
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
@@ -173,9 +166,9 @@ drawRow offset imgs = pictures [head imgs,
 -- | Draw buttons with possible actions for player.
 drawButtons :: (ActionType, ActionType) -> (Picture, Picture) -> [ButtonText] -> Int -> Picture
 drawButtons actions buttons texts buttonPressed = 
-  uncurry translate (getButtonsOffset $ fst actions) $ drawRow buttonOffset imgsButtons
+  translate (-buttonOffset) buttonPositionOffset $ drawRow buttonOffset imgsButtons
   where
-    getButtonImg pressed = if (buttonPressed /= pressed)
+    getButtonImg pressedNum = if (buttonPressed /= pressedNum)
       then fst buttons
       else snd buttons
     fstImg = case fst actions of

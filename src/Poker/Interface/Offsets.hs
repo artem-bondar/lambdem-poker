@@ -70,14 +70,8 @@ getChipsOffset s columns = case s of
 
 -- | Return pot offset depending on amount of columns. 
 getPotOffset :: Int -> (Float, Float)
-getPotOffset columns = 
-  (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 125)    
-
--- | Return buttons offset depending on possible middle action.
-getButtonsOffset :: ActionType -> (Float, Float)
-getButtonsOffset act = case act of
-  Check -> (-buttonOffset / 2,   buttonPositionOffset)
-  _     -> (-buttonOffset,       buttonPositionOffset)
+getPotOffset columns =
+  (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 125)
 
 -------------------------------------------------------------------------------
 -- * Constant offsets

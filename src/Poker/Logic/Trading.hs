@@ -103,6 +103,17 @@ calculatePot players = foldl1 (+) (map
   (\player -> invested player)
   players)
 
+-- | Return move depending on pressed button number, possible actions, incoming bet,
+--   selected bet, made bet and player balance.
+getMoveFromButtonPressed :: Int -> (ActionType, ActionType) -> Int -> Int -> Player -> Move
+getMoveFromButtonPressed btn actions bet selectedBet player
+  | btn == 1  = Move Folded (betSize $ move player)
+  | btn == 2  = case fst actions of
+      Check -> Move Checked 0
+      Call  -> Move Called bet
+      _     -> Move All_In_ed (balance player)
+  | otherwise = Move Raised selectedBet
+
 -------------------------------------------------------------------------------
 -- * Operations with player(-s)
 -------------------------------------------------------------------------------
@@ -127,7 +138,7 @@ toggleNewActivePlayer players pos = map
 writeMove :: [Player] -> Position -> Move -> [Player]
 writeMove players pos mv = map
   (\player -> case position player == pos of
-      True  -> player { move = mv }
+      True  -> player { move = mv, pressed = 0 }
       False -> player)
   players    
 
@@ -189,9 +200,16 @@ changePlayerPositions players = map
 --   Return only second two actions. Fold action is calculated independently.
 getPossibleActions :: Player -> Int -> (ActionType, ActionType)
 getPossibleActions player bet
-    | bet == 0              = (Check,  Bet)
-    | bet >= balance player = (All_In, All_In)
-    | otherwise             = (Call,   Raise)
+    | bet == 0 || bet == betSize (move player) = (Check,  Bet)
+    | bet >= balance player                    = (All_In, All_In)
+    | otherwise                                = (Call,   Raise)
+
+-- | Write number of pressed button to active player.
+writeButtonClick :: Int -> [Player] -> [Player]
+writeButtonClick _ [] = []
+writeButtonClick btn players
+  | active $ head players = (head players) { pressed = btn } : tail players
+  | otherwise = head players : writeButtonClick btn (tail players)
 
 -------------------------------------------------------------------------------
 -- * Constants

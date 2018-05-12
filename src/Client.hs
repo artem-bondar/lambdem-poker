@@ -45,8 +45,8 @@ createTableScreenWith generator imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
-    [Player Human " Hero"    1500 SB Bottom Nothing False False (Move Waiting 0) 0,
-     Player Human "Opponent" 1500 BB Top    Nothing True  False (Move Waiting 0) 0]
+    [Player Human " Hero"    1500 SB Bottom Nothing False False 0 (Move Waiting 0) 0,
+     Player Human "Opponent" 1500 BB Top    Nothing True  False 0 (Move Waiting 0) 0]
   , street     = Preflop
   , handCount  = 1
   , dealer     = Bottom
@@ -103,19 +103,23 @@ updateGame timePassed screen
             AI    -> AI_Thinking
         , timer      = 0
         , sliderData = updateSlideData (sliderData screen)
-            (getActivePlayer $ players screen) maxBet (blindSize screen)
+            activePlayer maxBet (blindSize screen)
         }
   | state screen == Show_Click = 
     if (timer screen < clickTime)
       then screen { timer = timer screen + timePassed }
-      else screen { state = Next_Move }
+      else screen
+      { state   = Next_Move
+      , players = writeMove (players screen) activePlayerPosition $ 
+          getMoveFromButtonPressed (pressed activePlayer) possibleActions
+          maxBet (currentValue $ sliderData screen) activePlayer }
   | state screen == Waiting_User_Input =
     if (timer screen < humanThinkTime)
       then screen { timer = timer screen + timePassed }
       else screen
         { state   = Next_Move
         , players = writeMove (players screen) activePlayerPosition
-            (autoHumanMove (getActivePlayer $ players screen) maxBet)
+            (autoHumanMove activePlayer maxBet)
         }
   | state screen == AI_Thinking = 
     if (timer screen < aiThinkTime)
@@ -123,7 +127,7 @@ updateGame timePassed screen
       else screen
         { state   = Next_Move
         , players = writeMove (players screen) activePlayerPosition
-            (autoHumanMove (getActivePlayer $ players screen) maxBet)
+            (autoHumanMove activePlayer maxBet)
         }
   | state screen == Next_Move =
     if (countInHandPlayers (players screen) == 1)
@@ -155,14 +159,16 @@ updateGame timePassed screen
         }
   | otherwise = screen
   where
-    activePlayerType     = control  . getActivePlayer $ players screen
-    activePlayerPosition = position . getActivePlayer $ players screen
+    maxBet               = countMaxBet $ players screen
+    activePlayer         = getActivePlayer $ players screen
+    activePlayerType     = control  activePlayer
+    activePlayerPosition = position activePlayer
+    possibleActions      = getPossibleActions activePlayer maxBet
     dealResult     = dealPlayers (players screen) (randomizer screen) createDeck
     firstPosition  = getFirstPosition (length $ players screen) (street screen)
     nextPosition   = getNextPositon   (length $ players screen) (street screen)
                                        activePlayerPosition
     lastPosition   = getLastPosition  (length $ players screen) (street screen)
-    maxBet         = countMaxBet $ players screen
     buttonPosition = if (length (players screen) == 2)
                       then SB
                       else BTN
