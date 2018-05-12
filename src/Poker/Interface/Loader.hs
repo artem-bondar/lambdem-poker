@@ -7,6 +7,10 @@ import Graphics.Gloss.Data.Picture
 import Poker.Interface.Types
 import Poker.Logic.Types
 
+-------------------------------------------------------------------------------
+-- * Load functions
+-------------------------------------------------------------------------------
+
 -- | Load all table images from files.
 loadedTableImages :: IO TableImages
 loadedTableImages = do
@@ -21,6 +25,7 @@ loadedTableImages = do
   imgsButtonTexts        <- loadButtonTexts
   Just imgSmallButton    <- loadJuicyPNG "img/small button.png"
   imgsSmallButtonTexts   <- loadSmallButtonTexts
+  Just imgBetWindow      <- loadJuicyPNG "img/bet window.png"
   Just imgBack           <- loadJuicyPNG "img/deck/back.png"
   imgsDeck               <- loadDeckLayout
   Just imgDealerChip     <- loadJuicyPNG "img/chips/dealer.png"
@@ -37,6 +42,7 @@ loadedTableImages = do
     , buttonTexts      = imgsButtonTexts
     , smallButton      = imgSmallButton
     , smallButtonTexts = imgsSmallButtonTexts
+    , betWindow        = imgBetWindow
     , deckLayout       = DeckLayout
         { back  = imgBack
         , front = imgsDeck
@@ -94,6 +100,10 @@ loadChipLayout = do
     loadedList = map
       (\x -> loadJuicyPNG $ "img/chips/" ++ x ++ ".png")
       (map show allChipValues)
+
+-------------------------------------------------------------------------------
+-- * Utility functions
+-------------------------------------------------------------------------------
 
 -- | Return `Picture` or blank.
 unwrapMaybePicture :: Maybe Picture -> Picture

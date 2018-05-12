@@ -4,7 +4,7 @@ module Poker.Interface.Offsets where
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
--- * Offsets
+-- * Computed offsets
 -------------------------------------------------------------------------------
 
 -- | Return offset for cards depending on seat.
@@ -70,17 +70,11 @@ getChipsOffset s columns = case s of
 
 -- | Return pot offset depending on amount of columns. 
 getPotOffset :: Int -> (Float, Float)
-getPotOffset columns = 
-  (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 125)    
-
--- | Return buttons offset depending on possible middle action.
-getButtonsOffset :: ActionType -> (Float, Float)
-getButtonsOffset act = case act of
-  Check -> (-buttonOffset / 2,   buttonPositionOffset)
-  _     -> (-buttonOffset, buttonPositionOffset)
+getPotOffset columns =
+  (fromIntegral (columns - 1) * (-chipColumnOffset / 2), 125)
 
 -------------------------------------------------------------------------------
--- * Constants
+-- * Constant offsets
 -------------------------------------------------------------------------------
 
 -- | Right card offset.
@@ -110,3 +104,24 @@ buttonOffset = 134
 -- | Vertical offset for buttons.
 buttonPositionOffset :: Float
 buttonPositionOffset = -300
+
+-- | Offset for small button.
+smallButtonOffset :: Float
+smallButtonOffset = 58
+
+-- | Offset for small buttons.
+smallButtonPositionOffset :: (Float, Float)
+smallButtonPositionOffset =
+  (-5, -220)
+
+-- | Offset for slider.
+sliderOffset :: (Float, Float)
+sliderOffset = (0, -250)
+
+-- | Offset for bet window.
+betWindowOffset :: (Float, Float)
+betWindowOffset = (buttonOffset * 1.5 - 33, -250)
+
+-- | Offset for test in bet window.
+betWindowTextOffset :: (Float, Float)
+betWindowTextOffset = (-20, -6)

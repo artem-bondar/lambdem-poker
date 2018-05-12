@@ -7,7 +7,7 @@ import Poker.Logic.Types
 -- * Operations with positions
 -------------------------------------------------------------------------------
 
--- | Return first position depending on amount of players and street.
+-- | Return first position depending on amount of players and street
 getFirstPosition :: Int -> Street -> Position
 getFirstPosition amountOfPlayers street = case amountOfPlayers of
   2 -> if (street == Preflop)
@@ -59,7 +59,7 @@ checkSkipForActivePlayer players
   | active $ head players = case action . move $ head players of
       Bankrupted -> True
       Folded     -> True
-      All_In_ed     -> True
+      All_In_ed  -> True
       _          -> False
   | otherwise = checkSkipForActivePlayer $ tail players
 
@@ -67,8 +67,9 @@ checkSkipForActivePlayer players
 countInHandPlayers :: [Player] -> Int
 countInHandPlayers players = foldl1 (+) (map
   (\player -> case action $ move player of
-      Folded    -> 0
-      _         -> 1)
+      Bankrupted -> 0
+      Folded     -> 0
+      _          -> 1)
   players)
 
 -- | Return maximal bet that occured.
@@ -103,6 +104,19 @@ calculatePot players = foldl1 (+) (map
   (\player -> invested player)
   players)
 
+-- | Return move depending on pressed button number, possible actions, incoming bet,
+--   selected bet, made bet and player balance.
+getMoveFromButtonPressed :: Int -> (ActionType, ActionType) -> Int -> Int -> Player -> Move
+getMoveFromButtonPressed btn actions bet selectedBet player
+  | btn == 1  = Move Folded (betSize $ move player)
+  | btn == 2  = case fst actions of
+      Check -> Move Checked (betSize $ move player)
+      Call  -> Move Called bet
+      _     -> Move All_In_ed (balance player)
+  | otherwise = if (selectedBet /= balance player)
+      then Move Raised     selectedBet
+      else Move All_In_ed (balance player)
+
 -------------------------------------------------------------------------------
 -- * Operations with player(-s)
 -------------------------------------------------------------------------------
@@ -127,7 +141,7 @@ toggleNewActivePlayer players pos = map
 writeMove :: [Player] -> Position -> Move -> [Player]
 writeMove players pos mv = map
   (\player -> case position player == pos of
-      True  -> player { move = mv }
+      True  -> player { move = mv, pressed = 0 }
       False -> player)
   players    
 
@@ -135,11 +149,11 @@ writeMove players pos mv = map
 applyMoveResults :: [Player] -> [Player]
 applyMoveResults players = map
   (\player -> player
-    { balance  = balance  player - bet player
+    { balance  = balance player - bet player
     , move     = case action $ move player of
         Bankrupted -> Move Bankrupted 0
         Folded     -> Move Folded 0
-        All_In_ed     -> Move All_In_ed 0
+        All_In_ed  -> Move All_In_ed 0
         _          -> Move Waiting 0
     , active   = False
     , invested = invested player + bet player
@@ -150,8 +164,8 @@ applyMoveResults players = map
 
 -- | Find out hand results and reward winner(-s) or split pot if draw.
 --   Also open all cards that should be shown at showdown. 
-computeHandResults :: [Player] -> [Player]
-computeHandResults players =
+computeHandResults :: [Player] -> [Card] -> [Player]
+computeHandResults players board =
   if (countInHandPlayers players == 1)
     then map (\player -> case action $ move player of
                 Folded -> player
@@ -162,7 +176,7 @@ computeHandResults players =
     maxInvested = maximum (map (\player -> invested player) players)
     tookFromEach = takePotFromPlayers players maxInvested
 
--- | Take from player amount of invested.  
+-- | Take from player part of invested sized in pot.  
 takePotFromPlayer :: Player -> Int -> (Player, Int)
 takePotFromPlayer player pot =
   if (invested player == 0)
@@ -171,7 +185,7 @@ takePotFromPlayer player pot =
       then (player { invested = 0 }, invested player)
       else (player { invested = invested player - pot }, pot)
 
--- | Take from each player amount of invested.
+-- | Take from each player part of invested sized in pot.
 takePotFromPlayers :: [Player] -> Int -> ([Player], Int)
 takePotFromPlayers players pot =
   (fst tookFromEach, foldl1 (+) $ snd tookFromEach)
@@ -189,9 +203,16 @@ changePlayerPositions players = map
 --   Return only second two actions. Fold action is calculated independently.
 getPossibleActions :: Player -> Int -> (ActionType, ActionType)
 getPossibleActions player bet
-    | bet == 0              = (Check,  Bet)
-    | bet >= balance player = (All_In, All_In)
-    | otherwise             = (Call,   Raise)
+    | bet == 0 || bet == betSize (move player) = (Check,  Bet)
+    | bet >= balance player                    = (All_In, All_In)
+    | otherwise                                = (Call,   Raise)
+
+-- | Write number of pressed button to active player.
+writeButtonClick :: Int -> [Player] -> [Player]
+writeButtonClick _ [] = []
+writeButtonClick btn players
+  | active $ head players = (head players) { pressed = btn } : tail players
+  | otherwise = head players : writeButtonClick btn (tail players)
 
 -------------------------------------------------------------------------------
 -- * Constants
@@ -203,8 +224,8 @@ aiThinkTime = 2.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
-humanThinkTime = 20.0
+humanThinkTime = 30.0
 
 -- | Time to display showdown results.
 showdownTime :: Float
-showdownTime = 3.0
+showdownTime = 2.0

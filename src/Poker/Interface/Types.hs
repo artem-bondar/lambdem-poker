@@ -6,6 +6,10 @@ import System.Random (StdGen)
 
 import Poker.Logic.Types
 
+-------------------------------------------------------------------------------
+-- * Declarations
+-------------------------------------------------------------------------------
+
 -- | Contain all data relative to table game screen.
 data TableScreen = TableScreen
   { state      :: GameState   -- ^ current game state
@@ -15,6 +19,7 @@ data TableScreen = TableScreen
   , handCount  :: Int         -- ^ current hand number
   , dealer     :: Seat        -- ^ position of dealer
   , blindSize  :: Int         -- ^ size of big blind
+  , sliderData :: Slider      -- ^ slider properties
   , board      :: [Card]      -- ^ cards on board
   , randomizer :: StdGen      -- ^ random number generator
   , deck       :: Deck        -- ^ cards to deal
@@ -33,7 +38,8 @@ data TableImages = TableImages
   , buttonClicked    :: Picture
   , buttonTexts      :: [ButtonText]
   , smallButton      :: Picture
-  , smallButtonTexts :: [SmallButtonText]    
+  , smallButtonTexts :: [SmallButtonText]
+  , betWindow        :: Picture  
   , deckLayout       :: DeckLayout
   , chipLayout       :: ChipLayout
   }
@@ -47,12 +53,8 @@ data ButtonText = ButtonText
 -- | Contains text to show on small buttons.
 data SmallButtonText = SmallButtonText
   { betSizing   :: Int     -- ^ size of pot in percentage
-  , betSiseText :: Picture
+  , betSizeText :: Picture
   }
-
--- | Value of all small buttons.
-allBetSizings :: [Int]
-allBetSizings = [40, 60, 80, 100]
 
 -- | Contain layout for card deck.
 data DeckLayout = DeckLayout
@@ -72,6 +74,28 @@ data Chip = Chip
   , sprite :: Picture
   }
 
+-- | Contain slider data.
+data Slider = Slider
+  { minValue     :: Int
+  , maxValue     :: Int
+  , currentValue :: Int
+  , stepSize     :: Float -- ^ in pixels
+  , ballPosition :: Float -- ^ in pixels
+  , isSelected   :: Bool
+  }
+
+-------------------------------------------------------------------------------
+-- * Constants
+-------------------------------------------------------------------------------
+
 -- | Value of all chips.
 allChipValues :: [Int]
 allChipValues = [1000, 500, 100, 25, 5, 1]
+
+-- | Value of all small buttons.
+allBetSizings :: [Int]
+allBetSizings = [40, 60, 80, 100]
+
+-- | Height of button.
+buttonHeight :: Float
+buttonHeight = 56

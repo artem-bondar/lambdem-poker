@@ -4,11 +4,14 @@ module Poker.Interface.Renderer where
 import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Data.Color
 
+import Poker.Interface.Handlers (sliderDimensions, sliderPadding)
 import Poker.Interface.Types
 import Poker.Interface.Offsets
 
 import Poker.Logic.Trading
 import Poker.Logic.Types
+
+import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Render functions
@@ -19,11 +22,11 @@ drawTableScreen :: TableScreen -> Picture
 drawTableScreen screen 
   | state screen == Dealing_Hand = pictures ([tableWithDealerChip] ++
       map (\p -> playerOnSeatBold p) (players screen))
-  | state screen == Waiting_User_Input = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
-    drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
-      (buttonTexts $ images screen) 0]
-  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands]
-      
+  | state screen == Waiting_User_Input ||
+    state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
+      drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
+      (buttonTexts $ images screen) (pressed activePlayer), sliderImage, smallButtons, betWindowImage]
+  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands] 
   where
     chipImages          = (chipLayout $ images screen)
     playerOnSeatBold p  = pictures [drawPlayerSeatBold p (case active p of
@@ -39,6 +42,16 @@ drawTableScreen screen
     activePlayer    = getActivePlayer $ players screen
     maxBet          = countMaxBet $ players screen
     possibleActions = getPossibleActions activePlayer maxBet
+    smallButtons    = case (calculatePot $ players screen) /= 0 && fst possibleActions /= All_In of
+      True  -> drawSmallButtons (smallButton $ images screen) (map
+        (\buttonText -> betSizeText buttonText) (smallButtonTexts $ images screen))
+      False -> blank
+    sliderImage    = case fst possibleActions /= All_In of
+      True  -> drawSlider (sliderData screen) (slider $ images screen) (sliderBall $ images screen)
+      False -> blank
+    betWindowImage = case fst possibleActions /= All_In of
+      True  -> drawBetWindow (currentValue $ sliderData screen) (betWindow $ images screen)
+      False -> blank
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
@@ -153,9 +166,9 @@ drawRow offset imgs = pictures [head imgs,
 -- | Draw buttons with possible actions for player.
 drawButtons :: (ActionType, ActionType) -> (Picture, Picture) -> [ButtonText] -> Int -> Picture
 drawButtons actions buttons texts buttonPressed = 
-  uncurry translate (getButtonsOffset $ fst actions) $ drawRow buttonOffset imgsButtons
+  translate (-buttonOffset) buttonPositionOffset $ drawRow buttonOffset imgsButtons
   where
-    getButtonImg pressed = if (buttonPressed /= pressed)
+    getButtonImg pressedNum = if (buttonPressed /= pressedNum)
       then fst buttons
       else snd buttons
     fstImg = case fst actions of
@@ -166,6 +179,28 @@ drawButtons actions buttons texts buttonPressed =
       All_In -> blank
       _      -> pictures [getButtonImg 3, getActionText texts $ snd actions]
     imgsButtons = [fstImg, sndImg, thdImg]
+
+-- | Draw small buttons.
+drawSmallButtons :: Picture -> [Picture] -> Picture
+drawSmallButtons img buttons =
+  uncurry translate smallButtonPositionOffset $ drawRow smallButtonOffset buttonsWithText
+  where
+    buttonsWithText = map (\textImage -> pictures [img, textImage]) buttons
+
+-- | Draw slider with possible raise values for player.
+drawSlider :: Slider -> Picture -> Picture -> Picture
+drawSlider sliderr img ball = 
+  uncurry translate sliderOffset $ pictures [img, ballOnSlider]
+  where
+    ballOnSlider = translate ballOffset 0 ball
+    ballOffset   = (-(fst sliderDimensions) + 2 * fst sliderPadding) / 2 +
+      (ballPosition sliderr)
+
+-- | Draw bet window with selected bet/raise size.
+drawBetWindow :: Int -> Picture -> Picture
+drawBetWindow bet img = 
+  uncurry translate betWindowOffset (pictures [img, 
+    uncurry translate betWindowTextOffset $ (drawText white $ show bet)])
 
 -------------------------------------------------------------------------------
 -- * Utility functions

@@ -12,7 +12,7 @@ import Poker.Logic.Types
 -- | Deal cards from deck to players.
 dealPlayers :: [Player] -> StdGen -> Deck -> ([Player], (StdGen, Deck))
 dealPlayers players randomizer deck = 
-  let randomResult = getNHands (length players) (randomizer, deck)
+  let randomResult = performN getHand (length players) (randomizer, deck)
   in (zipWith deal players (fst randomResult), snd randomResult)
   where
     deal player twoCards = player { hand = Just twoCards }
@@ -36,13 +36,24 @@ getHand randomizer deck =
       second = getCard (fst $ snd first) (snd $ snd first)
   in ((fst first, fst second), snd second)
 
--- | Get n hands from a deck.
-getNHands :: Int -> (StdGen, Deck) -> ([(Card, Card)], (StdGen, Deck))
-getNHands 0 x = ([], x)
-getNHands n (randomizer, deck) =
-  let randomResult = getHand randomizer deck
-      nextResult   = getNHands (n - 1) (snd randomResult)
-  in (fst randomResult : fst nextResult, snd  nextResult)
+-- | Get n entities from a deck.
+performN :: (StdGen -> Deck -> (a, (StdGen, Deck))) -> Int ->
+  (StdGen, Deck) -> ([a], (StdGen, Deck))
+performN _ 0 x = ([], x)
+performN performOnce n (randomizer, deck) =
+  let randomResult = performOnce randomizer deck
+      nextResult   = performN performOnce (n - 1) (snd randomResult)
+  in (fst randomResult : fst nextResult, snd nextResult)
+
+-- | Deal board cards depending on street.
+dealBoard :: StdGen -> Deck -> [Card] -> Street -> ([Card], (StdGen, Deck))
+dealBoard randomizer deck [] Flop = performN getCard 3 (randomizer, deck)
+dealBoard randomizer deck board street
+  | street == Turn  && length board < 4 ||
+    street == River && length board < 5 = (board ++ [fst randomResult], snd randomResult)
+  | otherwise = (board, (randomizer, deck))
+  where
+    randomResult = getCard randomizer deck
 
 -------------------------------------------------------------------------------
 -- * Operations with players

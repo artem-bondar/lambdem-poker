@@ -1,10 +1,11 @@
--- | Core module that handles all game processes.
+-- | Core module that handles all major game processes.
 module Client where
 
 import Graphics.Gloss.Interface.Environment (getScreenSize)
 import Graphics.Gloss.Interface.Pure.Game
 import System.Random (StdGen, getStdGen)
 
+import Poker.Interface.Handlers
 import Poker.Interface.Loader
 import Poker.Interface.Renderer
 import Poker.Interface.Types
@@ -15,7 +16,11 @@ import Poker.Logic.Types
 
 import Debug.Trace
 
--- | Launches main (table) game screen.
+-------------------------------------------------------------------------------
+-- * Game launch related functions
+-------------------------------------------------------------------------------
+
+-- | Launches game screen.
 launchGame :: IO ()
 launchGame =  do
   generator   <- getStdGen
@@ -40,26 +45,22 @@ createTableScreenWith generator imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
-    [Player Human " Hero"    1500 SB Bottom Nothing False False (Move Waiting 0) 0,
-     Player Human "Opponent" 1500 BB Top    Nothing True  False (Move Waiting 0) 0]
+    [Player Human " Hero"    1500 SB Bottom Nothing False False 0 (Move Waiting 0) 0,
+     Player Human "Opponent" 1500 BB Top    Nothing True  False 0 (Move Waiting 0) 0]
   , street     = Preflop
   , handCount  = 1
   , dealer     = Bottom
   , blindSize  = 30
+  , sliderData = Slider 0 0 0 0 0 False
   , board      = []
   , randomizer = generator
   , deck       = Deck 0 []
   , images     = imgs
   }
 
--- | Operate with user input.
-handleInput :: Event -> TableScreen -> TableScreen
-handleInput event screen 
-  | state screen == Waiting_User_Input = 
-    case event of
-      EventKey (MouseButton LeftButton) Down _ mouse -> trace (show mouse) screen
-      _ -> screen
-  | otherwise = screen
+-------------------------------------------------------------------------------
+-- * Game maintance related functions
+-------------------------------------------------------------------------------
 
 -- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen
@@ -90,8 +91,11 @@ updateGame timePassed screen
       , timer = 0
       }
       else screen 
-        { state   = Bet_Round
-        , players = toggleNewActivePlayer (players screen) firstPosition
+        { state      = Bet_Round
+        , players    = toggleNewActivePlayer (players screen) firstPosition
+        , board      = fst boardDealResult
+        , randomizer = fst $ snd boardDealResult
+        , deck       = snd $ snd boardDealResult
         }
   | state screen == Bet_Round =
     if (checkSkipForActivePlayer $ players screen)
@@ -100,15 +104,25 @@ updateGame timePassed screen
         { state = case activePlayerType of
             Human -> Waiting_User_Input
             AI    -> AI_Thinking
-        , timer = 0
+        , timer      = 0
+        , sliderData = updateSlideData (sliderData screen)
+            activePlayer maxBet (blindSize screen)
         }
+  | state screen == Show_Click = 
+    if (timer screen < clickTime)
+      then screen { timer = timer screen + timePassed }
+      else screen
+      { state   = Next_Move
+      , players = writeMove (players screen) activePlayerPosition $ 
+          getMoveFromButtonPressed (pressed activePlayer) possibleActions
+          maxBet (currentValue $ sliderData screen) activePlayer }
   | state screen == Waiting_User_Input =
     if (timer screen < humanThinkTime)
       then screen { timer = timer screen + timePassed }
       else screen
         { state   = Next_Move
         , players = writeMove (players screen) activePlayerPosition
-            (autoHumanMove (getActivePlayer $ players screen) maxBet)
+            (autoHumanMove activePlayer maxBet)
         }
   | state screen == AI_Thinking = 
     if (timer screen < aiThinkTime)
@@ -116,7 +130,7 @@ updateGame timePassed screen
       else screen
         { state   = Next_Move
         , players = writeMove (players screen) activePlayerPosition
-            (autoHumanMove (getActivePlayer $ players screen) maxBet)
+            (autoHumanMove activePlayer maxBet)
         }
   | state screen == Next_Move =
     if (countInHandPlayers (players screen) == 1)
@@ -143,20 +157,25 @@ updateGame timePassed screen
       else screen
         { state     = Dealing_Hand
         , timer     = 0
-        , players   = changePlayerPositions $ computeHandResults (players screen)
+        , players   = changePlayerPositions $ computeHandResults
+            (players screen) (board screen)
         , handCount = succ $ handCount screen
+        , board     = []
         }
   | otherwise = screen
   where
-    activePlayerType     = control  . getActivePlayer $ players screen
-    activePlayerPosition = position . getActivePlayer $ players screen
-    dealResult     = dealPlayers (players screen) (randomizer screen) createDeck
-    firstPosition  = getFirstPosition (length $ players screen) (street screen)
-    nextPosition   = getNextPositon   (length $ players screen) (street screen)
+    maxBet               = countMaxBet $ players screen
+    activePlayer         = getActivePlayer $ players screen
+    activePlayerType     = control  activePlayer
+    activePlayerPosition = position activePlayer
+    possibleActions      = getPossibleActions activePlayer maxBet
+    dealResult      = dealPlayers (players screen) (randomizer screen) createDeck
+    boardDealResult = dealBoard (randomizer screen) (deck screen) (board screen) (street screen)
+    firstPosition   = getFirstPosition (length $ players screen) (street screen)
+    nextPosition    = getNextPositon   (length $ players screen) (street screen)
                                        activePlayerPosition
-    lastPosition   = getLastPosition  (length $ players screen) (street screen)
-    maxBet         = countMaxBet $ players screen
-    buttonPosition = if (length (players screen) == 2)
+    lastPosition    = getLastPosition  (length $ players screen) (street screen)
+    buttonPosition  = if (length (players screen) == 2)
                       then SB
-                      else BTN 
+                      else BTN
     
