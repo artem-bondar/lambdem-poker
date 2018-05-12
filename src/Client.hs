@@ -91,9 +91,11 @@ updateGame timePassed screen
       , timer = 0
       }
       else screen 
-        { state   = Bet_Round
-        , players = toggleNewActivePlayer (players screen) firstPosition
-        --, board   = dealBoard (board screen) (street screen)
+        { state      = Bet_Round
+        , players    = toggleNewActivePlayer (players screen) firstPosition
+        , board      = fst boardDealResult
+        , randomizer = fst $ snd boardDealResult
+        , deck       = snd $ snd boardDealResult
         }
   | state screen == Bet_Round =
     if (checkSkipForActivePlayer $ players screen)
@@ -157,6 +159,7 @@ updateGame timePassed screen
         , timer     = 0
         , players   = changePlayerPositions $ computeHandResults (players screen)
         , handCount = succ $ handCount screen
+        , board     = []
         }
   | otherwise = screen
   where
@@ -165,12 +168,13 @@ updateGame timePassed screen
     activePlayerType     = control  activePlayer
     activePlayerPosition = position activePlayer
     possibleActions      = getPossibleActions activePlayer maxBet
-    dealResult     = dealPlayers (players screen) (randomizer screen) createDeck
-    firstPosition  = getFirstPosition (length $ players screen) (street screen)
-    nextPosition   = getNextPositon   (length $ players screen) (street screen)
+    dealResult      = dealPlayers (players screen) (randomizer screen) createDeck
+    boardDealResult = dealBoard (randomizer screen) (deck screen) (board screen) (street screen)
+    firstPosition   = getFirstPosition (length $ players screen) (street screen)
+    nextPosition    = getNextPositon   (length $ players screen) (street screen)
                                        activePlayerPosition
-    lastPosition   = getLastPosition  (length $ players screen) (street screen)
-    buttonPosition = if (length (players screen) == 2)
+    lastPosition    = getLastPosition  (length $ players screen) (street screen)
+    buttonPosition  = if (length (players screen) == 2)
                       then SB
                       else BTN
     

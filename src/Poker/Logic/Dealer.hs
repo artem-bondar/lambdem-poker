@@ -46,8 +46,14 @@ performN performOnce n (randomizer, deck) =
   in (fst randomResult : fst nextResult, snd nextResult)
 
 -- | Deal board cards depending on street.
-dealBoard :: StdGen -> Deck -> [Card] -> Street -> [Card]
-dealBoard randomizer deck [] street = []
+dealBoard :: StdGen -> Deck -> [Card] -> Street -> ([Card], (StdGen, Deck))
+dealBoard randomizer deck [] Flop = performN getCard 3 (randomizer, deck)
+dealBoard randomizer deck board street
+  | street == Turn  && length board < 4 ||
+    street == River && length board < 5 = (board ++ [fst randomResult], snd randomResult)
+  | otherwise = (board, (randomizer, deck))
+  where
+    randomResult = getCard randomizer deck
 
 -------------------------------------------------------------------------------
 -- * Operations with players
