@@ -93,6 +93,7 @@ updateGame timePassed screen
       else screen 
         { state   = Bet_Round
         , players = toggleNewActivePlayer (players screen) firstPosition
+        --, board   = dealBoard (board screen) (street screen)
         }
   | state screen == Bet_Round =
     if (checkSkipForActivePlayer $ players screen)

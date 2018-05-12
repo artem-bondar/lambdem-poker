@@ -227,4 +227,4 @@ humanThinkTime = 10.0
 
 -- | Time to display showdown results.
 showdownTime :: Float
-showdownTime = 3.0
+showdownTime = 2.0
