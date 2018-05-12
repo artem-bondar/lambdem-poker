@@ -109,7 +109,7 @@ getMoveFromButtonPressed :: Int -> (ActionType, ActionType) -> Int -> Int -> Pla
 getMoveFromButtonPressed btn actions bet selectedBet player
   | btn == 1  = Move Folded (betSize $ move player)
   | btn == 2  = case fst actions of
-      Check -> Move Checked 0
+      Check -> Move Checked (betSize $ move player)
       Call  -> Move Called bet
       _     -> Move All_In_ed (balance player)
   | otherwise = if (selectedBet /= balance player)
