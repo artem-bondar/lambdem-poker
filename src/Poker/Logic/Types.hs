@@ -16,6 +16,7 @@ data GameState
   = Dealing_Hand
   | Posting_Blinds
   | Bet_Round
+  | Show_Click
   | Waiting_User_Input
   | AI_Thinking
   | Next_Move

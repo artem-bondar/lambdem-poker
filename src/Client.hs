@@ -105,6 +105,10 @@ updateGame timePassed screen
         , sliderData = updateSlideData (sliderData screen)
             (getActivePlayer $ players screen) maxBet (blindSize screen)
         }
+  | state screen == Show_Click = 
+    if (timer screen < clickTime)
+      then screen { timer = timer screen + timePassed }
+      else screen { state = Next_Move }
   | state screen == Waiting_User_Input =
     if (timer screen < humanThinkTime)
       then screen { timer = timer screen + timePassed }
