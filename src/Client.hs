@@ -157,7 +157,8 @@ updateGame timePassed screen
       else screen
         { state     = Dealing_Hand
         , timer     = 0
-        , players   = changePlayerPositions $ computeHandResults (players screen)
+        , players   = changePlayerPositions $ computeHandResults
+            (players screen) (board screen)
         , handCount = succ $ handCount screen
         , board     = []
         }

@@ -178,7 +178,7 @@ data Suit
   | Clubs    -- ^ ♣
   | Hearts   -- ^ ♥
   | Spades   -- ^ ♠
-  deriving (Eq, Bounded, Enum, Show)
+  deriving (Eq, Ord, Bounded, Enum, Show)
 
 -- | Card ranks.
 data CardRank
@@ -195,7 +195,7 @@ data CardRank
   | Queen -- ^ Q
   | King  -- ^ K
   | Ace   -- ^ A
-  deriving (Eq, Bounded, Enum, Show)
+  deriving (Eq, Ord, Bounded, Enum, Show)
 
 -------------------------------------------------------------------------------
 -- * Utility functions
