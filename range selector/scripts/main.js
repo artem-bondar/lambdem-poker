@@ -9,13 +9,11 @@ var field = {
     primitiveSize: undefined,
     width: 13,
     height: 13,
-    range: []
+    range: undefined
 };
-
-/* Initialization of events listeners */
-
-// For whole window
-window.addEventListener('resize', handleResize);
 
 // Loading of grid
 loadSelectorGrid();
+
+// Initialization of events listeners
+window.addEventListener('resize', handleResize);

@@ -48,10 +48,10 @@ data PlayStyleType
 
 -- | Container to hold range of hands.
 data CardRange = CardRange
-{ suitedRange    :: [(CardRank, CardRank)]
-, pairedRange    :: [CardRank]
-, offsuitedRange :: [(CardRank, CardRank)]
-}
+  { suitedRange    :: [(CardRank, CardRank)]
+  , pairedRange    :: [CardRank]
+  , offsuitedRange :: [(CardRank, CardRank)]
+  }
 
 -- | Type of bets.
 data BetType
