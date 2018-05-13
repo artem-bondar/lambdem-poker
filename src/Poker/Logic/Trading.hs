@@ -1,8 +1,9 @@
 -- | Contains stuff to process bet rounds.
 module Poker.Logic.Trading where
 
+import Poker.Logic.Calculations
 import Poker.Logic.Types
-
+import Debug.Trace
 -------------------------------------------------------------------------------
 -- * Operations with positions
 -------------------------------------------------------------------------------
@@ -52,16 +53,16 @@ getSeatOfPosition pos players
 -- * Computations with player(-s)
 -------------------------------------------------------------------------------
 
--- | Check if active player is skippable.
-checkSkipForActivePlayer :: [Player] -> Bool
-checkSkipForActivePlayer [] = False
-checkSkipForActivePlayer players
-  | active $ head players = case action . move $ head players of
+-- | Check if active player is skippable depending on max bet and amount of
+--   players in hand that aren't all-in.
+checkSkipForActivePlayer :: Player -> Int -> Int -> Bool
+checkSkipForActivePlayer player maxBet livePlayers =
+  case action $ move player of
       Bankrupted -> True
       Folded     -> True
       All_In_ed  -> True
-      _          -> False
-  | otherwise = checkSkipForActivePlayer $ tail players
+      Waiting    -> (betSize $ move player) == maxBet && livePlayers == 1 
+      _          -> (betSize $ move player) == maxBet
 
 -- | Return amount of players left in hand.
 countInHandPlayers :: [Player] -> Int
@@ -69,6 +70,16 @@ countInHandPlayers players = foldl1 (+) (map
   (\player -> case action $ move player of
       Bankrupted -> 0
       Folded     -> 0
+      _          -> 1)
+  players)
+
+-- | Return amount of players in hand that can require move.
+countCanMovePlayers :: [Player] -> Int
+countCanMovePlayers players = foldl1 (+) (map
+  (\player -> case action $ move player of
+      Bankrupted -> 0
+      Folded     -> 0
+      All_In_ed  -> 0
       _          -> 1)
   players)
 
@@ -80,14 +91,27 @@ countMaxBet players = maximum (map
 
 -- | Return if repeating of trade is needed.
 checkReTrade :: [Player] -> Int -> Bool
-checkReTrade players bet = or (map
+checkReTrade players bet = any
   (\player ->
-      mv player /= Waiting && mv player /= Folded &&
-      mv player /= All_In_ed && bt player /= bet)
-  players)
+      (mv player == Called || mv player == Raised ||
+       mv player == Checked) &&
+       bt player /= bet)
+  players
   where
     mv p = action  $ move p
     bt p = betSize $ move p
+
+-- | Return if game ended.
+checkGameEnd :: [Player] -> Bool
+checkGameEnd players = sum (map (\player ->
+  if (balance player == 0)
+    then 0
+    else 1) players) == 1
+
+-- | Return if player with given name won the game.
+checkWin :: [Player] -> String -> Bool
+checkWin players playerName = any (\player ->
+  name player == playerName && balance player /= 0) players
 
 -- | Return default move to proposed bet size when human didn't made any input.
 autoHumanMove :: Player -> Int -> Move
@@ -150,12 +174,12 @@ applyMoveResults :: [Player] -> [Player]
 applyMoveResults players = map
   (\player -> player
     { balance  = balance player - bet player
-    , move     = case action $ move player of
-        Bankrupted -> Move Bankrupted 0
-        Folded     -> Move Folded 0
-        All_In_ed  -> Move All_In_ed 0
-        _          -> Move Waiting 0
     , active   = False
+    , move     = case action $ move player of
+      Bankrupted -> Move Bankrupted 0
+      Folded     -> Move Folded 0
+      All_In_ed  -> Move All_In_ed 0
+      _          -> Move Waiting 0
     , invested = invested player + bet player
     })
   players
@@ -171,10 +195,51 @@ computeHandResults players board =
                 Folded -> player
                 _      -> player { balance = balance player + snd tookFromEach })
       (fst tookFromEach)
-    else players
+    else if (notFinished)
+      then computeHandResults clearedPlayers board
+      else clearedPlayers
   where
-    maxInvested = maximum (map (\player -> invested player) players)
-    tookFromEach = takePotFromPlayers players maxInvested
+    maxInvested    = maximum (map (\player -> invested player) players)
+    tookFromEach   = takePotFromPlayers players maxInvested
+    winResults     = markWinnersActive players board
+    markedPlayers  = snd winResults
+    winnersAmount  = fst winResults 
+    minWinning     = minimum (map (\player -> invested player) $
+      filter (\player -> active player) markedPlayers)
+    takeResults    = takePotFromPlayers markedPlayers minWinning
+    takenPlayers   = fst takeResults
+    winnersPot     = snd takeResults
+    winnerAward    = winnersPot `div` winnersAmount
+    leftPart       = winnersPot - winnerAward * winnersAmount
+    awardedPlayers = giveLeftPart leftPart $ map (\player -> case active player of
+      True  -> player { balance = balance player + winnerAward }
+      False -> player) takenPlayers
+    notFinished    = any (\player -> invested player > 0) takenPlayers
+    clearedPlayers = map (\player -> player { active = False }) awardedPlayers
+
+-- | Give award to first active player.
+giveLeftPart :: Int -> [Player] -> [Player]
+giveLeftPart _ [] = []
+giveLeftPart award players 
+  | active $ head players =
+    ((head players) { balance = balance (head players) + award } : tail players)
+  | otherwise = (head players : giveLeftPart award (tail players))
+
+-- | Return amount of winners among player that invested something and mark them as active.    
+markWinnersActive :: [Player] -> [Card] -> (Int, [Player])
+markWinnersActive players board = (winnersAmount, markedPlayers)
+  where
+    combinations = map (\player -> computeCombination (hand player) board) players
+    playersWithCombinations = zip players combinations
+    markedCombinations =
+      map (\(player, combination) -> (invested player > 0, combination)) playersWithCombinations
+    winningCombinations = markWinningCombinations markedCombinations
+    winnersAmount = foldl1 (+) $ map (\x-> case x of
+      True  -> 1
+      False -> 0) winningCombinations
+    markedPlayers = map (\(player, isWinner) -> case isWinner of
+      True  -> player { active = True }
+      False -> player) $ zip players winningCombinations
 
 -- | Take from player part of invested sized in pot.  
 takePotFromPlayer :: Player -> Int -> (Player, Int)
@@ -220,7 +285,7 @@ writeButtonClick btn players
 
 -- | Time to get response from AI player.
 aiThinkTime :: Float
-aiThinkTime = 2.0
+aiThinkTime = 1.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float

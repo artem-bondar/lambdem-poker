@@ -14,7 +14,7 @@ import Poker.Logic.Dealer
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
-import Debug.Trace
+--import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Game launch related functions
@@ -47,6 +47,7 @@ createTableScreenWith generator imgs = TableScreen
   , players    =
     [Player Human " Hero"    1500 SB Bottom Nothing False False 0 (Move Waiting 0) 0,
      Player Human "Opponent" 1500 BB Top    Nothing True  False 0 (Move Waiting 0) 0]
+  , hero       = " Hero"
   , street     = Preflop
   , handCount  = 1
   , dealer     = Bottom
@@ -64,8 +65,12 @@ createTableScreenWith generator imgs = TableScreen
 
 -- | Update game parameters depending on game state.
 updateGame :: Float -> TableScreen -> TableScreen
-updateGame timePassed screen 
-  | state screen == Dealing_Hand = 
+updateGame timePassed screen
+  | state screen == Start_Hand =
+    if (checkGameEnd $ players screen)
+      then screen { state = Finish_Game }
+      else screen { state = Dealing_Hand }
+  | state screen == Dealing_Hand =
     if (timer screen < dealTime)
       then screen { timer = timer screen + timePassed }
       else screen 
@@ -87,8 +92,9 @@ updateGame timePassed screen
   | state screen == Start_Round =
     if (street screen == Showdown)
       then screen
-      { state = Finish_Hand
-      , timer = 0
+      { state   = Finish_Hand
+      , timer   = 0
+      , players = openHands $ players screen
       }
       else screen 
         { state      = Bet_Round
@@ -98,7 +104,8 @@ updateGame timePassed screen
         , deck       = snd $ snd boardDealResult
         }
   | state screen == Bet_Round =
-    if (checkSkipForActivePlayer $ players screen)
+    if (checkSkipForActivePlayer activePlayer maxBet $
+        countCanMovePlayers (players screen))
       then screen { state = Next_Move }
       else screen
         { state = case activePlayerType of
@@ -137,7 +144,7 @@ updateGame timePassed screen
       then screen
         { state   = Finish_Hand
         , timer   = 0
-        , players = applyMoveResults (players screen)
+        , players = openHands $ applyMoveResults (players screen)
         }
       else if (activePlayerPosition == lastPosition)
         then if (checkReTrade (players screen) maxBet)
@@ -148,14 +155,14 @@ updateGame timePassed screen
             , street  = succ $ street screen
             }
         else screen
-          { state   = Bet_Round
-          , players = toggleNewActivePlayer (players screen) nextPosition
-          }
+            { state   = Bet_Round
+            , players = toggleNewActivePlayer (players screen) nextPosition
+            }
   | state screen == Finish_Hand =
     if (timer screen < showdownTime)
       then screen { timer = timer screen + timePassed }
       else screen
-        { state     = Dealing_Hand
+        { state     = Start_Hand
         , timer     = 0
         , players   = changePlayerPositions $ computeHandResults
             (players screen) (board screen)

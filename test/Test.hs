@@ -3,38 +3,40 @@ import Poker.Logic.Types
 
 main :: IO ()
 main = do
-  putStrLn ("\n  1: " ++ show (computeHandRank hand00r))
-  putStrLn ("\n  2: " ++ show (computeHandRank hand00))
-  putStrLn ("\n  3: " ++ show (computeHandRank hand01))
-  putStrLn ("\n  4: " ++ show (computeHandRank hand02))
-  putStrLn ("\n  5: " ++ show (computeHandRank hand03))
-  putStrLn ("\n  6: " ++ show (computeHandRank hand04))
-  putStrLn ("\n  7: " ++ show (computeHandRank hand05))
-  putStrLn ("\n  8: " ++ show (computeHandRank hand06))
-  putStrLn ("\n  9: " ++ show (computeHandRank hand07))
-  putStrLn ("\n 10: " ++ show (computeHandRank hand08))
-  putStrLn ("\n 11: " ++ show (computeHandRank hand09))
-  putStrLn ("\n 12: " ++ show (computeHandRank hand10))
-  putStrLn ("\n 13: " ++ show (computeHandRank hand11))
-  putStrLn ("\n 14: " ++ show (computeHandRank hand12))
-  putStrLn ("\n 14: " ++ show (computeHandRank hand13))
-  putStrLn ("\n" ++ show (getCombination hand00r > getCombination hand00))
-  putStrLn ("\n" ++ show (getCombination hand00  > getCombination hand01))
-  putStrLn ("\n" ++ show (getCombination hand02  > getCombination hand03))
-  putStrLn ("\n" ++ show (getCombination hand03  > getCombination hand04))
-  putStrLn ("\n" ++ show (getCombination hand05  > getCombination hand06))
-  putStrLn ("\n" ++ show (getCombination hand07  > getCombination hand07c))
-  putStrLn ("\n" ++ show (getCombination hand10  > getCombination hand12))
-  putStrLn ("\n" ++ show (getCombination hand12  < getCombination hand12c))
-  putStrLn ("\n" ++ show (getCombination hand09  > getCombination hand09c))
-  putStrLn ("\n" ++ show (getCombination hand08  > getCombination hand08c))
+--   putStrLn ("\n  1: " ++ show (computeHandRank hand00r))
+--   putStrLn ("\n  2: " ++ show (computeHandRank hand00))
+--   putStrLn ("\n  3: " ++ show (computeHandRank hand01))
+--   putStrLn ("\n  4: " ++ show (computeHandRank hand02))
+--   putStrLn ("\n  5: " ++ show (computeHandRank hand03))
+--   putStrLn ("\n  6: " ++ show (computeHandRank hand04))
+--   putStrLn ("\n  7: " ++ show (computeHandRank hand05))
+--   putStrLn ("\n  8: " ++ show (computeHandRank hand06))
+--   putStrLn ("\n  9: " ++ show (computeHandRank hand07))
+--   putStrLn ("\n 10: " ++ show (computeHandRank hand08))
+--   putStrLn ("\n 11: " ++ show (computeHandRank hand09))
+--   putStrLn ("\n 12: " ++ show (computeHandRank hand10))
+--   putStrLn ("\n 13: " ++ show (computeHandRank hand11))
+--   putStrLn ("\n 14: " ++ show (computeHandRank hand12))
+--   putStrLn ("\n 14: " ++ show (computeHandRank hand13))
+--   putStrLn ("\n" ++ show (getCombination hand00r > getCombination hand00))
+--   putStrLn ("\n" ++ show (getCombination hand00  > getCombination hand01))
+--   putStrLn ("\n" ++ show (getCombination hand02  > getCombination hand03))
+--   putStrLn ("\n" ++ show (getCombination hand03  > getCombination hand04))
+--   putStrLn ("\n" ++ show (getCombination hand05  > getCombination hand06))
+--   putStrLn ("\n" ++ show (getCombination hand07  > getCombination hand07c))
+--   putStrLn ("\n" ++ show (getCombination hand10  > getCombination hand12))
+--   putStrLn ("\n" ++ show (getCombination hand12  < getCombination hand12c))
+--   putStrLn ("\n" ++ show (getCombination hand09  > getCombination hand09c))
+--   putStrLn ("\n" ++ show (getCombination hand08  > getCombination hand08c))
+  putStrLn ("\n" ++ show (markWinningCombinations markedCombinations))
   where
     handRankComputations cards = computeHandRank cards
     getCombination cards = Combination
       { handRank  = fst $ handRankComputations cards
       , structure = fst . snd $ handRankComputations cards
       , kicker    = snd . snd $ handRankComputations cards }
-
+    combinations = map getCombination [hand00, hand01, hand02, hand05, hand00r, hand06]
+    markedCombinations = zip (replicate (length combinations) True) combinations
 
 -- | Test cases for combinations.
 

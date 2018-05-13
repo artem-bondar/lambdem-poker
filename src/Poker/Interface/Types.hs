@@ -15,6 +15,7 @@ data TableScreen = TableScreen
   { state      :: GameState   -- ^ current game state
   , timer      :: Float       -- ^ for detecting time  
   , players    :: [Player]    -- ^ info about every player
+  , hero       :: String      -- ^ name of hero
   , street     :: Street      -- ^ current street
   , handCount  :: Int         -- ^ current hand number
   , dealer     :: Seat        -- ^ position of dealer
@@ -29,6 +30,8 @@ data TableScreen = TableScreen
 -- | Contain all images relative to table game screen.
 data TableImages = TableImages
   { background       :: Picture
+  , win              :: Picture
+  , loss             :: Picture
   , table            :: Picture
   , seatBold         :: Picture
   , seatBoldActive   :: Picture

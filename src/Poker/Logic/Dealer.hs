@@ -59,23 +59,26 @@ dealBoard randomizer deck board street
 -- * Operations with players
 -------------------------------------------------------------------------------
 
--- | Take blind from player.
+-- | Take blind from player and mark bankrupted players.
 takeBlind :: Player -> Int -> Player
 takeBlind player blind
     | balance player == 0     = player
+      { move = Move Bankrupted 0 }
     | balance player <= blind = player
       { move = Move All_In_ed (balance player) }
     | otherwise               = player
-      { move = Move Raised blind }
+      { move = Move Waiting blind }
 
--- | Take blinds from players.
+-- | Take blinds from players and mark bankrupted players.
 takeBlinds :: [Player] -> Int -> [Player]
 takeBlinds [] _      = []
 takeBlinds (p:ps) bb = 
   let takeBB player blind = case position player of
         SB -> takeBlind player (blind `div` 2)
         BB -> takeBlind player blind
-        _  -> player
+        _  -> if (balance player == 0)
+          then player { move = Move Bankrupted 0 }
+          else player  
   in (takeBB p bb : takeBlinds ps bb)
 
 -- | Hide hand depending on player type and settings.
@@ -85,6 +88,10 @@ hideHands players = map
         Human -> player { hideHand = hideHumaHand }
         AI    -> player { hideHand = hideAIhand   })
     players
+
+-- | Open all hands.
+openHands :: [Player] -> [Player]
+openHands players = map (\player -> player { hideHand = False }) players
 
 -------------------------------------------------------------------------------
 -- * Constants

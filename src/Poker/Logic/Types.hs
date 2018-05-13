@@ -13,15 +13,17 @@ import Data.List
 
 -- | Possible game states. 
 data GameState
-  = Dealing_Hand
+  = Start_Hand
+  | Dealing_Hand
   | Posting_Blinds
+  | Start_Round
   | Bet_Round
   | Show_Click
   | Waiting_User_Input
   | AI_Thinking
   | Next_Move
-  | Start_Round
   | Finish_Hand
+  | Finish_Game
   deriving (Eq)
 
 -- | Contain all personal player data.
@@ -122,7 +124,7 @@ data Combination = Combination
   { handRank  :: HandRank
   , structure :: [CardRank] -- ^ card ranks to indicate combination strength
   , kicker    :: [CardRank] -- ^ kicker card ranks
-  } deriving (Eq, Ord)
+  } deriving (Eq, Ord, Show)
 
 -- | Hand ranks.
 data HandRank

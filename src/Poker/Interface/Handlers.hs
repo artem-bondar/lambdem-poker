@@ -9,8 +9,6 @@ import Poker.Interface.Offsets
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
-import Debug.Trace
-
 -------------------------------------------------------------------------------
 -- * Handler functions
 -------------------------------------------------------------------------------

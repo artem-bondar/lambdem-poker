@@ -5,7 +5,7 @@ import Data.List (sort)
 
 import Poker.Logic.Types
 
-import Debug.Trace
+--import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Functions to operate with cards
@@ -85,7 +85,8 @@ computeCombination :: Maybe (Card, Card) -> [Card] -> Combination
 computeCombination handCards board = Combination
   { handRank  = fst handRankComputations
   , structure = fst $ snd handRankComputations
-  , kicker    = snd $ snd handRankComputations }
+  , kicker    = snd $ snd handRankComputations
+  }
   where
     handRankComputations = computeHandRank allCards
     allCards = case handCards of
@@ -144,3 +145,17 @@ countRanks cards = foldl (\ranks card -> addRank ranks $ fromEnum (cardRank card
 takeEqualBestN :: Int -> Int -> [Int] -> [Int]
 takeEqualBestN n num list = snd . unzip . take n $ reverse
   (filter (\x -> fst x == num) (zip list [0..12]))
+
+-- | Convert combination list to bool list with marked top combinations.
+--   Receive combination list zipped with bool list that indicates if
+--   the combination require to participate in comparing.
+markWinningCombinations :: [(Bool, Combination)] -> [Bool]
+markWinningCombinations participateAndCombinations = bitWinners
+  where
+    filteredWithIndexes = map (\((_,c),i) -> (c,i)) $ filter (\pAc -> fst $ fst pAc)
+      (zip participateAndCombinations [0..length participateAndCombinations])
+    sorted     = reverse $ sort filteredWithIndexes
+    winners    = (head sorted:takeWhile (\(c, _) -> c == fst (head sorted)) (tail sorted))
+    bitWinners = foldl (\bitmap index ->
+      fst (splitAt index bitmap) ++ [True] ++ tail (snd $ splitAt index bitmap))
+      (replicate (length participateAndCombinations) False) (snd $ unzip winners)
