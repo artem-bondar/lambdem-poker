@@ -15,6 +15,7 @@ data TableScreen = TableScreen
   { state      :: GameState   -- ^ current game state
   , timer      :: Float       -- ^ for detecting time  
   , players    :: [Player]    -- ^ info about every player
+  , hero       :: String      -- ^ name of hero
   , street     :: Street      -- ^ current street
   , handCount  :: Int         -- ^ current hand number
   , dealer     :: Seat        -- ^ position of dealer

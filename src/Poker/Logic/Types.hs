@@ -13,15 +13,17 @@ import Data.List
 
 -- | Possible game states. 
 data GameState
-  = Dealing_Hand
+  = Start_Hand
+  | Dealing_Hand
   | Posting_Blinds
+  | Start_Round
   | Bet_Round
   | Show_Click
   | Waiting_User_Input
   | AI_Thinking
   | Next_Move
-  | Start_Round
   | Finish_Hand
+  | Finish_Game
   deriving (Eq)
 
 -- | Contain all personal player data.

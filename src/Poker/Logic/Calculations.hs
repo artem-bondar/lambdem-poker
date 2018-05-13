@@ -155,7 +155,7 @@ markWinningCombinations participateAndCombinations = bitWinners
     filteredWithIndexes = map (\((_,c),i) -> (c,i)) $ filter (\pAc -> fst $ fst pAc)
       (zip participateAndCombinations [0..length participateAndCombinations])
     sorted     = reverse $ sort filteredWithIndexes
-    winners    = (head sorted:takeWhile (\(c, i) -> c == fst (head sorted)) (tail sorted))
+    winners    = (head sorted:takeWhile (\(c, _) -> c == fst (head sorted)) (tail sorted))
     bitWinners = foldl (\bitmap index ->
       fst (splitAt index bitmap) ++ [True] ++ tail (snd $ splitAt index bitmap))
       (replicate (length participateAndCombinations) False) (snd $ unzip winners)

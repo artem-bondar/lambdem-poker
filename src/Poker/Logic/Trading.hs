@@ -90,6 +90,13 @@ checkReTrade players bet = or (map
     mv p = action  $ move p
     bt p = betSize $ move p
 
+-- | Return if game ended.
+checkGameEnd :: [Player] -> Bool
+checkGameEnd players = sum (map (\player ->
+  if (balance player == 0)
+    then 0
+    else 1) players) == 1
+
 -- | Return default move to proposed bet size when human didn't made any input.
 autoHumanMove :: Player -> Int -> Move
 autoHumanMove player bet
@@ -262,7 +269,7 @@ writeButtonClick btn players
 
 -- | Time to get response from AI player.
 aiThinkTime :: Float
-aiThinkTime = 2.0
+aiThinkTime = 1.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
