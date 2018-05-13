@@ -23,10 +23,10 @@ drawTableScreen screen
   | state screen == Dealing_Hand = pictures ([tableWithDealerChip] ++
       map (\p -> playerOnSeatBold p) (players screen))
   | state screen == Waiting_User_Input ||
-    state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersWithHands,
+    state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersHands, playersBets,
       drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
       (buttonTexts $ images screen) (pressed activePlayer), sliderImage, smallButtons, betWindowImage]
-  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersWithHands] 
+  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersHands, playersBets] 
   where
     chipImages          = (chipLayout $ images screen)
     playerOnSeatBold p  = pictures [drawPlayerSeatBold p (case active p of
@@ -37,8 +37,11 @@ drawTableScreen screen
       drawDealerChip (dealer screen) chipImages]
     potWithBoard        = pictures [drawPot (calculatePot $ players screen) chipImages,
       drawCardsOnTable (board screen) (front . deckLayout $ images screen)]
-    playersWithHands    = pictures (map (\p -> pictures [drawPlayerHand p (deckLayout $ images screen),
-      playerOnSeatBold p, drawPlayerBet p chipImages]) (players screen))
+    playersHands    = pictures (map (\p -> case action $ move p of
+      Bankrupted -> blank
+      Folded     -> blank
+      _          -> pictures [drawPlayerHand p (deckLayout $ images screen)]) (players screen))
+    playersBets     = pictures (map (\p -> pictures [playerOnSeatBold p, drawPlayerBet p chipImages]) (players screen))
     activePlayer    = getActivePlayer $ players screen
     maxBet          = countMaxBet $ players screen
     possibleActions = getPossibleActions activePlayer maxBet
