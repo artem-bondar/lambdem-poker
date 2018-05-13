@@ -125,3 +125,7 @@ betWindowOffset = (buttonOffset * 1.5 - 33, -250)
 -- | Offset for test in bet window.
 betWindowTextOffset :: (Float, Float)
 betWindowTextOffset = (-20, -6)
+
+-- | Vertical offset for result message
+resultMessageOffset :: Float
+resultMessageOffset = 70

@@ -30,6 +30,8 @@ data TableScreen = TableScreen
 -- | Contain all images relative to table game screen.
 data TableImages = TableImages
   { background       :: Picture
+  , win              :: Picture
+  , loss             :: Picture
   , table            :: Picture
   , seatBold         :: Picture
   , seatBoldActive   :: Picture

@@ -15,6 +15,8 @@ import Poker.Logic.Types
 loadedTableImages :: IO TableImages
 loadedTableImages = do
   Just imgBackground     <- loadJuicyPNG "img/background.png"
+  Just imgWin            <- loadJuicyPNG "img/text/win.png"
+  Just imgLoss           <- loadJuicyPNG "img/text/loss.png"
   Just imgTable          <- loadJuicyPNG "img/table.png"
   Just imgSeatBold       <- loadJuicyPNG "img/seatbold.png"
   Just imgSeatBoldActive <- loadJuicyPNG "img/seatbold active.png"
@@ -32,6 +34,8 @@ loadedTableImages = do
   imgsChips              <- loadChipLayout
   return TableImages
     { background       = imgBackground
+    , win              = imgWin
+    , loss             = imgLoss
     , table            = imgTable
     , seatBold         = imgSeatBold
     , seatBoldActive   = imgSeatBoldActive

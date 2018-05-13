@@ -97,6 +97,11 @@ checkGameEnd players = sum (map (\player ->
     then 0
     else 1) players) == 1
 
+-- | Return if player with given name won the game.
+checkWin :: [Player] -> String -> Bool
+checkWin players playerName = any (\player ->
+  name player == playerName && balance player /= 0) players
+
 -- | Return default move to proposed bet size when human didn't made any input.
 autoHumanMove :: Player -> Int -> Move
 autoHumanMove player bet

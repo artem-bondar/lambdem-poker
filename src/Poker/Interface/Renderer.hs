@@ -21,10 +21,12 @@ drawTableScreen screen
   | state screen == Dealing_Hand = pictures ([tableWithDealerChip] ++
       map (\p -> playerOnSeatBold p) (players screen))
   | state screen == Waiting_User_Input ||
-    state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersHands, playersBets,
+    state screen == Show_Click = pictures [tableWithDealerChip, potWithBoard, playersHands, playersWihtBets,
       drawButtons possibleActions (button $ images screen, buttonClicked $ images screen)
       (buttonTexts $ images screen) (pressed activePlayer), sliderImage, smallButtons, betWindowImage]
-  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersHands, playersBets] 
+  | state screen == Finish_Game = pictures [background $ images screen, table $ images screen,
+    playersWihtBets, resultMessage]
+  | otherwise = pictures [tableWithDealerChip, potWithBoard, playersHands, playersWihtBets] 
   where
     chipImages          = (chipLayout $ images screen)
     playerOnSeatBold p  = pictures [drawPlayerSeatBold p (case active p of
@@ -39,7 +41,7 @@ drawTableScreen screen
       Bankrupted -> blank
       Folded     -> blank
       _          -> pictures [drawPlayerHand p (deckLayout $ images screen)]) (players screen))
-    playersBets     = pictures (map (\p -> pictures [playerOnSeatBold p, drawPlayerBet p chipImages]) (players screen))
+    playersWihtBets = pictures (map (\p -> pictures [playerOnSeatBold p, drawPlayerBet p chipImages]) (players screen))
     activePlayer    = getActivePlayer $ players screen
     maxBet          = countMaxBet $ players screen
     possibleActions = getPossibleActions activePlayer maxBet
@@ -53,6 +55,9 @@ drawTableScreen screen
     betWindowImage = case fst possibleActions /= All_In of
       True  -> drawBetWindow (currentValue $ sliderData screen) (betWindow $ images screen)
       False -> blank
+    resultMessage = case checkWin (players screen) (hero screen) of
+      True  -> translate 0 resultMessageOffset (win  $ images screen)
+      False -> translate 0 resultMessageOffset (loss $ images screen)
 
 -- | Draw player seatbold.
 drawPlayerSeatBold :: Player -> Picture -> Picture
