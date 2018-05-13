@@ -172,10 +172,35 @@ computeHandResults players board =
                 Folded -> player
                 _      -> player { balance = balance player + snd tookFromEach })
       (fst tookFromEach)
-    else players
+    else if (notFinished)
+      then computeHandResults clearedPlayers board
+      else clearedPlayers
   where
-    maxInvested = maximum (map (\player -> invested player) players)
-    tookFromEach = takePotFromPlayers players maxInvested
+    maxInvested    = maximum (map (\player -> invested player) players)
+    tookFromEach   = takePotFromPlayers players maxInvested
+    winResults     = markWinnersActive players board
+    markedPlayers  = snd winResults
+    winnersAmount  = fst winResults 
+    minWinning     = minimum (map (\player -> invested player) $
+      filter (\player -> active player) markedPlayers)
+    takeResults    = takePotFromPlayers markedPlayers minWinning
+    takenPlayers   = fst takeResults
+    winnersPot     = snd takeResults
+    winnerAward    = winnersPot `div` winnersAmount
+    leftPart       = winnersPot - winnerAward * winnersAmount
+    awardedPlayers = giveLeftPart leftPart $ map (\player -> case active player of
+      True  -> player { balance = balance player + winnerAward }
+      False -> player) takenPlayers
+    notFinished    = any (\player -> invested player > 0) takenPlayers
+    clearedPlayers = map (\player -> player { active = False }) awardedPlayers
+
+-- | Give award to first active player.
+giveLeftPart :: Int -> [Player] -> [Player]
+giveLeftPart _ [] = []
+giveLeftPart award players 
+  | active $ head players =
+    ((head players) { balance = balance (head players) + award } : tail players)
+  | otherwise = (head players : giveLeftPart award (tail players))
 
 -- | Return amount of winners among player that invested something and mark them as active.    
 markWinnersActive :: [Player] -> [Card] -> (Int, [Player])
