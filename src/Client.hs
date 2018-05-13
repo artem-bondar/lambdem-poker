@@ -5,6 +5,9 @@ import Graphics.Gloss.Interface.Environment (getScreenSize)
 import Graphics.Gloss.Interface.Pure.Game
 import System.Random (StdGen, getStdGen)
 
+import Poker.AI.Engine
+import Poker.AI.Types
+
 import Poker.Interface.Handlers
 import Poker.Interface.Loader
 import Poker.Interface.Renderer

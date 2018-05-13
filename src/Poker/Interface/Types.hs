@@ -4,6 +4,8 @@ module Poker.Interface.Types where
 import Graphics.Gloss.Data.Picture
 import System.Random (StdGen)
 
+import Poker.AI.Types
+
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
