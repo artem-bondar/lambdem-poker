@@ -19,10 +19,13 @@ List of implemented features:
 - time delayed actions
 - fade on button click
 - bottom & up seatbolds
+- detecting end of game
 - automove on timebank end
 - hightlighting of active player
 - calculation of possible actions
+- autoskip when no action is required
 - handling bet rounds until showdown
+- detecting winner(-s) and awarding them 
 - detecting & comparing of poker combinations
 - *another not really cool stuff*
 
@@ -31,13 +34,13 @@ List of implemented features:
 ## Status
 
 One phrase review: \
-*Almost done ... base version*
+*Base version seemed to be done*
 
-Nothing really complete here yet,
-but you can watch the flop, do some moves and play to
-your heart content with a slider.
+Release candidate for base version,
+you can play to your heart content versus yourself, 
+although some bugs are sneaking nearby, probably.
 
-Developing ...
+Developing AI ...
 
 ![serious coding](/docs/images/serious%20coding.gif)
 
@@ -62,3 +65,5 @@ to verify results.
 For launching tests:
 
 `stack test`
+
+*Don't even try to run if you don't know what you're exactly doing!*
