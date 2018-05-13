@@ -14,7 +14,7 @@ import Poker.Logic.Dealer
 import Poker.Logic.Trading
 import Poker.Logic.Types
 
-import Debug.Trace
+--import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Game launch related functions

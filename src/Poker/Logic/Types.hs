@@ -122,7 +122,7 @@ data Combination = Combination
   { handRank  :: HandRank
   , structure :: [CardRank] -- ^ card ranks to indicate combination strength
   , kicker    :: [CardRank] -- ^ kicker card ranks
-  } deriving (Eq, Ord)
+  } deriving (Eq, Ord, Show)
 
 -- | Hand ranks.
 data HandRank

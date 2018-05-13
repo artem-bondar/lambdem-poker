@@ -1,6 +1,7 @@
 -- | Contains stuff to process bet rounds.
 module Poker.Logic.Trading where
 
+import Poker.Logic.Calculations
 import Poker.Logic.Types
 
 -------------------------------------------------------------------------------
@@ -150,12 +151,12 @@ applyMoveResults :: [Player] -> [Player]
 applyMoveResults players = map
   (\player -> player
     { balance  = balance player - bet player
-    , move     = case action $ move player of
-        Bankrupted -> Move Bankrupted 0
-        Folded     -> Move Folded 0
-        All_In_ed  -> Move All_In_ed 0
-        _          -> Move Waiting 0
     , active   = False
+    , move     = case action $ move player of
+      Bankrupted -> Move Bankrupted 0
+      Folded     -> Move Folded 0
+      All_In_ed  -> Move All_In_ed 0
+      _          -> Move Waiting 0
     , invested = invested player + bet player
     })
   players
@@ -175,6 +176,22 @@ computeHandResults players board =
   where
     maxInvested = maximum (map (\player -> invested player) players)
     tookFromEach = takePotFromPlayers players maxInvested
+
+-- | Return amount of winners among player that invested something and mark them as active.    
+markWinnersActive :: [Player] -> [Card] -> (Int, [Player])
+markWinnersActive players board = (winnersAmount, markedPlayers)
+  where
+    combinations = map (\player -> computeCombination (hand player) board) players
+    playersWithCombinations = zip players combinations
+    markedCombinations =
+      map (\(player, combination) -> (invested player > 0, combination)) playersWithCombinations
+    winningCombinations = markWinningCombinations markedCombinations
+    winnersAmount = foldl1 (+) $ map (\x-> case x of
+      True  -> 1
+      False -> 0) winningCombinations
+    markedPlayers = map (\(player, isWinner) -> case isWinner of
+      True  -> player { active = True }
+      False -> player) $ zip players winningCombinations
 
 -- | Take from player part of invested sized in pot.  
 takePotFromPlayer :: Player -> Int -> (Player, Int)
