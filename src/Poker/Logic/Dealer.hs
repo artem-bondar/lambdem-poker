@@ -67,7 +67,7 @@ takeBlind player blind
     | balance player <= blind = player
       { move = Move All_In_ed (balance player) }
     | otherwise               = player
-      { move = Move Raised blind }
+      { move = Move Waiting blind }
 
 -- | Take blinds from players and mark bankrupted players.
 takeBlinds :: [Player] -> Int -> [Player]

@@ -104,7 +104,8 @@ updateGame timePassed screen
         , deck       = snd $ snd boardDealResult
         }
   | state screen == Bet_Round =
-    if (checkSkipForActivePlayer $ players screen)
+    if (checkSkipForActivePlayer activePlayer maxBet $
+        countCanMovePlayers (players screen))
       then screen { state = Next_Move }
       else screen
         { state = case activePlayerType of
@@ -154,9 +155,9 @@ updateGame timePassed screen
             , street  = succ $ street screen
             }
         else screen
-          { state   = Bet_Round
-          , players = toggleNewActivePlayer (players screen) nextPosition
-          }
+            { state   = Bet_Round
+            , players = toggleNewActivePlayer (players screen) nextPosition
+            }
   | state screen == Finish_Hand =
     if (timer screen < showdownTime)
       then screen { timer = timer screen + timePassed }

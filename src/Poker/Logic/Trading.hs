@@ -3,7 +3,7 @@ module Poker.Logic.Trading where
 
 import Poker.Logic.Calculations
 import Poker.Logic.Types
-
+import Debug.Trace
 -------------------------------------------------------------------------------
 -- * Operations with positions
 -------------------------------------------------------------------------------
@@ -53,16 +53,16 @@ getSeatOfPosition pos players
 -- * Computations with player(-s)
 -------------------------------------------------------------------------------
 
--- | Check if active player is skippable.
-checkSkipForActivePlayer :: [Player] -> Bool
-checkSkipForActivePlayer [] = False
-checkSkipForActivePlayer players
-  | active $ head players = case action . move $ head players of
+-- | Check if active player is skippable depending on max bet and amount of
+--   players in hand that aren't all-in.
+checkSkipForActivePlayer :: Player -> Int -> Int -> Bool
+checkSkipForActivePlayer player maxBet livePlayers =
+  case action $ move player of
       Bankrupted -> True
       Folded     -> True
       All_In_ed  -> True
-      _          -> False
-  | otherwise = checkSkipForActivePlayer $ tail players
+      Waiting    -> (betSize $ move player) == maxBet && livePlayers == 1 
+      _          -> (betSize $ move player) == maxBet
 
 -- | Return amount of players left in hand.
 countInHandPlayers :: [Player] -> Int
@@ -70,6 +70,16 @@ countInHandPlayers players = foldl1 (+) (map
   (\player -> case action $ move player of
       Bankrupted -> 0
       Folded     -> 0
+      _          -> 1)
+  players)
+
+-- | Return amount of players in hand that can require move.
+countCanMovePlayers :: [Player] -> Int
+countCanMovePlayers players = foldl1 (+) (map
+  (\player -> case action $ move player of
+      Bankrupted -> 0
+      Folded     -> 0
+      All_In_ed  -> 0
       _          -> 1)
   players)
 
@@ -81,11 +91,12 @@ countMaxBet players = maximum (map
 
 -- | Return if repeating of trade is needed.
 checkReTrade :: [Player] -> Int -> Bool
-checkReTrade players bet = or (map
+checkReTrade players bet = any
   (\player ->
-      mv player /= Waiting && mv player /= Folded &&
-      mv player /= All_In_ed && bt player /= bet)
-  players)
+      (mv player == Called || mv player == Raised ||
+       mv player == Checked) &&
+       bt player /= bet)
+  players
   where
     mv p = action  $ move p
     bt p = betSize $ move p
