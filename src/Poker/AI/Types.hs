@@ -9,25 +9,86 @@ import Poker.Logic.Types
 -- * Declarations
 -------------------------------------------------------------------------------
 
+-- | Additional player data for AI needs.
 data AIPlayer = AIPlayer
   { hand       :: [Card]    -- ^ dealt hand
+  , suited     :: Bool      -- ^ if hand is suited
+  , paired     :: Bool      -- ^ if hand is paired
   , board      :: [Card]    -- ^ current board
   , playStyle  :: PlayStyle -- ^ type of play style
   , pfr        :: Bool      -- ^ preflop raise
   , randomizer :: StdGen    -- ^ random number generator
   }
 
+-- | Data about game patterns.
 data PlayStyle = PlayStyle
-  { playStyleType :: PlayStyleType
-
+  { playStyleType   :: PlayStyleType    -- ^ name of playstyle
+  , betRangePF      :: BetRange         -- ^ in big blinds
+  , callPFSmall     :: CardRange        -- ^ range to call on preflop
+  , callPFMedium    :: CardRange        -- ^ range to call on preflop
+  , callPFBig       :: CardRange        -- ^ range to call on preflop
+  , raisePF         :: CardRange        -- ^ range to raise on preflop
+  , pushPF          :: CardRange        -- ^ range to push  on preflop 
+  , cbet            :: Int              -- ^ % to cbet flop
+  , handPower       :: CombinationRange -- ^ range of hand power
+  , betRangePostF   :: BetRange         -- ^ in % relative to hand power
+  , callRangePostF  :: BetRange         -- ^ in % relative to hand power
+  , raiseRangePostF :: BetRange         -- ^ in % relative to hand power
+  , betSizings      :: BetSizings       -- ^ sizings for bets
   }
 
+-- | Play style types.
 data PlayStyleType
-  = Telephone
-  | Passive
-  | Tight
-  | Aggresive
-  | Random
+  = Telephone  -- ^ opens very huge range, raises almost never
+  | Passive    -- ^ opens      huge range, raises occasionally
+  | Loose      -- ^ opens       big range, raises periodically 
+  | Tight      -- ^ opens     small range, raises often
+  | Aggresive  -- ^ opens    medium range, raises very often 
+  | Random     -- ^ choose one of previous five lines to act
+
+-- | Container to hold range of hands.
+data CardRange = CardRange
+{ suitedRange    :: [(CardRank, CardRank)]
+, pairedRange    :: [CardRank]
+, offsuitedRange :: [(CardRank, CardRank)]
+}
+
+-- | Type of bets.
+data BetType
+  = Small_Bet
+  | Medium_Bet
+  | Big_Bet
+  | Huge_bet
+
+-- | Container to hold range of bets.
+data BetRange = BetRange
+  { smallBet  :: Int
+  , mediumBet :: Int
+  , bigBet    :: Int
+  , hugeBet   :: Int
+  }
+
+-- | Type of hand power.
+data HandPower
+  = Weak_Hand
+  | Medium_Hand
+  | Strong_Hand
+  | Monster_Hand
+
+-- | Container to hold range of combinations.
+data CombinationRange = CombinationRange
+  { weakHand    :: Combination
+  , mediumHand  :: Combination
+  , strongHand  :: Combination
+  , monsterHand :: Combination
+  }
+
+-- | Container to hold bet sizings.
+data BetSizings = BetSizings
+  { raisePF    :: Int
+  , betPostF   :: Int
+  , raisePostF :: Int
+  }
 
 -------------------------------------------------------------------------------
 -- * Constructors

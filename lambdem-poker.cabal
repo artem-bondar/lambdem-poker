@@ -16,6 +16,7 @@ library
   exposed-modules:     
     Client
     Poker.AI.Engine
+    Poker.AI.Ranges
     Poker.AI.Types
     Poker.Interface.Handlers
     Poker.Interface.Loader

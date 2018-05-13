@@ -4,6 +4,7 @@ module Poker.Logic.Trading where
 import Poker.Logic.Calculations
 import Poker.Logic.Types
 import Debug.Trace
+
 -------------------------------------------------------------------------------
 -- * Operations with positions
 -------------------------------------------------------------------------------
