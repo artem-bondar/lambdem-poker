@@ -11,13 +11,12 @@ import Poker.Logic.Types
 
 -- | Additional player data for AI needs.
 data AIPlayer = AIPlayer
-  { hand       :: [Card]    -- ^ dealt hand
+  { cards      :: [Card]    -- ^ dealt cards, including board
   , suited     :: Bool      -- ^ if hand is suited
   , paired     :: Bool      -- ^ if hand is paired
-  , board      :: [Card]    -- ^ current board
   , playStyle  :: PlayStyle -- ^ type of play style
   , pfr        :: Bool      -- ^ preflop raise
-  , randomizer :: StdGen    -- ^ random number generator
+  , rng        :: StdGen    -- ^ random number generator
   }
 
 -- | Data about game patterns.
@@ -27,8 +26,8 @@ data PlayStyle = PlayStyle
   , callPFSmall     :: CardRange        -- ^ range to call on preflop
   , callPFMedium    :: CardRange        -- ^ range to call on preflop
   , callPFBig       :: CardRange        -- ^ range to call on preflop
-  , raisePF         :: CardRange        -- ^ range to raise on preflop
-  , pushPF          :: CardRange        -- ^ range to push  on preflop 
+  , raisePFRange    :: CardRange        -- ^ range to raise on preflop
+  , pushPFRange     :: CardRange        -- ^ range to push  on preflop 
   , cbet            :: Int              -- ^ % to cbet flop
   , handPower       :: CombinationRange -- ^ range of hand power
   , betRangePostF   :: BetRange         -- ^ in % relative to hand power
@@ -86,6 +85,7 @@ data CombinationRange = CombinationRange
 -- | Container to hold bet sizings.
 data BetSizings = BetSizings
   { raisePF    :: Int
+  , cbetFlop   :: Int
   , betPostF   :: Int
   , raisePostF :: Int
   }
