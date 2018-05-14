@@ -33,7 +33,7 @@ data PlayStyle = PlayStyle
   , betRangePostF     :: BetRange         -- ^ in % relative to hand power
   , callRangePostF    :: BetRange         -- ^ in % relative to hand power
   , raiseRangePostF   :: BetRange         -- ^ in % relative to hand power
-  , betSizings        :: BetSizings       -- ^ sizings for bets
+  , betSizings        :: BetSizings       -- ^ sizings for bets in %
   }
 
 -- | Play style types.
@@ -76,11 +76,11 @@ data HandPower
 
 -- | Container to hold ranges of hands.
 data HandRangePF = HandRangePF
-{ vpipRange     :: CardRange
-, pfrRange      :: CardRange
-, 3bRange       :: CardRange
-, pushRange     :: CardRange
-}
+  { vpipRange :: CardRange
+  , pfrRange  :: CardRange
+  , 3bRange   :: CardRange
+  , pushRange :: CardRange
+  }
 
 -- | Container to hold range of combinations.
 data CombinationRange = CombinationRange
@@ -92,13 +92,87 @@ data CombinationRange = CombinationRange
 
 -- | Container to hold bet sizings.
 data BetSizings = BetSizings
-  { raisePF    :: Int
-  , cbetFlop   :: Int
-  , betPostF   :: Int
-  , raisePostF :: Int
+  { raisePF         :: Int
+  , cbetFlop        :: Int
+  , betPostF        :: Int
+  , betDistribution :: Int
+  , raisePostF      :: Int
   }
 
 -------------------------------------------------------------------------------
 -- * Constructors
 -------------------------------------------------------------------------------
 
+-- | Telephone.
+getTelephonePlaystyle :: PlayStyle
+getTelephonePlaystyle =
+  { playStyleType  = Telephone
+  , betSizeRangePF = BetRange -- in big blinds
+      { smallBet  = 4
+      , mediumBet = 8 
+      , bigBet    = 12
+      , hugeBet   = 20
+      }
+  , PFHandPower = HandRangePF
+      { vpipRange = seventyOpen
+      , pfrRange  = bestPremium
+      , 3bRange   = bestPremium
+      , pushRange = highPremium
+      }
+  , betRangePF = BetRange -- in %
+      { smallBet  = 100
+      , mediumBet = 100 
+      , bigBet    = 100
+      , hugeBet   = 100
+      }
+    , callRangePF = BetRange -- in %
+      { smallBet  = 90
+      , mediumBet = 100
+      , bigBet    = 100
+      , hugeBet   = 100
+      }
+    , raiseRangePF = BetRange -- in %
+      { smallBet  = 1
+      , mediumBet = 90
+      , bigBet    = 80
+      , hugeBet   = 70
+      }
+    , cbet = 0
+    , betSizeRangePostF = BetRange -- in % of pot
+      { smallBet  = 30
+      , mediumBet = 60
+      , bigBet    = 80
+      , hugeBet   = 120
+      }
+  , handPower = CombinationRange
+      { weakHand    = Combination Two_pair [Ace, King] []
+      , mediumHand  = Combination Straight [Ace] []
+      , strongHand  = Combination Flush [Ace] []
+      , monsterHand = Combination Full_house [Ace, King] []
+      }
+  , betRangePostF = BetRange -- in %
+      { smallBet  = 5
+      , mediumBet = 15
+      , bigBet    = 25
+      , hugeBet   = 40
+      }
+    , callRangePostF = BetRange -- in %
+      { smallBet  = 80
+      , mediumBet = 95
+      , bigBet    = 100
+      , hugeBet   = 100
+      }
+    , raiseRangePostF = BetRange -- in %
+      { smallBet  = 0
+      , mediumBet = 3
+      , bigBet    = 7
+      , hugeBet   = 12
+      }
+    , betSizings = BetSizings
+      { raisePF         = 200
+      , cbetFlop        = 0
+      , betPostF        = 40
+      , betDistribution = 10
+      , raisePostF      = 200
+      }
+  }
