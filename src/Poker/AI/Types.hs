@@ -11,10 +11,13 @@ import Poker.Logic.Types.Cards
 
 -- | Additional player data for AI needs.
 data AIPlayer = AIPlayer
-  { cards     :: [Card]    -- ^ dealt cards, including board
-  , playStyle :: PlayStyle -- ^ type of play style
-  , pfr       :: Bool      -- ^ made preflop raise
-  , rng       :: StdGen    -- ^ random number generator
+  { cards         :: [Card]    -- ^ dealt cards, including board
+  , playStyle     :: PlayStyle -- ^ type of play style
+  , madePfr       :: Bool      -- ^ made preflop raise
+  , madeCbet      :: Bool      -- ^ made cbet on flop
+  , madeSndBarrel :: Bool      -- ^ made second barrel on turn
+  , madeTrdBarrel :: Bool      -- ^ made third  barrel on river
+  , rng           :: StdGen    -- ^ random number generator
   }
 
 -- | Data about game patterns.
@@ -26,6 +29,8 @@ data PlayStyle = PlayStyle
   , callRangePF       :: BetRange         -- ^ in % relative to hand power
   , raiseRangePF      :: BetRange         -- ^ in % relative to hand power
   , cbet              :: Int              -- ^ % to cbet flop
+  , sndBarrel         :: Int              -- ^ % to barrel turn  after cbet
+  , thdBarrel         :: Int              -- ^ % to barrel river after turn
   , betSizeRangePostF :: BetRange         -- ^ in % of pot
   , handPower         :: CombinationRange -- ^ range of hand power
   , betRangePostF     :: BetRange         -- ^ in % relative to hand power
@@ -55,7 +60,8 @@ data BetType
   = Small_Bet
   | Medium_Bet
   | Big_Bet
-  | Huge_bet
+  | Huge_Bet
+  deriving (Eq)
 
 -- | Container to hold range of bets.
 data BetRange = BetRange

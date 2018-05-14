@@ -222,7 +222,11 @@ computeHandResults players board =
     clearedPlayers = map (\player -> player { active = False }) awardedPlayers
     clearAIData pl = map (\player -> player { aiData = case aiData player of
       Nothing       -> Nothing
-      Just handData -> Just handData { pfr = False }}) pl
+      Just handData -> Just handData
+        { madePfr       = False
+        , madeCbet      = False
+        , madeSndBarrel = False
+        , madeTrdBarrel = False }}) pl
 
 -- | Give award to first active player.
 giveLeftPart :: Int -> [Player] -> [Player]
