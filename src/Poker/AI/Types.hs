@@ -21,19 +21,19 @@ data AIPlayer = AIPlayer
 
 -- | Data about game patterns.
 data PlayStyle = PlayStyle
-  { playStyleType   :: PlayStyleType    -- ^ name of playstyle
-  , betRangePF      :: BetRange         -- ^ in big blinds
-  , callPFSmall     :: CardRange        -- ^ range to call on preflop
-  , callPFMedium    :: CardRange        -- ^ range to call on preflop
-  , callPFBig       :: CardRange        -- ^ range to call on preflop
-  , raisePFRange    :: CardRange        -- ^ range to raise on preflop
-  , pushPFRange     :: CardRange        -- ^ range to push  on preflop 
-  , cbet            :: Int              -- ^ % to cbet flop
-  , handPower       :: CombinationRange -- ^ range of hand power
-  , betRangePostF   :: BetRange         -- ^ in % relative to hand power
-  , callRangePostF  :: BetRange         -- ^ in % relative to hand power
-  , raiseRangePostF :: BetRange         -- ^ in % relative to hand power
-  , betSizings      :: BetSizings       -- ^ sizings for bets
+  { playStyleType     :: PlayStyleType    -- ^ name of playstyle
+  , betSizeRangePF    :: BetRange         -- ^ in big blinds
+  , PFHandPower       :: HandRangePF      -- ^ range of preflop hand 
+  , betRangePF        :: BetRange         -- ^ in % relative to hand power
+  , callRangePF       :: BetRange         -- ^ in % relative to hand power
+  , raiseRangePF      :: BetRange         -- ^ in % relative to hand power
+  , cbet              :: Int              -- ^ % to cbet flop
+  , betSizeRangePostF :: BetRange         -- ^ in % of pot
+  , handPower         :: CombinationRange -- ^ range of hand power
+  , betRangePostF     :: BetRange         -- ^ in % relative to hand power
+  , callRangePostF    :: BetRange         -- ^ in % relative to hand power
+  , raiseRangePostF   :: BetRange         -- ^ in % relative to hand power
+  , betSizings        :: BetSizings       -- ^ sizings for bets
   }
 
 -- | Play style types.
@@ -73,6 +73,14 @@ data HandPower
   | Medium_Hand
   | Strong_Hand
   | Monster_Hand
+
+-- | Container to hold ranges of hands.
+data HandRangePF = HandRangePF
+{ vpipRange     :: CardRange
+, pfrRange      :: CardRange
+, 3bRange       :: CardRange
+, pushRange     :: CardRange
+}
 
 -- | Container to hold range of combinations.
 data CombinationRange = CombinationRange
