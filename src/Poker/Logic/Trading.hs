@@ -1,6 +1,8 @@
 -- | Contains stuff to process bet rounds.
 module Poker.Logic.Trading where
 
+import Poker.AI.Types
+
 import Poker.Logic.Calculations
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
@@ -188,7 +190,8 @@ applyMoveResults players = map
     bet p = betSize $ move p
 
 -- | Find out hand results and reward winner(-s) or split pot if draw.
---   Also open all cards that should be shown at showdown. 
+--   Also open all cards that should be shown at showdown.
+--   Vanish AI data relative to hand.
 computeHandResults :: [Player] -> [Card] -> [Player]
 computeHandResults players board =
   if (countInHandPlayers players == 1)
@@ -198,7 +201,7 @@ computeHandResults players board =
       (fst tookFromEach)
     else if (notFinished)
       then computeHandResults clearedPlayers board
-      else clearedPlayers
+      else clearAIData clearedPlayers
   where
     maxInvested    = maximum (map (\player -> invested player) players)
     tookFromEach   = takePotFromPlayers players maxInvested
@@ -217,6 +220,9 @@ computeHandResults players board =
       False -> player) takenPlayers
     notFinished    = any (\player -> invested player > 0) takenPlayers
     clearedPlayers = map (\player -> player { active = False }) awardedPlayers
+    clearAIData pl = map (\player -> player { aiData = case aiData player of
+      Nothing       -> Nothing
+      Just handData -> Just handData { pfr = False }}) pl
 
 -- | Give award to first active player.
 giveLeftPart :: Int -> [Player] -> [Player]

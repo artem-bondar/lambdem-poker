@@ -61,7 +61,7 @@ data Card = Card
   { cardRank :: CardRank
   , suit     :: Suit
   }
-  deriving (Eq)
+  deriving (Eq, Ord)
 
 -- | Derive 'Show' class for 'Card'.
 instance Show Card where

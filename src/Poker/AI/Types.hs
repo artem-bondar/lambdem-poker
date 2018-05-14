@@ -1,6 +1,8 @@
 -- | All AI related types are declared here.
 module Poker.AI.Types where
 
+import System.Random (StdGen)
+
 import Poker.Logic.Types.Cards
 
 -------------------------------------------------------------------------------
@@ -10,10 +12,9 @@ import Poker.Logic.Types.Cards
 -- | Additional player data for AI needs.
 data AIPlayer = AIPlayer
   { cards     :: [Card]    -- ^ dealt cards, including board
-  , suited    :: Bool      -- ^ if hand is suited
-  , paired    :: Bool      -- ^ if hand is paired
   , playStyle :: PlayStyle -- ^ type of play style
   , pfr       :: Bool      -- ^ made preflop raise
+  , rng       :: StdGen    -- ^ random number generator
   }
 
 -- | Data about game patterns.
