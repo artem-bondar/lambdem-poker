@@ -3,7 +3,8 @@ module Poker.Logic.Dealer where
 
 import System.Random (StdGen, randomR)
 
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Operations with cards

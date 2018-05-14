@@ -3,7 +3,7 @@ module Poker.Logic.Calculations where
 
 import Data.List (sort)
 
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
 
 --import Debug.Trace
 

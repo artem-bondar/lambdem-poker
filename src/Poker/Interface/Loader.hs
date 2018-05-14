@@ -5,7 +5,9 @@ import Graphics.Gloss.Juicy (loadJuicyPNG)
 import Graphics.Gloss.Data.Picture
 
 import Poker.Interface.Types
-import Poker.Logic.Types
+
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Load functions

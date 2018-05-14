@@ -15,7 +15,8 @@ import Poker.Interface.Types
 
 import Poker.Logic.Dealer
 import Poker.Logic.Trading
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 --import Debug.Trace
 
@@ -48,8 +49,10 @@ createTableScreenWith generator imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
-    [Player Human " Hero"    1500 SB Bottom Nothing False False 0 (Move Waiting 0) 0,
-     Player Human "Opponent" 1500 BB Top    Nothing True  False 0 (Move Waiting 0) 0]
+    [Player Human " Hero"    1500 SB Bottom Nothing
+     False False 0 (Move Waiting 0) 0 Nothing,
+     Player Human "Opponent" 1500 BB Top    Nothing
+     True  False 0 (Move Waiting 0) 0 Nothing]
   , hero       = " Hero"
   , street     = Preflop
   , handCount  = 1

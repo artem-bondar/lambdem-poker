@@ -2,8 +2,8 @@
 module Poker.Logic.Trading where
 
 import Poker.Logic.Calculations
-import Poker.Logic.Types
-import Debug.Trace
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Operations with positions

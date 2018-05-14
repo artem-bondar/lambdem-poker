@@ -1,7 +1,10 @@
 -- | Contains constructors for playstyles.
 module Poker.AI.PlayStyles where
 
+import Poker.AI.Ranges
 import Poker.AI.Types
+
+import Poker.Logic.Types.Cards
 
 -------------------------------------------------------------------------------
 -- * Constructors

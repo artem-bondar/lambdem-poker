@@ -9,7 +9,8 @@ import Poker.Interface.Types
 import Poker.Interface.Offsets
 
 import Poker.Logic.Trading
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Render functions
