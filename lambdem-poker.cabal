@@ -16,6 +16,7 @@ library
   exposed-modules:     
     Client
     Poker.AI.Engine
+    Poker.AI.PlayStyles
     Poker.AI.Ranges
     Poker.AI.Types
     Poker.Interface.Handlers
@@ -26,7 +27,8 @@ library
     Poker.Logic.Calculations
     Poker.Logic.Dealer
     Poker.Logic.Trading
-    Poker.Logic.Types
+    Poker.Logic.Types.Cards
+    Poker.Logic.Types.Game
   build-depends:       base >= 4.7 && < 5
                      , gloss
                      , gloss-juicy

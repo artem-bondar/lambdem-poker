@@ -1,9 +1,7 @@
 -- | All AI related types are declared here.
 module Poker.AI.Types where
 
-import System.Random (StdGen)
-
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
 
 -------------------------------------------------------------------------------
 -- * Declarations
@@ -11,19 +9,18 @@ import Poker.Logic.Types
 
 -- | Additional player data for AI needs.
 data AIPlayer = AIPlayer
-  { cards      :: [Card]    -- ^ dealt cards, including board
-  , suited     :: Bool      -- ^ if hand is suited
-  , paired     :: Bool      -- ^ if hand is paired
-  , playStyle  :: PlayStyle -- ^ type of play style
-  , pfr        :: Bool      -- ^ preflop raise
-  , rng        :: StdGen    -- ^ random number generator
+  { cards     :: [Card]    -- ^ dealt cards, including board
+  , suited    :: Bool      -- ^ if hand is suited
+  , paired    :: Bool      -- ^ if hand is paired
+  , playStyle :: PlayStyle -- ^ type of play style
+  , pfr       :: Bool      -- ^ made preflop raise
   }
 
 -- | Data about game patterns.
 data PlayStyle = PlayStyle
   { playStyleType     :: PlayStyleType    -- ^ name of playstyle
   , betSizeRangePF    :: BetRange         -- ^ in big blinds
-  , PFHandPower       :: HandRangePF      -- ^ range of preflop hand 
+  , pfHandPower       :: HandRangePF      -- ^ range of preflop hand
   , betRangePF        :: BetRange         -- ^ in % relative to hand power
   , callRangePF       :: BetRange         -- ^ in % relative to hand power
   , raiseRangePF      :: BetRange         -- ^ in % relative to hand power
@@ -76,10 +73,10 @@ data HandPower
 
 -- | Container to hold ranges of hands.
 data HandRangePF = HandRangePF
-  { vpipRange :: CardRange
-  , pfrRange  :: CardRange
-  , 3bRange   :: CardRange
-  , pushRange :: CardRange
+  { vpipRange  :: CardRange
+  , pfrRange   :: CardRange
+  , raiseRange :: CardRange
+  , pushRange  :: CardRange
   }
 
 -- | Container to hold range of combinations.
@@ -97,82 +94,4 @@ data BetSizings = BetSizings
   , betPostF        :: Int
   , betDistribution :: Int
   , raisePostF      :: Int
-  }
-
--------------------------------------------------------------------------------
--- * Constructors
--------------------------------------------------------------------------------
-
--- | Telephone.
-getTelephonePlaystyle :: PlayStyle
-getTelephonePlaystyle =
-  { playStyleType  = Telephone
-  , betSizeRangePF = BetRange -- in big blinds
-      { smallBet  = 4
-      , mediumBet = 8 
-      , bigBet    = 12
-      , hugeBet   = 20
-      }
-  , PFHandPower = HandRangePF
-      { vpipRange = seventyOpen
-      , pfrRange  = bestPremium
-      , 3bRange   = bestPremium
-      , pushRange = highPremium
-      }
-  , betRangePF = BetRange -- in %
-      { smallBet  = 100
-      , mediumBet = 100 
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , callRangePF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 100
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePF = BetRange -- in %
-      { smallBet  = 1
-      , mediumBet = 90
-      , bigBet    = 80
-      , hugeBet   = 70
-      }
-    , cbet = 0
-    , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 30
-      , mediumBet = 60
-      , bigBet    = 80
-      , hugeBet   = 120
-      }
-  , handPower = CombinationRange
-      { weakHand    = Combination Two_pair [Ace, King] []
-      , mediumHand  = Combination Straight [Ace] []
-      , strongHand  = Combination Flush [Ace] []
-      , monsterHand = Combination Full_house [Ace, King] []
-      }
-  , betRangePostF = BetRange -- in %
-      { smallBet  = 5
-      , mediumBet = 15
-      , bigBet    = 25
-      , hugeBet   = 40
-      }
-    , callRangePostF = BetRange -- in %
-      { smallBet  = 80
-      , mediumBet = 95
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePostF = BetRange -- in %
-      { smallBet  = 0
-      , mediumBet = 3
-      , bigBet    = 7
-      , hugeBet   = 12
-      }
-    , betSizings = BetSizings
-      { raisePF         = 200
-      , cbetFlop        = 0
-      , betPostF        = 40
-      , betDistribution = 10
-      , raisePostF      = 200
-      }
   }
