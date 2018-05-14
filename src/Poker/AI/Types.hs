@@ -13,7 +13,7 @@ import Poker.Logic.Types.Cards
 data AIPlayer = AIPlayer
   { cards         :: [Card]    -- ^ dealt cards, including board
   , playStyle     :: PlayStyle -- ^ type of play style
-  , madePfr       :: Bool      -- ^ made preflop raise
+  , madePFR       :: Bool      -- ^ made preflop raise
   , madeCbet      :: Bool      -- ^ made cbet on flop
   , madeSndBarrel :: Bool      -- ^ made second barrel on turn
   , madeTrdBarrel :: Bool      -- ^ made third  barrel on river

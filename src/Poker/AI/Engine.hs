@@ -7,8 +7,6 @@ import System.Random (StdGen, mkStdGen, randomR)
 import Poker.AI.PlayStyles (getTelephonePlaystyle)
 import Poker.AI.Types
 
-import Poker.Interface.Types
-
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
 
@@ -20,9 +18,9 @@ import Poker.Logic.Types.Game
 --   playstyle, incoming bet, blind size, pot and street.
 calculateAIMove :: Player -> Int -> Int -> Int -> Street -> (Move, AIPlayer)
 calculateAIMove player bet bb pot street
-  | street == Preflop = case action flopMove == Raised && madePfr aiDataRaw == False of
-      True  -> (flopMove, aiDataRaw { madePfr = True  })
-      False -> (flopMove, aiDataRaw { madePfr = False })
+  | street == Preflop = case action flopMove == Raised && madePFR aiDataRaw == False of
+      True  -> (flopMove, aiDataRaw { madePFR = True  })
+      False -> (flopMove, aiDataRaw { madePFR = False })
   | otherwise = (Move Folded 0, aiDataRaw)
   where
     flopMove  = calculateFlopMove (cards aiDataRaw) (playStyle aiDataRaw)
@@ -34,7 +32,7 @@ calculateAIMove player bet bb pot street
 -- | Calculate move on flop depending on hand, playstyle, made bet, incoming bet, max bet
 --   blind size and bet sizings.
 calculateFlopMove :: [Card] -> PlayStyle -> Int -> Int -> Int -> Int -> Move
-calculateFlopMove hand playstyle madeBet bet maxBet bb
+calculateFlopMove handPF playstyle madeBet bet maxBet bb
   | bet == bb = case suggestedMove of
     Fold -> if (madeBet == bb)
       then checkMove
@@ -65,7 +63,7 @@ calculateFlopMove hand playstyle madeBet bet maxBet bb
     _      -> foldMove
   where
     betSizeType   = evalBet (bet `div` bb) (betRangePF playstyle)
-    suggestedMove = suggestPFMove hand (pfHandPower playstyle)
+    suggestedMove = suggestPFMove handPF (pfHandPower playstyle)
     raiseBet      = (bet * (raisePF $ betSizings playstyle)) `div` 100
     foldMove      = Move Folded  madeBet
     checkMove     = Move Checked bet
@@ -84,7 +82,7 @@ updateAIData player board = player { aiData = newAiData }
   where
     playerHand = case hand player of
       Nothing    -> []
-      Just cards -> [fst cards, snd cards]
+      Just crds  -> [fst crds, snd crds]
     newAiData  = case aiData player of
       Nothing       -> Nothing
       Just handData -> Just (handData {cards = playerHand ++ board })
@@ -105,13 +103,13 @@ checkChance chance randomizer = (fst randomResult <= chance, snd randomResult)
 
 -- | Return if hand is in range.
 checkRange :: [Card] -> CardRange -> Bool
-checkRange cards range
+checkRange handPF range
   | isPaired  = fst ranks `elem` (pairedRange    range)
   | isSuited  =     ranks `elem` (suitedRange    range)
   | otherwise =     ranks `elem` (offsuitedRange range)
   where
-    fstCard  = head $        sort cards
-    sndCard  = head . tail $ sort cards
+    fstCard  = head $        sort handPF
+    sndCard  = head . tail $ sort handPF
     ranks    = (cardRank fstCard, cardRank sndCard)
     isPaired = fst ranks == snd ranks
     isSuited = suit fstCard == suit sndCard
@@ -134,9 +132,9 @@ evalHand combination range
 
 -- | Return suggested move for hand on preflop.
 suggestPFMove :: [Card] -> HandRangePF -> ActionType
-suggestPFMove hand range
-  | checkRange hand (pushRange  range) = All_In
-  | checkRange hand (raiseRange range) = Raise
-  | checkRange hand (pfrRange   range) = Bet
-  | checkRange hand (vpipRange  range) = Call
+suggestPFMove handPF range
+  | checkRange handPF (pushRange  range) = All_In
+  | checkRange handPF (raiseRange range) = Raise
+  | checkRange handPF (pfrRange   range) = Bet
+  | checkRange handPF (vpipRange  range) = Call
   | otherwise                          = Fold

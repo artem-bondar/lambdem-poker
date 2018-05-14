@@ -223,7 +223,7 @@ computeHandResults players board =
     clearAIData pl = map (\player -> player { aiData = case aiData player of
       Nothing       -> Nothing
       Just handData -> Just handData
-        { madePfr       = False
+        { madePFR       = False
         , madeCbet      = False
         , madeSndBarrel = False
         , madeTrdBarrel = False }}) pl
