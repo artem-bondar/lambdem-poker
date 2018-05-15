@@ -48,7 +48,7 @@ split the pot (more common than one would think).
 
 ## 5. Hand Rankings
 
-<img src="images/hand ranking.jpg" width="65%">
+<img src="images/hand ranking.jpg" width="50%">
 
 The following is the ranking of poker hands, from best to worst. Note that all poker hands include exactly five cards:
  - Straight Flush – five cards of the same suit and in consecutive rank (i.e. 4, 5, 6, 7, 8, all spades). The highest Straight flush
