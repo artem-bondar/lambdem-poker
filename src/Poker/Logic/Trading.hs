@@ -296,11 +296,11 @@ writeButtonClick btn players
 
 -- | Time to get response from AI player.
 aiThinkTime :: Float
-aiThinkTime = 1.0
+aiThinkTime = 0.76
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
-humanThinkTime = 30.0
+humanThinkTime = 1000.0
 
 -- | Time to display showdown results.
 showdownTime :: Float

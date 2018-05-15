@@ -54,16 +54,16 @@ getTelephonePlaystyle = PlayStyle
     , sndBarrel = 0
     , trdBarrel = 0
     , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 60
-      , mediumBet = 85
-      , bigBet    = 150
+      { smallBet  = 100
+      , mediumBet = 150
+      , bigBet    = 200
       , hugeBet   = 0
       }
   , handPower = CombinationRange
       { weakHand    = Combination One_pair [Deuce] [Deuce, Deuce, Deuce]
       , mediumHand  = Combination Two_pair [Deuce, Deuce] [Deuce]
-      , strongHand  = Combination Straight [Deuce] []
-      , monsterHand = Combination Flush [Deuce] []
+      , strongHand  = Combination Three_of_a_kind [Deuce] [Deuce, Deuce]
+      , monsterHand = Combination Straight [Deuce] []
       }
   , betRangePostF = BetRange -- in %
       { smallBet  = 5
@@ -72,7 +72,7 @@ getTelephonePlaystyle = PlayStyle
       , hugeBet   = 35
       }
     , callRangePostF = BetRange -- in %
-      { smallBet  = 80
+      { smallBet  = 90
       , mediumBet = 95
       , bigBet    = 100
       , hugeBet   = 100

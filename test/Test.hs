@@ -1,5 +1,5 @@
 import Poker.Logic.Calculations
-import Poker.Logic.Types.Game
+import Poker.Logic.Types.Cards
 
 main :: IO ()
 main = do
