@@ -104,7 +104,7 @@ dealTime = 0.60
 
 -- | Time consumed to post blinds.
 postTime :: Float
-postTime = 1.0
+postTime = 0.8
 
 -- | Hide AI hand during bet rounds.
 hideAIhand :: Bool

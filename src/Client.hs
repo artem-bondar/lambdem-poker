@@ -64,9 +64,9 @@ createTableScreenWith generator playstyle imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
-    [Player Human " Hero"    1500 SB Bottom Nothing
+    [Player Human " Hero"    3000 SB Bottom Nothing
      False False 0 (Move Waiting 0) 0 Nothing,
-     Player AI    "Opponent" 1500 BB Top    Nothing
+     Player AI    "Opponent" 3000 BB Top    Nothing
      True  False 0 (Move Waiting 0) 0
      (Just (getAIPlayer playstyle generator))]
   , hero       = " Hero"

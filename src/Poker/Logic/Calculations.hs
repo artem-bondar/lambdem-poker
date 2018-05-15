@@ -5,8 +5,6 @@ import Data.List (sort)
 
 import Poker.Logic.Types.Cards
 
---import Debug.Trace
-
 -------------------------------------------------------------------------------
 -- * Functions to operate with cards
 -------------------------------------------------------------------------------

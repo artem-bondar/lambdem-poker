@@ -280,9 +280,9 @@ aggresivePlaystyle = PlayStyle
       }
   , pfHandPower = HandRangePF
       { vpipRange  = seventyOpen
-      , pfrRange   = mpPFR
+      , pfrRange   = coPFR
       , raiseRange = broadwayToFives
-      , pushRange  = mediumPremium
+      , pushRange  = lowPremium
       }
     , cbet      = 85
     , sndBarrel = 75
@@ -294,10 +294,10 @@ aggresivePlaystyle = PlayStyle
       , hugeBet   = 0
       }
   , handPower = CombinationRange
-      { weakHand    = Combination One_pair [Deuce] [Deuce, Deuce, Deuce]
-      , mediumHand  = Combination Two_pair [Deuce, Deuce] [Deuce]
-      , strongHand  = Combination Three_of_a_kind [Deuce] [Deuce, Deuce]
-      , monsterHand = Combination Straight [Deuce] []
+      { weakHand    = Combination High_card [Ace, Deuce, Deuce, Deuce, Deuce] []
+      , mediumHand  = Combination One_pair [Nine] [Deuce]
+      , strongHand  = Combination Two_pair [Deuce, Deuce] [Deuce]
+      , monsterHand = Combination Three_of_a_kind [Deuce] []
       }
   , betRangePostF = BetRange -- in %
       { smallBet  = 50
