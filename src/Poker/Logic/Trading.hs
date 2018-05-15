@@ -1,14 +1,17 @@
 -- | Contains stuff to process bet rounds.
 module Poker.Logic.Trading where
 
-import Poker.Logic.Calculations
-import Poker.Logic.Types
-import Debug.Trace
+import Poker.AI.Types (AIPlayer (..))
+
+import Poker.Logic.Calculations (computeCombination, markWinningCombinations)
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
+
 -------------------------------------------------------------------------------
 -- * Operations with positions
 -------------------------------------------------------------------------------
 
--- | Return first position depending on amount of players and street
+-- | Return first position depending on amount of players and street.
 getFirstPosition :: Int -> Street -> Position
 getFirstPosition amountOfPlayers street = case amountOfPlayers of
   2 -> if (street == Preflop)
@@ -187,7 +190,8 @@ applyMoveResults players = map
     bet p = betSize $ move p
 
 -- | Find out hand results and reward winner(-s) or split pot if draw.
---   Also open all cards that should be shown at showdown. 
+--   Also open all cards that should be shown at showdown.
+--   Vanish AI data relative to hand.
 computeHandResults :: [Player] -> [Card] -> [Player]
 computeHandResults players board =
   if (countInHandPlayers players == 1)
@@ -197,7 +201,7 @@ computeHandResults players board =
       (fst tookFromEach)
     else if (notFinished)
       then computeHandResults clearedPlayers board
-      else clearedPlayers
+      else clearAIData clearedPlayers
   where
     maxInvested    = maximum (map (\player -> invested player) players)
     tookFromEach   = takePotFromPlayers players maxInvested
@@ -216,6 +220,13 @@ computeHandResults players board =
       False -> player) takenPlayers
     notFinished    = any (\player -> invested player > 0) takenPlayers
     clearedPlayers = map (\player -> player { active = False }) awardedPlayers
+    clearAIData pl = map (\player -> player { aiData = case aiData player of
+      Nothing       -> Nothing
+      Just handData -> Just handData
+        { madePFR    = False
+        , madeCbet   = False
+        , madeBarrel = False
+        }}) pl
 
 -- | Give award to first active player.
 giveLeftPart :: Int -> [Player] -> [Player]
@@ -289,8 +300,8 @@ aiThinkTime = 1.0
 
 -- | Time to get response from human player.
 humanThinkTime :: Float
-humanThinkTime = 30.0
+humanThinkTime = 1000.0
 
 -- | Time to display showdown results.
 showdownTime :: Float
-showdownTime = 2.0
+showdownTime = 2.44

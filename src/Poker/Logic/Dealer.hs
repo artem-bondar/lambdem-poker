@@ -3,7 +3,8 @@ module Poker.Logic.Dealer where
 
 import System.Random (StdGen, randomR)
 
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Operations with cards
@@ -38,7 +39,7 @@ getHand randomizer deck =
 
 -- | Get n entities from a deck.
 performN :: (StdGen -> Deck -> (a, (StdGen, Deck))) -> Int ->
-  (StdGen, Deck) -> ([a], (StdGen, Deck))
+             (StdGen, Deck) -> ([a], (StdGen, Deck))
 performN _ 0 x = ([], x)
 performN performOnce n (randomizer, deck) =
   let randomResult = performOnce randomizer deck
@@ -103,7 +104,7 @@ dealTime = 0.60
 
 -- | Time consumed to post blinds.
 postTime :: Float
-postTime = 1.0
+postTime = 0.8
 
 -- | Hide AI hand during bet rounds.
 hideAIhand :: Bool

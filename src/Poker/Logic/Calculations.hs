@@ -3,15 +3,13 @@ module Poker.Logic.Calculations where
 
 import Data.List (sort)
 
-import Poker.Logic.Types
-
---import Debug.Trace
+import Poker.Logic.Types.Cards
 
 -------------------------------------------------------------------------------
 -- * Functions to operate with cards
 -------------------------------------------------------------------------------
 
--- | Return if card array is a straight and kicker card.
+-- | Return if card array is a straight and it's rank.
 checkStraight :: [Card] -> (Bool, CardRank)
 checkStraight cards = (hasStraight, kickerCard)
   where
@@ -24,7 +22,7 @@ checkStraight cards = (hasStraight, kickerCard)
       then Five
       else toEnum $ kickerCardNum + 4
 
--- | Return if card array is a flush and 5-7 kicker cards.
+-- | Return if card array is a flush and 5-7 cards ranks.
 checkFlush :: [Card] -> (Bool, [CardRank])
 checkFlush cards = (hasFlush, map toEnum kickerCards)
   where

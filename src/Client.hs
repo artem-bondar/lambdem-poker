@@ -2,29 +2,34 @@
 module Client where
 
 import Graphics.Gloss.Interface.Environment (getScreenSize)
-import Graphics.Gloss.Interface.Pure.Game
+import Graphics.Gloss.Interface.Pure.Game (play, Display(InWindow), white)
+import System.Environment (getArgs)
 import System.Random (StdGen, getStdGen)
 
-import Poker.Interface.Handlers
-import Poker.Interface.Loader
-import Poker.Interface.Renderer
+import Poker.AI.Engine (writeAIDataChange, calculateAIMove, updateAIData)
+import Poker.AI.PlayStyles (getAIPlayer)
+import Poker.AI.Types (PlayStyleType(..))
+
+import Poker.Interface.Handlers (handleInput, updateSlideData, clickTime)
+import Poker.Interface.Loader (loadedTableImages)
+import Poker.Interface.Renderer (getMarginsFrom, drawTableScreen, windowSize)
 import Poker.Interface.Types
 
 import Poker.Logic.Dealer
 import Poker.Logic.Trading
-import Poker.Logic.Types
-
---import Debug.Trace
+import Poker.Logic.Types.Cards (createDeck, Deck(..))
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Game launch related functions
 -------------------------------------------------------------------------------
 
--- | Launches game screen.
+-- | Launch game screen.
 launchGame :: IO ()
 launchGame =  do
   generator   <- getStdGen
-  tableScreen <- initTableScreen generator
+  playstyle   <- parsePlaystyle getArgs
+  tableScreen <- initTableScreen generator playstyle
   resolution  <- getScreenSize
   play (display $ getMarginsFrom resolution)
     backgroundColor fps tableScreen
@@ -34,19 +39,36 @@ launchGame =  do
     backgroundColor = white
     fps             = 25
 
+-- | Parse command line arguments.
+parsePlaystyle :: IO [String] -> IO PlayStyleType
+parsePlaystyle arguments = do
+  args <- arguments
+  if (length args == 1)
+    then case head args of
+      "telephone" -> return Telephone
+      "passive"   -> return Passive
+      "loose"     -> return Loose
+      "tight"     -> return Tight
+      "aggresive" -> return Aggresive
+      _           -> return Random
+    else return Random
+
 -- | Initialization of table screen.
 --   All images are loaded and all player data is set.
-initTableScreen :: StdGen -> IO TableScreen
-initTableScreen generator = createTableScreenWith generator <$> loadedTableImages
+initTableScreen :: StdGen -> PlayStyleType -> IO TableScreen
+initTableScreen generator playstyle = createTableScreenWith generator playstyle <$> loadedTableImages
 
 -- | Create new table screen made of images and set default parameters.
-createTableScreenWith :: StdGen -> TableImages -> TableScreen
-createTableScreenWith generator imgs = TableScreen
+createTableScreenWith :: StdGen -> PlayStyleType -> TableImages -> TableScreen
+createTableScreenWith generator playstyle imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
-    [Player Human " Hero"    1500 SB Bottom Nothing False False 0 (Move Waiting 0) 0,
-     Player Human "Opponent" 1500 BB Top    Nothing True  False 0 (Move Waiting 0) 0]
+    [Player Human " Hero"    3000 SB Bottom Nothing
+     False False 0 (Move Waiting 0) 0 Nothing,
+     Player AI    "Opponent" 3000 BB Top    Nothing
+     True  False 0 (Move Waiting 0) 0
+     (Just (getAIPlayer playstyle generator))]
   , hero       = " Hero"
   , street     = Preflop
   , handCount  = 1
@@ -136,15 +158,15 @@ updateGame timePassed screen
       then screen { timer = timer screen + timePassed }
       else screen
         { state   = Next_Move
-        , players = writeMove (players screen) activePlayerPosition
-            (autoHumanMove activePlayer maxBet)
+        , players = writeAIDataChange (writeMove (players screen) activePlayerPosition
+            (fst aiCalculationResults)) activePlayerPosition (snd aiCalculationResults)
         }
   | state screen == Next_Move =
     if (countInHandPlayers (players screen) == 1)
       then screen
         { state   = Finish_Hand
         , timer   = 0
-        , players = openHands $ applyMoveResults (players screen)
+        , players = applyMoveResults (players screen)
         }
       else if (activePlayerPosition == lastPosition)
         then if (checkReTrade (players screen) maxBet)
@@ -185,4 +207,6 @@ updateGame timePassed screen
     buttonPosition  = if (length (players screen) == 2)
                       then SB
                       else BTN
+    aiCalculationResults = calculateAIMove (updateAIData activePlayer $ board screen)
+      maxBet (blindSize screen) (calculatePot $ players screen) (street screen)
     

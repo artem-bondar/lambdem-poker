@@ -2,10 +2,12 @@
 module Poker.Interface.Loader where
 
 import Graphics.Gloss.Juicy (loadJuicyPNG)
-import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Data.Picture (Picture (..), blank)
 
 import Poker.Interface.Types
-import Poker.Logic.Types
+
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Load functions

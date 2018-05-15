@@ -9,7 +9,8 @@ import Poker.Interface.Types
 import Poker.Interface.Offsets
 
 import Poker.Logic.Trading
-import Poker.Logic.Types
+import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Render functions
@@ -99,7 +100,6 @@ drawPlayerBalance player =
 drawDealerChip :: Seat -> ChipLayout -> Picture
 drawDealerChip s layout = 
   uncurry translate (getDealerChipOffset s) $ dealerChip layout
-
 
 -- | Draw player bet.
 drawPlayerBet :: Player -> ChipLayout -> Picture
@@ -217,7 +217,7 @@ getMarginsFrom :: (Int, Int) -> (Int, Int)
 getMarginsFrom (w, h) = ((w - fst windowSize) `div` 2,
                          (h - snd windowSize) `div` 2)
 
--- | Separate bet into chip count array.
+-- | Separate bet into chip count list.
 separateBet :: Int -> [Int] -> [Int]
 separateBet _ [] = []
 separateBet bet separation

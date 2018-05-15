@@ -7,7 +7,7 @@ import Poker.Interface.Types
 import Poker.Interface.Offsets
 
 import Poker.Logic.Trading
-import Poker.Logic.Types
+import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------
 -- * Handler functions

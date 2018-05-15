@@ -1,5 +1,5 @@
 name:                lambdem-poker
-version:             0.5
+version:             0.6
 synopsis:            Poker client
 -- description:
 homepage:            https://github.com/cmc-haskell-2018/lambdem-poker
@@ -15,6 +15,10 @@ library
   ghc-options:         -Wall -fno-warn-type-defaults
   exposed-modules:     
     Client
+    Poker.AI.Engine
+    Poker.AI.PlayStyles
+    Poker.AI.Ranges
+    Poker.AI.Types
     Poker.Interface.Handlers
     Poker.Interface.Loader
     Poker.Interface.Offsets
@@ -23,7 +27,8 @@ library
     Poker.Logic.Calculations
     Poker.Logic.Dealer
     Poker.Logic.Trading
-    Poker.Logic.Types
+    Poker.Logic.Types.Cards
+    Poker.Logic.Types.Game
   build-depends:       base >= 4.7 && < 5
                      , gloss
                      , gloss-juicy
@@ -42,9 +47,9 @@ test-suite poker-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Test.hs
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , lambdem-poker
-  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
 source-repository head
