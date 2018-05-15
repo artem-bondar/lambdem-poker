@@ -112,7 +112,3 @@ eightyFiveOpen = CardRange
   , pairedRange = [Ace, King, Queen, Jack, Ten, Nine, Eight, Seven, Six, Five, Four, Three, Deuce]
   , offsuitedRange = [(Ace, King), (Ace, Queen), (King, Queen), (Ace, Jack), (King, Jack), (Queen, Jack), (Ace, Ten), (King, Ten), (Queen, Ten), (Jack, Ten), (Ace, Nine), (King, Nine), (Queen, Nine), (Jack, Nine), (Ten, Nine), (Ace, Eight), (King, Eight), (Queen, Eight), (Jack, Eight), (Ten, Eight), (Nine, Eight), (Ace, Seven), (King, Seven), (Queen, Seven), (Jack, Seven), (Ten, Seven), (Nine, Seven), (Eight, Seven), (Ace, Six), (King, Six), (Queen, Six), (Jack, Six), (Ten, Six), (Nine, Six), (Eight, Six), (Seven, Six), (Ace, Five), (King, Five), (Queen, Five), (Jack, Five), (Ten, Five), (Nine, Five), (Eight, Five), (Seven, Five), (Six, Five), (Ace, Four), (King, Four), (Queen, Four), (Jack, Four), (Ten, Four), (Seven, Four), (Six, Four), (Five, Four), (Ace, Three), (King, Three), (Queen, Three), (Jack, Three), (Ten, Three), (Ace, Deuce), (King, Deuce), (Queen, Deuce), (Jack, Deuce)]
   }
-
--------------------------------------------------------------------------------
--- * Special ranges
--------------------------------------------------------------------------------

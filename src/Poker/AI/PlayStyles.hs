@@ -203,7 +203,7 @@ loosePlaystyle = PlayStyle
       }
     , betSizings = BetSizings
       { raisePF         = 240
-      , cbetFlop        = 0
+      , cbetFlop        = 65
       , betPostF        = 60
       , betDistribution = 15
       , raisePostF      = 265
@@ -221,50 +221,50 @@ tightPlaystyle = PlayStyle
       , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
-      { vpipRange  = seventyOpen
-      , pfrRange   = bestPremium
-      , raiseRange = bestPremium
+      { vpipRange  = btnPFR
+      , pfrRange   = broadwayToFives
+      , raiseRange = mediumPremium
       , pushRange  = highPremium
       }
-    , cbet      = 0
-    , sndBarrel = 0
-    , trdBarrel = 0
+    , cbet      = 65
+    , sndBarrel = 50
+    , trdBarrel = 35
     , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 100
-      , mediumBet = 150
-      , bigBet    = 200
+      { smallBet  = 65
+      , mediumBet = 100
+      , bigBet    = 150
       , hugeBet   = 0
       }
   , handPower = CombinationRange
-      { weakHand    = Combination One_pair [Deuce] [Deuce, Deuce, Deuce]
+      { weakHand    = Combination One_pair [Eight] [Deuce, Deuce, Deuce]
       , mediumHand  = Combination Two_pair [Deuce, Deuce] [Deuce]
-      , strongHand  = Combination Three_of_a_kind [Deuce] [Deuce, Deuce]
-      , monsterHand = Combination Straight [Deuce] []
+      , strongHand  = Combination Straight [Deuce] [Deuce, Deuce]
+      , monsterHand = Combination Flush [Deuce] []
       }
   , betRangePostF = BetRange -- in %
-      { smallBet  = 5
-      , mediumBet = 10
-      , bigBet    = 25
-      , hugeBet   = 35
+      { smallBet  = 55
+      , mediumBet = 65
+      , bigBet    = 75
+      , hugeBet   = 90
       }
     , callRangePostF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 95
-      , bigBet    = 100
+      { smallBet  = 50
+      , mediumBet = 85
+      , bigBet    = 90
       , hugeBet   = 100
       }
     , raiseRangePostF = BetRange -- in %
-      { smallBet  = 0
-      , mediumBet = 3
-      , bigBet    = 7
-      , hugeBet   = 12
+      { smallBet  = 10
+      , mediumBet = 20
+      , bigBet    = 30
+      , hugeBet   = 40
       }
     , betSizings = BetSizings
-      { raisePF         = 200
-      , cbetFlop        = 0
-      , betPostF        = 40
-      , betDistribution = 10
-      , raisePostF      = 200
+      { raisePF         = 270
+      , cbetFlop        = 70
+      , betPostF        = 65
+      , betDistribution = 15
+      , raisePostF      = 285
       }
   }
 
@@ -280,17 +280,17 @@ aggresivePlaystyle = PlayStyle
       }
   , pfHandPower = HandRangePF
       { vpipRange  = seventyOpen
-      , pfrRange   = bestPremium
-      , raiseRange = bestPremium
-      , pushRange  = highPremium
+      , pfrRange   = mpPFR
+      , raiseRange = broadwayToFives
+      , pushRange  = mediumPremium
       }
-    , cbet      = 0
-    , sndBarrel = 0
-    , trdBarrel = 0
+    , cbet      = 85
+    , sndBarrel = 75
+    , trdBarrel = 65
     , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 100
-      , mediumBet = 150
-      , bigBet    = 200
+      { smallBet  = 65
+      , mediumBet = 100
+      , bigBet    = 150
       , hugeBet   = 0
       }
   , handPower = CombinationRange
@@ -300,28 +300,28 @@ aggresivePlaystyle = PlayStyle
       , monsterHand = Combination Straight [Deuce] []
       }
   , betRangePostF = BetRange -- in %
-      { smallBet  = 5
-      , mediumBet = 10
-      , bigBet    = 25
-      , hugeBet   = 35
+      { smallBet  = 50
+      , mediumBet = 75
+      , bigBet    = 85
+      , hugeBet   = 95
       }
     , callRangePostF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 95
-      , bigBet    = 100
+      { smallBet  = 40
+      , mediumBet = 65
+      , bigBet    = 90
       , hugeBet   = 100
       }
     , raiseRangePostF = BetRange -- in %
-      { smallBet  = 0
-      , mediumBet = 3
-      , bigBet    = 7
-      , hugeBet   = 12
+      { smallBet  = 30
+      , mediumBet = 40
+      , bigBet    = 65
+      , hugeBet   = 90
       }
     , betSizings = BetSizings
-      { raisePF         = 200
-      , cbetFlop        = 0
-      , betPostF        = 40
-      , betDistribution = 10
-      , raisePostF      = 200
+      { raisePF         = 250
+      , cbetFlop        = 80
+      , betPostF        = 80
+      , betDistribution = 40
+      , raisePostF      = 285
       }
   }
