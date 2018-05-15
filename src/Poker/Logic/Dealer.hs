@@ -39,7 +39,7 @@ getHand randomizer deck =
 
 -- | Get n entities from a deck.
 performN :: (StdGen -> Deck -> (a, (StdGen, Deck))) -> Int ->
-  (StdGen, Deck) -> ([a], (StdGen, Deck))
+             (StdGen, Deck) -> ([a], (StdGen, Deck))
 performN _ 0 x = ([], x)
 performN performOnce n (randomizer, deck) =
   let randomResult = performOnce randomizer deck

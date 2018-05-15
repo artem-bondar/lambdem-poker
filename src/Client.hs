@@ -24,7 +24,7 @@ import Poker.Logic.Types.Game
 -- * Game launch related functions
 -------------------------------------------------------------------------------
 
--- | Launches game screen.
+-- | Launch game screen.
 launchGame :: IO ()
 launchGame =  do
   generator   <- getStdGen

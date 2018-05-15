@@ -24,7 +24,7 @@ instance Show Deck where
 -- | Poker combination.
 data Combination = Combination
   { handRank  :: HandRank
-  , structure :: [CardRank] -- ^ card ranks to indicate combination strength
+  , structure :: [CardRank] -- ^ card ranks that indicate combination strength
   , kicker    :: [CardRank] -- ^ kicker card ranks
   } deriving (Eq, Ord, Show)
 

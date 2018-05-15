@@ -9,6 +9,10 @@ import Poker.Logic.Types.Cards
 -- * Balanced ranges
 -------------------------------------------------------------------------------
 
+---------------------------------------
+-- ** Premium ranges
+---------------------------------------
+
 -- | Best 2.6% hands for all-in in any situations.
 bestPremium :: CardRange
 bestPremium = CardRange
@@ -41,13 +45,9 @@ lowPremium = CardRange
   , offsuitedRange = [(Ace, King), (Ace, Queen), (King, Queen), (Ace, Jack), (King, Jack), (Ace, Ten)]
   }
 
--- | 16.6% range, all broadway, 55+
-broadwayToFives :: CardRange
-broadwayToFives = CardRange
-  { suitedRange = [(Ace, King), (Ace, Queen), (Ace, Jack), (Ace, Ten), (King, Queen), (King, Jack), (King, Ten), (Queen, Jack), (Queen, Ten), (Jack, Ten)]
-  , pairedRange = [Ace, King, Queen, Jack, Ten, Nine, Eight, Seven, Six, Five]
-  , offsuitedRange = [(Ace, King), (Ace, Queen), (King, Queen), (Ace, Jack), (King, Jack), (Queen, Jack), (Ace, Ten), (King, Ten), (Queen, Ten), (Jack, Ten)]
-  }
+---------------------------------------
+-- ** Balanced ranges
+---------------------------------------
 
 -- | EP 6max PFR, 12.7%
 epPFR :: CardRange
@@ -111,4 +111,16 @@ eightyFiveOpen = CardRange
   { suitedRange = [(Ace, King), (Ace, Queen), (Ace, Jack), (Ace, Ten), (Ace, Nine), (Ace, Eight), (Ace, Seven), (Ace, Six), (Ace, Five), (Ace, Four), (Ace, Three), (Ace, Deuce), (King, Queen), (King, Jack), (King, Ten), (King, Nine), (King, Eight), (King, Seven), (King, Six), (King, Five), (King, Four), (King, Three), (King, Deuce), (Queen, Jack), (Queen, Ten), (Queen, Nine), (Queen, Eight), (Queen, Seven), (Queen, Six), (Queen, Five), (Queen, Four), (Queen, Three), (Queen, Deuce), (Jack, Ten), (Jack, Nine), (Jack, Eight), (Jack, Seven), (Jack, Six), (Jack, Five), (Jack, Four), (Jack, Three), (Jack, Deuce), (Ten, Nine), (Ten, Eight), (Ten, Seven), (Ten, Six), (Ten, Five), (Ten, Four), (Ten, Three), (Ten, Deuce), (Nine, Eight), (Nine, Seven), (Nine, Six), (Nine, Five), (Nine, Four), (Nine, Three), (Nine, Deuce), (Eight, Seven), (Eight, Six), (Eight, Five), (Eight, Four), (Eight, Three), (Eight, Deuce), (Seven, Six), (Seven, Five), (Seven, Four), (Seven, Three), (Seven, Deuce), (Six, Five), (Six, Four), (Six, Three), (Six, Deuce), (Five, Four), (Five, Three), (Five, Deuce), (Four, Three), (Four, Deuce), (Three, Deuce)]
   , pairedRange = [Ace, King, Queen, Jack, Ten, Nine, Eight, Seven, Six, Five, Four, Three, Deuce]
   , offsuitedRange = [(Ace, King), (Ace, Queen), (King, Queen), (Ace, Jack), (King, Jack), (Queen, Jack), (Ace, Ten), (King, Ten), (Queen, Ten), (Jack, Ten), (Ace, Nine), (King, Nine), (Queen, Nine), (Jack, Nine), (Ten, Nine), (Ace, Eight), (King, Eight), (Queen, Eight), (Jack, Eight), (Ten, Eight), (Nine, Eight), (Ace, Seven), (King, Seven), (Queen, Seven), (Jack, Seven), (Ten, Seven), (Nine, Seven), (Eight, Seven), (Ace, Six), (King, Six), (Queen, Six), (Jack, Six), (Ten, Six), (Nine, Six), (Eight, Six), (Seven, Six), (Ace, Five), (King, Five), (Queen, Five), (Jack, Five), (Ten, Five), (Nine, Five), (Eight, Five), (Seven, Five), (Six, Five), (Ace, Four), (King, Four), (Queen, Four), (Jack, Four), (Ten, Four), (Seven, Four), (Six, Four), (Five, Four), (Ace, Three), (King, Three), (Queen, Three), (Jack, Three), (Ten, Three), (Ace, Deuce), (King, Deuce), (Queen, Deuce), (Jack, Deuce)]
+  }
+
+---------------------------------------
+-- ** Special ranges
+---------------------------------------
+
+-- | 16.6% range, all broadway, 55+
+broadwayToFives :: CardRange
+broadwayToFives = CardRange
+  { suitedRange = [(Ace, King), (Ace, Queen), (Ace, Jack), (Ace, Ten), (King, Queen), (King, Jack), (King, Ten), (Queen, Jack), (Queen, Ten), (Jack, Ten)]
+  , pairedRange = [Ace, King, Queen, Jack, Ten, Nine, Eight, Seven, Six, Five]
+  , offsuitedRange = [(Ace, King), (Ace, Queen), (King, Queen), (Ace, Jack), (King, Jack), (Queen, Jack), (Ace, Ten), (King, Ten), (Queen, Ten), (Jack, Ten)]
   }

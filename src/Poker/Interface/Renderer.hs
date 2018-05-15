@@ -218,7 +218,7 @@ getMarginsFrom :: (Int, Int) -> (Int, Int)
 getMarginsFrom (w, h) = ((w - fst windowSize) `div` 2,
                          (h - snd windowSize) `div` 2)
 
--- | Separate bet into chip count array.
+-- | Separate bet into chip count list.
 separateBet :: Int -> [Int] -> [Int]
 separateBet _ [] = []
 separateBet bet separation

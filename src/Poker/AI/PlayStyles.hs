@@ -12,7 +12,7 @@ import Poker.Logic.Types.Cards
 -- * Utility functions
 -------------------------------------------------------------------------------
 
--- | Return new AI player data with defined playstyle and generator.
+-- | Return new AI player data with defined play style and random number generator.
 getAIPlayer :: PlayStyleType -> StdGen -> AIPlayer
 getAIPlayer playstyle randomizer = case playstyle of
   Telephone -> AIPlayer [] telephonePlaystyle           False False False randomizer
@@ -36,7 +36,7 @@ randomPlaystyle randomizer = case toEnum $ fst randomResult of
 -- * Constructors
 -------------------------------------------------------------------------------
 
--- | Telephone.
+-- | Telephone player.
 telephonePlaystyle :: PlayStyle
 telephonePlaystyle = PlayStyle
   { playStyleType  = Telephone
@@ -94,7 +94,7 @@ telephonePlaystyle = PlayStyle
       }
   }
 
--- | Passive.
+-- | Passive player.
 passivePlaystyle :: PlayStyle
 passivePlaystyle = PlayStyle
   { playStyleType  = Telephone
@@ -152,7 +152,7 @@ passivePlaystyle = PlayStyle
       }
   }
 
--- | Loose.
+-- | Loose player.
 loosePlaystyle :: PlayStyle
 loosePlaystyle = PlayStyle
   { playStyleType  = Telephone
@@ -210,7 +210,7 @@ loosePlaystyle = PlayStyle
       }
   }
 
--- | Tight.
+-- | Tight player.
 tightPlaystyle :: PlayStyle
 tightPlaystyle = PlayStyle
   { playStyleType  = Telephone
@@ -268,7 +268,7 @@ tightPlaystyle = PlayStyle
       }
   }
 
--- | Aggresive.
+-- | Aggresive player.
 aggresivePlaystyle :: PlayStyle
 aggresivePlaystyle = PlayStyle
   { playStyleType  = Telephone

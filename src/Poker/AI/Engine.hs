@@ -16,7 +16,7 @@ import Poker.Logic.Types.Game
 -------------------------------------------------------------------------------
 
 -- | Main function that return AI move and updated AI data depending on it's
---   playstyle, incoming bet, blind size, pot and street.
+--   play style, incoming bet, blind size, pot and street.
 calculateAIMove :: Player -> Int -> Int -> Int -> Street -> (Move, AIPlayer)
 calculateAIMove player bet bb pot street
   | street == Preflop = case action preFlopMove == Raised of
@@ -45,7 +45,7 @@ calculateAIMove player bet bb pot street
       (betSize $ move player) bet (balance player) pot street raisedLast (rng aiDataRaw)
     postFlopMove = fst postFlopResults
 
--- | Calculate move on preflop depending on hand, playstyle, made bet, incoming bet,
+-- | Calculate move on preflop depending on hand, play style, made bet, incoming bet,
 --   max bet and blind size.
 calculatePreFlopMove :: [Card] -> PlayStyle -> Int -> Int -> Int -> Int -> Move
 calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
@@ -90,7 +90,7 @@ calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
       then Move Raised    raiseBet
       else Move All_In_ed maxBet
 
--- | Calculate move on postflop depending on combination, playstyle, made bet, incoming bet,
+-- | Calculate move on postflop depending on combination, play style, made bet, incoming bet,
 --   max bet, pot size, street and last move.
 calculatePostFlopMove :: Combination -> PlayStyle -> Int -> Int -> Int -> Int
                                      -> Street -> Bool -> StdGen -> (Move, StdGen)

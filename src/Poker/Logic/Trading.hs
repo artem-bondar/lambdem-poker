@@ -11,7 +11,7 @@ import Poker.Logic.Types.Game
 -- * Operations with positions
 -------------------------------------------------------------------------------
 
--- | Return first position depending on amount of players and street
+-- | Return first position depending on amount of players and street.
 getFirstPosition :: Int -> Street -> Position
 getFirstPosition amountOfPlayers street = case amountOfPlayers of
   2 -> if (street == Preflop)

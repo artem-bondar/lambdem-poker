@@ -19,9 +19,9 @@ data AIPlayer = AIPlayer
   , rng           :: StdGen    -- ^ random number generator
   }
 
--- | Data about game patterns.
+-- | Data about player game patterns.
 data PlayStyle = PlayStyle
-  { playStyleType     :: PlayStyleType    -- ^ name of playstyle
+  { playStyleType     :: PlayStyleType    -- ^ name of play style
   , betSizeRangePF    :: BetRange         -- ^ in big blinds
   , pfHandPower       :: HandRangePF      -- ^ range of preflop hand
   , cbet              :: Int              -- ^ % to cbet flop
