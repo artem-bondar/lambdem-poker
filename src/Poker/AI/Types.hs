@@ -15,7 +15,7 @@ data AIPlayer = AIPlayer
   , playStyle     :: PlayStyle -- ^ type of play style
   , madePFR       :: Bool      -- ^ made preflop raise
   , madeCbet      :: Bool      -- ^ made cbet on flop
-  , madeBarrel    :: Bool         -- ^ made cbet on turn
+  , madeBarrel    :: Bool      -- ^ made cbet on turn
   , rng           :: StdGen    -- ^ random number generator
   }
 
@@ -46,6 +46,7 @@ data PlayStyleType
   | Tight      -- ^ opens     small range, raises often
   | Aggresive  -- ^ opens    medium range, raises very often 
   | Random     -- ^ choose one of previous five lines to act
+  deriving (Enum, Show)
 
 -- | Container to hold range of hands.
 data CardRange = CardRange
@@ -60,7 +61,7 @@ data BetType
   | Medium_Bet
   | Big_Bet
   | Huge_Bet
-  deriving (Eq, Show)
+  deriving (Eq)
 
 -- | Container to hold range of bets.
 data BetRange = BetRange

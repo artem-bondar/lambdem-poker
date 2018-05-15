@@ -4,14 +4,12 @@ module Poker.AI.Engine where
 import Data.List (sort)
 import System.Random (StdGen, mkStdGen, randomR)
 
-import Poker.AI.PlayStyles (getTelephonePlaystyle)
+import Poker.AI.PlayStyles (getAIPlayer)
 import Poker.AI.Types
 
 import Poker.Logic.Calculations (computeCombination)
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
-
-import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Core functions for simulating AI thinking
@@ -35,7 +33,7 @@ calculateAIMove player bet bb pot street
     preFlopMove = calculatePreFlopMove (cards aiDataRaw) (playStyle aiDataRaw)
       (betSize $ move player) bet (balance player) bb
     aiDataRaw = case aiData player of
-      Nothing       -> AIPlayer [] getTelephonePlaystyle False False False (mkStdGen 0)
+      Nothing       -> getAIPlayer Random $ mkStdGen 0
       Just handData -> handData
     combination = computeCombination (hand player) (tail . tail $ cards aiDataRaw)
     raisedLast  = case street of

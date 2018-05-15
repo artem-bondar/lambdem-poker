@@ -3,6 +3,7 @@ module Client where
 
 import Graphics.Gloss.Interface.Environment (getScreenSize)
 import Graphics.Gloss.Interface.Pure.Game
+import System.Environment (getArgs)
 import System.Random (StdGen, getStdGen)
 
 import Poker.AI.Engine
@@ -19,8 +20,6 @@ import Poker.Logic.Trading
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
 
---import Debug.Trace
-
 -------------------------------------------------------------------------------
 -- * Game launch related functions
 -------------------------------------------------------------------------------
@@ -29,7 +28,8 @@ import Poker.Logic.Types.Game
 launchGame :: IO ()
 launchGame =  do
   generator   <- getStdGen
-  tableScreen <- initTableScreen generator
+  playstyle   <- parsePlaystyle getArgs
+  tableScreen <- initTableScreen generator playstyle
   resolution  <- getScreenSize
   play (display $ getMarginsFrom resolution)
     backgroundColor fps tableScreen
@@ -39,14 +39,28 @@ launchGame =  do
     backgroundColor = white
     fps             = 25
 
+-- | Parse command line arguments.
+parsePlaystyle :: IO [String] -> IO PlayStyleType
+parsePlaystyle arguments = do
+  args <- arguments
+  if (length args == 1)
+    then case head args of
+      "telephone" -> return Telephone
+      "passive"   -> return Passive
+      "loose"     -> return Loose
+      "tight"     -> return Tight
+      "aggresive" -> return Aggresive
+      _           -> return Random
+    else return Random
+
 -- | Initialization of table screen.
 --   All images are loaded and all player data is set.
-initTableScreen :: StdGen -> IO TableScreen
-initTableScreen generator = createTableScreenWith generator <$> loadedTableImages
+initTableScreen :: StdGen -> PlayStyleType -> IO TableScreen
+initTableScreen generator playstyle = createTableScreenWith generator playstyle <$> loadedTableImages
 
 -- | Create new table screen made of images and set default parameters.
-createTableScreenWith :: StdGen -> TableImages -> TableScreen
-createTableScreenWith generator imgs = TableScreen
+createTableScreenWith :: StdGen -> PlayStyleType -> TableImages -> TableScreen
+createTableScreenWith generator playstyle imgs = TableScreen
   { state      = Dealing_Hand
   , timer      = 0.0
   , players    =
@@ -54,7 +68,7 @@ createTableScreenWith generator imgs = TableScreen
      False False 0 (Move Waiting 0) 0 Nothing,
      Player AI    "Opponent" 1500 BB Top    Nothing
      True  False 0 (Move Waiting 0) 0
-     (Just (getAIPlayer Telephone generator))]
+     (Just (getAIPlayer playstyle generator))]
   , hero       = " Hero"
   , street     = Preflop
   , handCount  = 1
