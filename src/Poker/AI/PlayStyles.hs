@@ -15,9 +15,9 @@ getTelephonePlaystyle :: PlayStyle
 getTelephonePlaystyle = PlayStyle
   { playStyleType  = Telephone
   , betSizeRangePF = BetRange -- in big blinds
-      { smallBet  = 4
-      , mediumBet = 8 
-      , bigBet    = 12
+      { smallBet  = 8
+      , mediumBet = 12 
+      , bigBet    = 16
       , hugeBet   = 20
       }
   , pfHandPower = HandRangePF
@@ -44,7 +44,9 @@ getTelephonePlaystyle = PlayStyle
       , bigBet    = 80
       , hugeBet   = 70
       }
-    , cbet = 0
+    , cbet      = 0
+    , sndBarrel = 0
+    , trdBarrel = 0
     , betSizeRangePostF = BetRange -- in % of pot
       { smallBet  = 30
       , mediumBet = 60
@@ -52,16 +54,16 @@ getTelephonePlaystyle = PlayStyle
       , hugeBet   = 120
       }
   , handPower = CombinationRange
-      { weakHand    = Combination Two_pair [Ace, King] []
-      , mediumHand  = Combination Straight [Ace] []
-      , strongHand  = Combination Flush [Ace] []
-      , monsterHand = Combination Full_house [Ace, King] []
+      { weakHand    = Combination Two_pair [Deuce, Deuce] [Deuce]
+      , mediumHand  = Combination Straight [Deuce] []
+      , strongHand  = Combination Flush [Deuce] []
+      , monsterHand = Combination Full_house [Deuce, Deuce] []
       }
   , betRangePostF = BetRange -- in %
-      { smallBet  = 5
-      , mediumBet = 15
-      , bigBet    = 25
-      , hugeBet   = 40
+      { smallBet  = 60
+      , mediumBet = 100
+      , bigBet    = 150
+      , hugeBet   = 0
       }
     , callRangePostF = BetRange -- in %
       { smallBet  = 80

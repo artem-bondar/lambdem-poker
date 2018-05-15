@@ -15,8 +15,7 @@ data AIPlayer = AIPlayer
   , playStyle     :: PlayStyle -- ^ type of play style
   , madePFR       :: Bool      -- ^ made preflop raise
   , madeCbet      :: Bool      -- ^ made cbet on flop
-  , madeSndBarrel :: Bool      -- ^ made second barrel on turn
-  , madeTrdBarrel :: Bool      -- ^ made third  barrel on river
+  , madeBarrel    :: Bool         -- ^ made cbet on turn
   , rng           :: StdGen    -- ^ random number generator
   }
 
@@ -29,8 +28,8 @@ data PlayStyle = PlayStyle
   , callRangePF       :: BetRange         -- ^ in % relative to hand power
   , raiseRangePF      :: BetRange         -- ^ in % relative to hand power
   , cbet              :: Int              -- ^ % to cbet flop
-  , sndBarrel         :: Int              -- ^ % to barrel turn  after cbet
-  , thdBarrel         :: Int              -- ^ % to barrel river after turn
+  , sndBarrel         :: Int              -- ^ % to cbet turn  after flop cbet
+  , trdBarrel         :: Int              -- ^ % to cbet river after turn cbet
   , betSizeRangePostF :: BetRange         -- ^ in % of pot
   , handPower         :: CombinationRange -- ^ range of hand power
   , betRangePostF     :: BetRange         -- ^ in % relative to hand power
@@ -73,7 +72,8 @@ data BetRange = BetRange
 
 -- | Type of hand power.
 data HandPower
-  = Weak_Hand
+  = Trash_Hand
+  | Weak_Hand
   | Medium_Hand
   | Strong_Hand
   | Monster_Hand
@@ -87,6 +87,7 @@ data HandRangePF = HandRangePF
   }
 
 -- | Container to hold range of combinations.
+--   Represents minimum requirements for hand power.
 data CombinationRange = CombinationRange
   { weakHand    :: Combination
   , mediumHand  :: Combination
