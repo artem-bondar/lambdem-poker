@@ -88,10 +88,10 @@ calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
     checkMove     = Move Checked bet
     callMove      = if (bet <= maxBet)
       then Move Called    bet
-      else Move All_In_ed bet
+      else Move All_In_ed maxBet
     raiseMove     = if (raiseBet <= maxBet)
       then Move Raised    raiseBet
-      else Move All_In_ed raiseBet
+      else Move All_In_ed maxBet
 
 -- | Calculate move on postflop depending on combination, playstyle, made bet, incoming bet,
 --   max bet, pot size, street and last move.
@@ -144,13 +144,13 @@ calculatePostFlopMove combination playstyle madeBet bet maxBet pot
     checkMove     = Move Checked 0
     callMove      = if (bet <= maxBet)
       then Move Called    bet
-      else Move All_In_ed bet
+      else Move All_In_ed maxBet
     betMove       = if (betBet <= maxBet)
       then Move Raised    betBet
-      else Move All_In_ed betBet
+      else Move All_In_ed maxBet
     raiseMove     = if (raiseBet <= maxBet)
       then Move Raised    raiseBet
-      else Move All_In_ed raiseBet
+      else Move All_In_ed maxBet
     cbetChance = case street of
         Flop  -> cbet      playstyle
         Turn  -> sndBarrel playstyle

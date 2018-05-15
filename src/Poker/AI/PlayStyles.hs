@@ -24,7 +24,7 @@ getTelephonePlaystyle = PlayStyle
       { smallBet  = 8
       , mediumBet = 12 
       , bigBet    = 16
-      , hugeBet   = 20
+      , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
       { vpipRange  = seventyOpen
@@ -54,22 +54,22 @@ getTelephonePlaystyle = PlayStyle
     , sndBarrel = 0
     , trdBarrel = 0
     , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 30
-      , mediumBet = 60
-      , bigBet    = 80
-      , hugeBet   = 120
-      }
-  , handPower = CombinationRange
-      { weakHand    = Combination Two_pair [Deuce, Deuce] [Deuce]
-      , mediumHand  = Combination Straight [Deuce] []
-      , strongHand  = Combination Flush [Deuce] []
-      , monsterHand = Combination Full_house [Deuce, Deuce] []
-      }
-  , betRangePostF = BetRange -- in %
       { smallBet  = 60
-      , mediumBet = 100
+      , mediumBet = 85
       , bigBet    = 150
       , hugeBet   = 0
+      }
+  , handPower = CombinationRange
+      { weakHand    = Combination One_pair [Deuce] [Deuce, Deuce, Deuce]
+      , mediumHand  = Combination Two_pair [Deuce, Deuce] [Deuce]
+      , strongHand  = Combination Straight [Deuce] []
+      , monsterHand = Combination Flush [Deuce] []
+      }
+  , betRangePostF = BetRange -- in %
+      { smallBet  = 5
+      , mediumBet = 10
+      , bigBet    = 25
+      , hugeBet   = 35
       }
     , callRangePostF = BetRange -- in %
       { smallBet  = 80
