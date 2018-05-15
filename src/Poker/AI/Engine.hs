@@ -11,8 +11,6 @@ import Poker.Logic.Calculations (computeCombination)
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
 
-import Debug.Trace
-
 -------------------------------------------------------------------------------
 -- * Core functions for simulating AI thinking
 -------------------------------------------------------------------------------
@@ -45,7 +43,7 @@ calculateAIMove player bet bb pot street
       _     -> False
     postFlopResults = calculatePostFlopMove combination (playStyle aiDataRaw)
       (betSize $ move player) bet (balance player) pot street raisedLast (rng aiDataRaw)
-    postFlopMove = trace (show raisedLast) fst postFlopResults
+    postFlopMove = fst postFlopResults
 
 -- | Calculate move on preflop depending on hand, playstyle, made bet, incoming bet,
 --   max bet and blind size.

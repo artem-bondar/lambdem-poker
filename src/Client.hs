@@ -166,7 +166,7 @@ updateGame timePassed screen
       then screen
         { state   = Finish_Hand
         , timer   = 0
-        , players = openHands $ applyMoveResults (players screen)
+        , players = applyMoveResults (players screen)
         }
       else if (activePlayerPosition == lastPosition)
         then if (checkReTrade (players screen) maxBet)
