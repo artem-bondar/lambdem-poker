@@ -24,9 +24,6 @@ data PlayStyle = PlayStyle
   { playStyleType     :: PlayStyleType    -- ^ name of playstyle
   , betSizeRangePF    :: BetRange         -- ^ in big blinds
   , pfHandPower       :: HandRangePF      -- ^ range of preflop hand
-  , betRangePF        :: BetRange         -- ^ in % relative to hand power
-  , callRangePF       :: BetRange         -- ^ in % relative to hand power
-  , raiseRangePF      :: BetRange         -- ^ in % relative to hand power
   , cbet              :: Int              -- ^ % to cbet flop
   , sndBarrel         :: Int              -- ^ % to cbet turn  after flop cbet
   , trdBarrel         :: Int              -- ^ % to cbet river after turn cbet
@@ -46,7 +43,7 @@ data PlayStyleType
   | Tight      -- ^ opens     small range, raises often
   | Aggresive  -- ^ opens    medium range, raises very often 
   | Random     -- ^ choose one of previous five lines to act
-  deriving (Enum, Show)
+  deriving (Enum)
 
 -- | Container to hold range of hands.
 data CardRange = CardRange

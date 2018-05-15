@@ -47,28 +47,10 @@ telephonePlaystyle = PlayStyle
       , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
-      { vpipRange  = seventyOpen
+      { vpipRange  = eightyFiveOpen
       , pfrRange   = bestPremium
       , raiseRange = bestPremium
       , pushRange  = highPremium
-      }
-  , betRangePF = BetRange -- in %
-      { smallBet  = 100
-      , mediumBet = 100 
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , callRangePF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 100
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePF = BetRange -- in %
-      { smallBet  = 1
-      , mediumBet = 90
-      , bigBet    = 80
-      , hugeBet   = 70
       }
     , cbet      = 0
     , sndBarrel = 0
@@ -117,74 +99,56 @@ passivePlaystyle :: PlayStyle
 passivePlaystyle = PlayStyle
   { playStyleType  = Telephone
   , betSizeRangePF = BetRange -- in big blinds
-      { smallBet  = 8
-      , mediumBet = 12 
+      { smallBet  = 6
+      , mediumBet = 10 
       , bigBet    = 16
       , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
       { vpipRange  = seventyOpen
-      , pfrRange   = bestPremium
-      , raiseRange = bestPremium
+      , pfrRange   = highPremium
+      , raiseRange = highPremium
       , pushRange  = highPremium
-      }
-  , betRangePF = BetRange -- in %
-      { smallBet  = 100
-      , mediumBet = 100 
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , callRangePF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 100
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePF = BetRange -- in %
-      { smallBet  = 1
-      , mediumBet = 90
-      , bigBet    = 80
-      , hugeBet   = 70
       }
     , cbet      = 0
     , sndBarrel = 0
     , trdBarrel = 0
     , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 100
-      , mediumBet = 150
-      , bigBet    = 200
+      { smallBet  = 85
+      , mediumBet = 135
+      , bigBet    = 170
       , hugeBet   = 0
       }
   , handPower = CombinationRange
-      { weakHand    = Combination One_pair [Deuce] [Deuce, Deuce, Deuce]
+      { weakHand    = Combination One_pair [Eight] [Deuce, Deuce, Deuce]
       , mediumHand  = Combination Two_pair [Deuce, Deuce] [Deuce]
-      , strongHand  = Combination Three_of_a_kind [Deuce] [Deuce, Deuce]
-      , monsterHand = Combination Straight [Deuce] []
+      , strongHand  = Combination Straight [Deuce] [Deuce, Deuce]
+      , monsterHand = Combination Flush [Deuce] []
       }
   , betRangePostF = BetRange -- in %
-      { smallBet  = 5
-      , mediumBet = 10
+      { smallBet  = 12
+      , mediumBet = 15
       , bigBet    = 25
-      , hugeBet   = 35
+      , hugeBet   = 40
       }
     , callRangePostF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 95
+      { smallBet  = 100
+      , mediumBet = 100
       , bigBet    = 100
       , hugeBet   = 100
       }
     , raiseRangePostF = BetRange -- in %
       { smallBet  = 0
-      , mediumBet = 3
-      , bigBet    = 7
-      , hugeBet   = 12
+      , mediumBet = 15
+      , bigBet    = 20
+      , hugeBet   = 35
       }
     , betSizings = BetSizings
       { raisePF         = 200
       , cbetFlop        = 0
-      , betPostF        = 40
-      , betDistribution = 10
-      , raisePostF      = 200
+      , betPostF        = 50
+      , betDistribution = 15
+      , raisePostF      = 220
       }
   }
 
@@ -193,42 +157,24 @@ loosePlaystyle :: PlayStyle
 loosePlaystyle = PlayStyle
   { playStyleType  = Telephone
   , betSizeRangePF = BetRange -- in big blinds
-      { smallBet  = 8
-      , mediumBet = 12 
-      , bigBet    = 16
+      { smallBet  = 6
+      , mediumBet = 9 
+      , bigBet    = 14
       , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
-      { vpipRange  = seventyOpen
-      , pfrRange   = bestPremium
-      , raiseRange = bestPremium
+      { vpipRange  = sixtyOpen
+      , pfrRange   = mediumPremium
+      , raiseRange = highPremium
       , pushRange  = highPremium
       }
-  , betRangePF = BetRange -- in %
-      { smallBet  = 100
-      , mediumBet = 100 
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , callRangePF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 100
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePF = BetRange -- in %
-      { smallBet  = 1
-      , mediumBet = 90
-      , bigBet    = 80
-      , hugeBet   = 70
-      }
-    , cbet      = 0
-    , sndBarrel = 0
-    , trdBarrel = 0
+    , cbet      = 35
+    , sndBarrel = 45
+    , trdBarrel = 20
     , betSizeRangePostF = BetRange -- in % of pot
-      { smallBet  = 100
-      , mediumBet = 150
-      , bigBet    = 200
+      { smallBet  = 65
+      , mediumBet = 100
+      , bigBet    = 175
       , hugeBet   = 0
       }
   , handPower = CombinationRange
@@ -238,29 +184,29 @@ loosePlaystyle = PlayStyle
       , monsterHand = Combination Straight [Deuce] []
       }
   , betRangePostF = BetRange -- in %
-      { smallBet  = 5
-      , mediumBet = 10
-      , bigBet    = 25
-      , hugeBet   = 35
+      { smallBet  = 25
+      , mediumBet = 35
+      , bigBet    = 45
+      , hugeBet   = 60
       }
     , callRangePostF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 95
-      , bigBet    = 100
+      { smallBet  = 60
+      , mediumBet = 80
+      , bigBet    = 95
       , hugeBet   = 100
       }
     , raiseRangePostF = BetRange -- in %
-      { smallBet  = 0
-      , mediumBet = 3
-      , bigBet    = 7
-      , hugeBet   = 12
+      { smallBet  = 5
+      , mediumBet = 10
+      , bigBet    = 20
+      , hugeBet   = 40
       }
     , betSizings = BetSizings
-      { raisePF         = 200
+      { raisePF         = 240
       , cbetFlop        = 0
-      , betPostF        = 40
-      , betDistribution = 10
-      , raisePostF      = 200
+      , betPostF        = 60
+      , betDistribution = 15
+      , raisePostF      = 265
       }
   }
 
@@ -269,9 +215,9 @@ tightPlaystyle :: PlayStyle
 tightPlaystyle = PlayStyle
   { playStyleType  = Telephone
   , betSizeRangePF = BetRange -- in big blinds
-      { smallBet  = 8
-      , mediumBet = 12 
-      , bigBet    = 16
+      { smallBet  = 6
+      , mediumBet = 9 
+      , bigBet    = 14
       , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
@@ -279,24 +225,6 @@ tightPlaystyle = PlayStyle
       , pfrRange   = bestPremium
       , raiseRange = bestPremium
       , pushRange  = highPremium
-      }
-  , betRangePF = BetRange -- in %
-      { smallBet  = 100
-      , mediumBet = 100 
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , callRangePF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 100
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePF = BetRange -- in %
-      { smallBet  = 1
-      , mediumBet = 90
-      , bigBet    = 80
-      , hugeBet   = 70
       }
     , cbet      = 0
     , sndBarrel = 0
@@ -345,9 +273,9 @@ aggresivePlaystyle :: PlayStyle
 aggresivePlaystyle = PlayStyle
   { playStyleType  = Telephone
   , betSizeRangePF = BetRange -- in big blinds
-      { smallBet  = 8
-      , mediumBet = 12 
-      , bigBet    = 16
+      { smallBet  = 6
+      , mediumBet = 9 
+      , bigBet    = 14
       , hugeBet   = 0
       }
   , pfHandPower = HandRangePF
@@ -355,24 +283,6 @@ aggresivePlaystyle = PlayStyle
       , pfrRange   = bestPremium
       , raiseRange = bestPremium
       , pushRange  = highPremium
-      }
-  , betRangePF = BetRange -- in %
-      { smallBet  = 100
-      , mediumBet = 100 
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , callRangePF = BetRange -- in %
-      { smallBet  = 90
-      , mediumBet = 100
-      , bigBet    = 100
-      , hugeBet   = 100
-      }
-    , raiseRangePF = BetRange -- in %
-      { smallBet  = 1
-      , mediumBet = 90
-      , bigBet    = 80
-      , hugeBet   = 70
       }
     , cbet      = 0
     , sndBarrel = 0
