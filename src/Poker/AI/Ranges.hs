@@ -1,7 +1,7 @@
 -- | Contains ranges of poker hands.
 module Poker.AI.Ranges where
 
-import Poker.AI.Types
+import Poker.AI.Types (CardRange(..))
 
 import Poker.Logic.Types.Cards
 

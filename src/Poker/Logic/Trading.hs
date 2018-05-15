@@ -1,9 +1,9 @@
 -- | Contains stuff to process bet rounds.
 module Poker.Logic.Trading where
 
-import Poker.AI.Types
+import Poker.AI.Types (AIPlayer (..))
 
-import Poker.Logic.Calculations
+import Poker.Logic.Calculations (computeCombination, markWinningCombinations)
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
 

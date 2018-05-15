@@ -1,7 +1,7 @@
 -- | Contain offsets for images.
 module Poker.Interface.Offsets where
 
-import Poker.Logic.Types.Game
+import Poker.Logic.Types.Game (Seat (..))
 
 -------------------------------------------------------------------------------
 -- * Computed offsets

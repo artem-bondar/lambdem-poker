@@ -2,22 +2,22 @@
 module Client where
 
 import Graphics.Gloss.Interface.Environment (getScreenSize)
-import Graphics.Gloss.Interface.Pure.Game
+import Graphics.Gloss.Interface.Pure.Game (play, Display(InWindow), white)
 import System.Environment (getArgs)
 import System.Random (StdGen, getStdGen)
 
-import Poker.AI.Engine
-import Poker.AI.PlayStyles
-import Poker.AI.Types
+import Poker.AI.Engine (writeAIDataChange, calculateAIMove, updateAIData)
+import Poker.AI.PlayStyles (getAIPlayer)
+import Poker.AI.Types (PlayStyleType(..))
 
-import Poker.Interface.Handlers
-import Poker.Interface.Loader
-import Poker.Interface.Renderer
+import Poker.Interface.Handlers (handleInput, updateSlideData, clickTime)
+import Poker.Interface.Loader (loadedTableImages)
+import Poker.Interface.Renderer (getMarginsFrom, drawTableScreen, windowSize)
 import Poker.Interface.Types
 
 import Poker.Logic.Dealer
 import Poker.Logic.Trading
-import Poker.Logic.Types.Cards
+import Poker.Logic.Types.Cards (createDeck, Deck(..))
 import Poker.Logic.Types.Game
 
 -------------------------------------------------------------------------------

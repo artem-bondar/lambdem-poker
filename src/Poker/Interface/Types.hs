@@ -1,7 +1,7 @@
 -- | All interface related types are declared here.
 module Poker.Interface.Types where
 
-import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Data.Picture (Picture (..))
 import System.Random (StdGen)
 
 import Poker.Logic.Types.Cards

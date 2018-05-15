@@ -2,7 +2,7 @@
 module Poker.Interface.Loader where
 
 import Graphics.Gloss.Juicy (loadJuicyPNG)
-import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Data.Picture (Picture (..), blank)
 
 import Poker.Interface.Types
 
