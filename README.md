@@ -4,7 +4,9 @@
 Client for playing Texas Hold`em versus AI or human beings with some additional features, possibly. \
 Full initial project description can be read [here](/docs/description.md).
 
-![layout](docs/images/layout.png)
+## Features
+
+![gameplay](docs/images/gameplay.gif)
 
 List of implemented features:
 - table
