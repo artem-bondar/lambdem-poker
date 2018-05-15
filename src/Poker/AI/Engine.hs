@@ -23,11 +23,11 @@ calculateAIMove player bet bb pot street
       True  -> (preFlopMove, aiDataRaw { madePFR = True  })
       False -> (preFlopMove, aiDataRaw { madePFR = False })
   | street == Flop = case action postFlopMove == Raised of
-      True  -> (postFlopMove, aiDataRaw { madeCbet = True  })
-      False -> (postFlopMove, aiDataRaw { madeCbet = False })
+      True  -> (postFlopMove, aiDataRaw { madeCbet = True,  rng = snd postFlopResults })
+      False -> (postFlopMove, aiDataRaw { madeCbet = False, rng = snd postFlopResults })
   | street == Flop = case action postFlopMove == Raised of
-      True  -> (postFlopMove, aiDataRaw { madeBarrel = True  })
-      False -> (postFlopMove, aiDataRaw { madeBarrel = False })
+      True  -> (postFlopMove, aiDataRaw { madeBarrel = True,  rng = snd postFlopResults })
+      False -> (postFlopMove, aiDataRaw { madeBarrel = False, rng = snd postFlopResults })
   | otherwise = (postFlopMove, aiDataRaw)
   where
     preFlopMove = calculatePreFlopMove (cards aiDataRaw) (playStyle aiDataRaw)
