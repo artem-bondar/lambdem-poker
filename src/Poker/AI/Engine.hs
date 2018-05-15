@@ -11,6 +11,8 @@ import Poker.Logic.Calculations (computeCombination)
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
 
+import Debug.Trace
+
 -------------------------------------------------------------------------------
 -- * Core functions for simulating AI thinking
 -------------------------------------------------------------------------------
@@ -59,7 +61,7 @@ calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
       _    -> raiseMove
   | betSizeType == Small_Bet = case suggestedMove of
       Fold -> foldMove
-      Call -> foldMove
+      Call -> callMove
       Bet  -> callMove
       _    -> raiseMove
   | betSizeType == Medium_Bet = case suggestedMove of
@@ -79,7 +81,8 @@ calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
       _      -> foldMove
   where
     betSizeType   = evalBet (bet `div` bb) (betRangePF playstyle)
-    suggestedMove = suggestPFMove handPF (pfHandPower playstyle)
+    suggestedMove = trace (show $ suggestPFMove handPF (pfHandPower playstyle))
+      suggestPFMove handPF (pfHandPower playstyle)
     raiseBet      = (bet * (raisePF $ betSizings playstyle)) `div` 100
     foldMove      = Move Folded  madeBet
     checkMove     = Move Checked bet
@@ -202,8 +205,8 @@ checkRange handPF range
   | isSuited  =     ranks `elem` (suitedRange    range)
   | otherwise =     ranks `elem` (offsuitedRange range)
   where
-    fstCard  = head $        sort handPF
-    sndCard  = head . tail $ sort handPF
+    fstCard  = head .        reverse $ sort handPF
+    sndCard  = head . tail . reverse $ sort handPF
     ranks    = (cardRank fstCard, cardRank sndCard)
     isPaired = fst ranks == snd ranks
     isSuited = suit fstCard == suit sndCard

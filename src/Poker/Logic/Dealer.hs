@@ -108,7 +108,7 @@ postTime = 1.0
 
 -- | Hide AI hand during bet rounds.
 hideAIhand :: Bool
-hideAIhand = True
+hideAIhand = False
 
 -- | Hide human hand during bet rounds.
 hideHumaHand :: Bool
