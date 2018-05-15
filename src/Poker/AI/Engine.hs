@@ -19,18 +19,24 @@ import Poker.Logic.Types.Game
 --   playstyle, incoming bet, blind size, pot and street.
 calculateAIMove :: Player -> Int -> Int -> Int -> Street -> (Move, AIPlayer)
 calculateAIMove player bet bb pot street
-  | street == Preflop = case action flopMove == Raised && madePFR aiDataRaw == False of
-      True  -> (flopMove, aiDataRaw { madePFR = True  })
-      False -> (flopMove, aiDataRaw { madePFR = False })
-  | otherwise = (Move Folded 0, aiDataRaw)
+  | street == Preflop = case action preFlopMove == Raised of
+      True  -> (preFlopMove, aiDataRaw { madePFR = True  })
+      False -> (preFlopMove, aiDataRaw { madePFR = False })
+  | street == Flop = case action postFlopMove == Raised of
+      True  -> (postFlopMove, aiDataRaw { madeCbet = True  })
+      False -> (postFlopMove, aiDataRaw { madeCbet = False })
+  | street == Flop = case action postFlopMove == Raised of
+      True  -> (postFlopMove, aiDataRaw { madeBarrel = True  })
+      False -> (postFlopMove, aiDataRaw { madeBarrel = False })
+  | otherwise = (postFlopMove, aiDataRaw)
   where
-    flopMove  = calculateFlopMove (cards aiDataRaw) (playStyle aiDataRaw)
+    preFlopMove = calculatePreFlopMove (cards aiDataRaw) (playStyle aiDataRaw)
       (betSize $ move player) bet (balance player) bb
     aiDataRaw = case aiData player of
       Nothing       -> AIPlayer [] getTelephonePlaystyle False False False (mkStdGen 0)
       Just handData -> handData
     combination = computeCombination (hand player) (tail . tail $ cards aiDataRaw)
-    raisedLast   = case street of
+    raisedLast  = case street of
       Flop  -> madePFR    aiDataRaw
       Turn  -> madeCbet   aiDataRaw
       River -> madeBarrel aiDataRaw
@@ -39,38 +45,38 @@ calculateAIMove player bet bb pot street
       (betSize $ move player) bet (balance player) pot street raisedLast (rng aiDataRaw)
     postFlopMove = fst postFlopResults
 
--- | Calculate move on flop depending on hand, playstyle, made bet, incoming bet,
+-- | Calculate move on preflop depending on hand, playstyle, made bet, incoming bet,
 --   max bet and blind size.
-calculateFlopMove :: [Card] -> PlayStyle -> Int -> Int -> Int -> Int -> Move
-calculateFlopMove handPF playstyle madeBet bet maxBet bb
+calculatePreFlopMove :: [Card] -> PlayStyle -> Int -> Int -> Int -> Int -> Move
+calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
   | bet == bb = case suggestedMove of
-    Fold -> if (madeBet == bb)
-      then checkMove
-      else foldMove
-    Call -> if (madeBet == bb)
-      then checkMove
-      else callMove
-    _    -> raiseMove
+      Fold -> if (madeBet == bb)
+        then checkMove
+        else foldMove
+      Call -> if (madeBet == bb)
+        then checkMove
+        else callMove
+      _    -> raiseMove
   | betSizeType == Small_Bet = case suggestedMove of
-    Fold -> foldMove
-    Call -> foldMove
-    Bet  -> callMove
-    _    -> raiseMove
+      Fold -> foldMove
+      Call -> foldMove
+      Bet  -> callMove
+      _    -> raiseMove
   | betSizeType == Medium_Bet = case suggestedMove of
-    Fold  -> foldMove
-    Call  -> foldMove
-    Bet   -> callMove
-    Raise -> callMove
-    _     -> raiseMove
+      Fold  -> foldMove
+      Call  -> foldMove
+      Bet   -> callMove
+      Raise -> callMove
+      _     -> raiseMove
   | betSizeType == Big_Bet = case suggestedMove of
-    Fold  -> foldMove
-    Call  -> foldMove
-    Bet   -> foldMove
-    Raise -> callMove
-    _     -> raiseMove
+      Fold  -> foldMove
+      Call  -> foldMove
+      Bet   -> foldMove
+      Raise -> callMove
+      _     -> raiseMove
   | otherwise = case suggestedMove of
-    All_In -> raiseMove
-    _      -> foldMove
+      All_In -> raiseMove
+      _      -> foldMove
   where
     betSizeType   = evalBet (bet `div` bb) (betRangePF playstyle)
     suggestedMove = suggestPFMove handPF (pfHandPower playstyle)
@@ -91,28 +97,28 @@ calculatePostFlopMove :: Combination -> PlayStyle -> Int -> Int -> Int -> Int
 calculatePostFlopMove combination playstyle madeBet bet maxBet pot
                                   street cbetted randomizer
   | bet == 0 = case handStrength of
-    Trash_Hand -> (checkMove, randomizer)
-    _          -> if (cbetted) 
-      then tryCbet
-      else tryBetCheck
+      Trash_Hand -> (checkMove, randomizer)
+      _          -> if (cbetted) 
+        then tryCbet
+        else tryBetCheck
   | betSizeType == Small_Bet = case handStrength of
-    Trash_Hand  -> (foldMove, randomizer)
-    Weak_Hand   -> tryCallFold
-    Medium_Hand -> tryCallFold
-    _           -> tryRaiseCall
+      Trash_Hand  -> (foldMove, randomizer)
+      Weak_Hand   -> tryCallFold
+      Medium_Hand -> tryCallFold
+      _           -> tryRaiseCall
   | betSizeType == Medium_Bet = case handStrength of
-    Trash_Hand  -> (foldMove, randomizer)
-    Weak_Hand   -> (foldMove, randomizer)
-    Medium_Hand -> tryCallFold
-    Strong_Hand -> tryCallFold
-    _           -> tryRaiseCall
+      Trash_Hand  -> (foldMove, randomizer)
+      Weak_Hand   -> (foldMove, randomizer)
+      Medium_Hand -> tryCallFold
+      Strong_Hand -> tryCallFold
+      _           -> tryRaiseCall
   | betSizeType == Big_Bet = case handStrength of
-    Monster_Hand -> tryRaiseCall
-    Strong_Hand  -> tryCallFold
-    _            -> (foldMove, randomizer)
+      Monster_Hand -> tryRaiseCall
+      Strong_Hand  -> tryCallFold
+      _            -> (foldMove, randomizer)
   | otherwise = case handStrength of
-    Monster_Hand -> tryRaiseCall
-    _            -> (foldMove, randomizer)
+      Monster_Hand -> tryRaiseCall
+      _            -> (foldMove, randomizer)
   where
     betSizeType   = evalBet ((bet * 100) `div` pot) (betRangePostF playstyle)
     handStrength  = evalHand combination (handPower playstyle)

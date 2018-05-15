@@ -1,6 +1,8 @@
 -- | Contains constructors for playstyles.
 module Poker.AI.PlayStyles where
 
+import System.Random (StdGen)
+
 import Poker.AI.Ranges
 import Poker.AI.Types
 
@@ -9,6 +11,10 @@ import Poker.Logic.Types.Cards
 -------------------------------------------------------------------------------
 -- * Constructors
 -------------------------------------------------------------------------------
+
+-- | Return new AI player data with defined playstyle and generator.
+getAIPlayer :: PlayStyleType -> StdGen -> AIPlayer
+getAIPlayer Telephone randomizer = AIPlayer [] getTelephonePlaystyle False False False randomizer
 
 -- | Telephone.
 getTelephonePlaystyle :: PlayStyle

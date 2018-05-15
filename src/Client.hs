@@ -6,6 +6,7 @@ import Graphics.Gloss.Interface.Pure.Game
 import System.Random (StdGen, getStdGen)
 
 import Poker.AI.Engine
+import Poker.AI.PlayStyles
 import Poker.AI.Types
 
 import Poker.Interface.Handlers
@@ -51,8 +52,9 @@ createTableScreenWith generator imgs = TableScreen
   , players    =
     [Player Human " Hero"    1500 SB Bottom Nothing
      False False 0 (Move Waiting 0) 0 Nothing,
-     Player Human "Opponent" 1500 BB Top    Nothing
-     True  False 0 (Move Waiting 0) 0 Nothing]
+     Player AI    "Opponent" 1500 BB Top    Nothing
+     True  False 0 (Move Waiting 0) 0
+     (Just (getAIPlayer Telephone generator))]
   , hero       = " Hero"
   , street     = Preflop
   , handCount  = 1
@@ -142,8 +144,8 @@ updateGame timePassed screen
       then screen { timer = timer screen + timePassed }
       else screen
         { state   = Next_Move
-        , players = writeMove (players screen) activePlayerPosition
-            (autoHumanMove activePlayer maxBet)
+        , players = writeAIDataChange (writeMove (players screen) activePlayerPosition
+            (fst aiCalculationResults)) activePlayerPosition (snd aiCalculationResults)
         }
   | state screen == Next_Move =
     if (countInHandPlayers (players screen) == 1)
@@ -191,4 +193,6 @@ updateGame timePassed screen
     buttonPosition  = if (length (players screen) == 2)
                       then SB
                       else BTN
+    aiCalculationResults = calculateAIMove (updateAIData activePlayer $ board screen)
+      maxBet (blindSize screen) (calculatePot $ players screen) (street screen)
     
