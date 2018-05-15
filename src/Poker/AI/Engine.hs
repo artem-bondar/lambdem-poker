@@ -11,7 +11,7 @@ import Poker.Logic.Calculations (computeCombination)
 import Poker.Logic.Types.Cards
 import Poker.Logic.Types.Game
 
---import Debug.Trace
+import Debug.Trace
 
 -------------------------------------------------------------------------------
 -- * Core functions for simulating AI thinking
@@ -80,7 +80,7 @@ calculatePreFlopMove handPF playstyle madeBet bet maxBet bb
       All_In -> raiseMove
       _      -> foldMove
   where
-    betSizeType   = evalBet (bet `div` bb) (betRangePF playstyle)
+    betSizeType   = evalBet (bet `div` bb) (betSizeRangePF playstyle)
     suggestedMove = suggestPFMove handPF (pfHandPower playstyle)
     raiseBet      = (bet * (raisePF $ betSizings playstyle)) `div` 100
     foldMove      = Move Folded  madeBet

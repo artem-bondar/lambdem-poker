@@ -60,7 +60,7 @@ data BetType
   | Medium_Bet
   | Big_Bet
   | Huge_Bet
-  deriving (Eq)
+  deriving (Eq, Show)
 
 -- | Container to hold range of bets.
 data BetRange = BetRange
