@@ -1,6 +1,7 @@
 # Λambd'em Poker
 
 ## Description
+
 Client for playing Texas Hold 'em versus AI or human beings with some additional features, possibly.
 
 *Feel uncomfortable if you don't know/remember game rules?* \
@@ -87,7 +88,7 @@ When choosing `random` play style, one of previous 5 is chosen fortuitously. Als
 
 Disregard that, [Cabal](https://www.haskell.org/cabal/) is fine too.
 
-```
+```bash
 cabal install --only-dependencies
 cabal run %playstylename%
 ```
@@ -101,7 +102,7 @@ And for brave ones, feel free to look through haddock documentation, it's offlin
 
 As part of project web based range selector is supplemented.
 
-![](docs/images/range%20selector.png)
+![ranges](docs/images/range%20selector.png)
 
 ~~Wait, what?! That peasant front end?! In my cozy haskell project?!~~
 
